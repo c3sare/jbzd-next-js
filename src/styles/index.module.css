@@ -1,0 +1,60 @@
+body {
+  margin: 0;
+  background: #252525;
+  font-family: Open Sans, sans-serif;
+  font-size: 14px;
+  color: white;
+}
+
+.buttonsMain {
+  max-width: 600px;
+  display: flex;
+  gap: 10px 5px;
+  margin-left: 57px;
+  flex-wrap: nowrap;
+  margin-bottom: 20px;
+}
+
+.buttonsMain > button {
+  cursor: pointer;
+  background: #3c3c3c;
+  border: 0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  height: 34px;
+  padding: 0 15px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0 10px;
+  position: relative;
+}
+
+.buttonsMain > .addMem {
+  background: #c03e3f;
+}
+
+.errorPage {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.errorPage h3 {
+  text-align: center;
+}
+
+.errorPage img {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+main {
+  margin: 0 auto;
+  padding: 0 15px;
+  width: calc(100% - 30px);
+  max-width: 1150px;
+}
