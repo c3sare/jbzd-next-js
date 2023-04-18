@@ -16,7 +16,7 @@ const YoutubeContainer = (props: any) => {
   useEffect(() => {
     const vidId = youtube_parser(url);
     if (vidId !== false)
-      fetch(`http://localhost:8000/youtubevideo/${vidId}`)
+      fetch(`/api/youtubevideo/${vidId}`)
         .then((data) => data.json())
         .then((data) => {
           if (data.videoExist) setData(vidId, index);
