@@ -153,10 +153,6 @@
   }
 }
 
-#departments {
-  position: relative;
-}
-
 .departmentsMenu {
   display: none;
   padding: 10px 0;
@@ -203,14 +199,6 @@
 .departmentsMenu ul li > a:hover,
 .departmentsMenuMobile ul li > a:hover {
   border-bottom: 1px solid darkred;
-}
-
-#departments:hover .departmentsMenu {
-  display: flex;
-}
-
-#departments:hover svg {
-  transform: rotate(180deg);
 }
 
 .mobileMenuContainer {

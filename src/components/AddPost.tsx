@@ -1,7 +1,6 @@
 import style from "@/styles/addpost.module.css";
 import { FaRegImage, FaVideo, FaYoutube, FaTrashAlt } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
-import { categories } from "@/data/categories";
 import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { BiMove } from "react-icons/bi";
@@ -11,6 +10,7 @@ import VideoContainer from "./AddPostComponents/VideoContainer";
 import YoutubeContainer from "./AddPostComponents/YoutubeContainer";
 import { useForm, useFieldArray } from "react-hook-form";
 import CheckUrl from "./AddPostComponents/CheckUrl";
+import useSwr from "swr";
 
 function isValidHttpUrl(link: string) {
   let url;
@@ -22,20 +22,37 @@ function isValidHttpUrl(link: string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-const AddPost = (props: any) => {
-  const { setOption } = props;
+interface AddPostInterface {
+  category: number | null;
+  linking: boolean;
+  linkingUrl?: string;
+  memContainers: {
+    data: string | File | null;
+    type: "youtube" | "text" | "image" | "video";
+  }[];
+  tags: {
+    value: string;
+  }[];
+  title: string;
+}
+
+const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
+  const { data, isLoading, error } = useSwr("/api/categories");
+  const normalCategories = data.filter(
+    (item: any) => !item.nsfw && !item.asPage
+  );
+  const nsfwCategories = data.filter((item: any) => item.nsfw && item.asPage);
 
   const {
     control,
     register,
     unregister,
     handleSubmit,
-    getValues,
     watch,
     reset,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm<AddPostInterface>();
   const {
     fields: fieldsTag,
     append: appendTag,
@@ -60,8 +77,8 @@ const AddPost = (props: any) => {
       required: "Przynajmniej jeden element jest wymagany!",
       minLength: 1,
       maxLength: 10,
-      validate: (val: any) => {
-        return val.filter((item: any) => item.data === null).length === 0;
+      validate: (val) => {
+        return val.filter((item) => item.data === null).length === 0;
       },
     },
   });
@@ -84,7 +101,7 @@ const AddPost = (props: any) => {
     setValue("linkingUrl", url);
   };
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: AddPostInterface) => {
     console.log(data);
   };
 
@@ -99,12 +116,12 @@ const AddPost = (props: any) => {
       e.preventDefault();
       if (!/^[a-zA-Z0-9]*$/.test(currentTag)) return;
       if (
-        getValues("tags").length >= 10 ||
-        getValues("tags").indexOf(currentTag) >= 0
+        tags.length >= 10 ||
+        tags.filter((item) => item.value === currentTag).length > 0
       )
         return;
       if (currentTag === "") return null;
-      appendTag(currentTag);
+      appendTag({ value: currentTag });
       setCurrentTag("");
     }
   };
@@ -114,7 +131,7 @@ const AddPost = (props: any) => {
     i: number
   ) => {
     e.preventDefault();
-    if (getValues("tags").indexOf(currentTag) >= 0) return;
+    if (tags.filter((item) => item.value === currentTag).length > 0) return;
     removeTag(i);
   };
 
@@ -123,28 +140,31 @@ const AddPost = (props: any) => {
     reset({ category: null });
   };
 
-  interface Type {
-    [name: string]: React.FunctionComponent;
+  interface TypeDataInterface {
+    data: string | File | null;
+    setData: (data: string | File | null, index: number) => void;
+    index: number;
   }
+
+  interface Type {
+    [name: string]: React.FunctionComponent<TypeDataInterface>;
+  }
+
+  const types: Type = {
+    image: ImageContainer,
+    text: TextContainer,
+    video: VideoContainer,
+    youtube: YoutubeContainer,
+  };
 
   const handleAddMemItem = (
     e: React.MouseEvent<HTMLButtonElement>,
-    type: string
+    type: "image" | "text" | "video" | "youtube"
   ) => {
     e.preventDefault();
-    const types: Type = {
-      image: ImageContainer,
-      text: TextContainer,
-      video: VideoContainer,
-      youtube: YoutubeContainer,
-    };
     appendMemContainer({
-      order: 0,
       data: null,
-      setData: (data: any, index: number) => {
-        setValue(`memContainers.${index}.data`, data);
-      },
-      element: types[type],
+      type,
     });
   };
 
@@ -166,14 +186,16 @@ const AddPost = (props: any) => {
             <p className={style.error}>{String(errors.title?.message)}</p>
           )}
         </div>
-        {fieldsMemContainers.map((item: any, i: number) => {
+        {fieldsMemContainers.map((item, i) => {
           return (
             <div className={style.memElement} key={item.id}>
-              <item.element
-                data={memContainers[i].data}
-                setData={memContainers[i].setData}
-                index={i}
-              />
+              {React.createElement(types[item.type], {
+                data: memContainers[i].data,
+                setData: (data: string | File | null, index: number) => {
+                  setValue(`memContainers.${index}.data`, data);
+                },
+                index: i,
+              })}
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -226,7 +248,7 @@ const AddPost = (props: any) => {
           <div className={style.tags}>
             {fieldsTag.map((item, i) => (
               <span className={style.tagItem} key={item.id}>
-                <span className={style.title}>{tags[i]}</span>
+                <span className={style.title}>{tags[i].value}</span>
                 <button onClick={(e) => handleDeleteTag(e, i)}>
                   <IoClose />
                 </button>
@@ -245,7 +267,7 @@ const AddPost = (props: any) => {
             Gdzie chcesz dodać treść?{" "}
             <span className={style.optional}>{"(opcjonalnie)"}</span>
             <div>
-              {categories[0].map((item, i) => (
+              {normalCategories.map((item, i) => (
                 <label
                   key={i}
                   className={
@@ -263,7 +285,7 @@ const AddPost = (props: any) => {
                   {item.name}
                 </label>
               ))}
-              {categoriesWatch! < categories[0].length &&
+              {categoriesWatch! < normalCategories.length &&
                 categoriesWatch !== null && (
                   <button
                     onClick={handleClearCategory}
@@ -276,12 +298,12 @@ const AddPost = (props: any) => {
             <div>
               <span style={{ fontSize: "12px", color: "#de2127" }}>nsfw:</span>
               <div>
-                {categories[1].map((item, i) => (
+                {nsfwCategories.map((item, i) => (
                   <label
                     key={i}
                     className={
                       Number(categoriesWatch) ===
-                        Number(i + categories[0].length) &&
+                        Number(i + normalCategories.length) &&
                       categoriesWatch !== null
                         ? style.active
                         : ""
@@ -291,12 +313,12 @@ const AddPost = (props: any) => {
                       {...register("category")}
                       name="category"
                       type="radio"
-                      value={categories[0].length + i}
+                      value={normalCategories.length + i}
                     />
                     {item.name}
                   </label>
                 ))}
-                {categoriesWatch! >= categories[0].length &&
+                {categoriesWatch! >= normalCategories.length &&
                   categoriesWatch !== null && (
                     <button
                       onClick={handleClearCategory}
@@ -318,14 +340,21 @@ const AddPost = (props: any) => {
               </label>
               {linking &&
                 (linkingUrl === undefined ? (
-                  <input
-                    placeholder="Wpisz link"
-                    type="url"
-                    onChange={(e) => {
-                      if (isValidHttpUrl(e.target.value))
-                        setValue("linkingUrl", e.target.value);
-                    }}
-                  />
+                  <>
+                    <input
+                      placeholder="Wpisz link"
+                      type="url"
+                      onChange={(e) => {
+                        if (isValidHttpUrl(e.target.value))
+                          setValue("linkingUrl", e.target.value);
+                      }}
+                    />
+                    {errors?.linkingUrl && (
+                      <p className={style.error}>
+                        {String(errors?.linkingUrl?.message)}
+                      </p>
+                    )}
+                  </>
                 ) : (
                   <CheckUrl data={linkingUrl} setData={setLinkingUrl} />
                 ))}

@@ -2,8 +2,15 @@ import { TiUpload } from "react-icons/ti";
 import React, { useRef, useState } from "react";
 import style from "@/styles/addpost.module.css";
 
-const VideoContainer = (props: any) => {
-  const { data, setData, index } = props;
+const VideoContainer = ({
+  data,
+  setData,
+  index,
+}: {
+  data: string | File | null;
+  setData: (data: File | null, index: number) => void;
+  index: number;
+}): JSX.Element => {
   const currentImage = data;
   const setCurrentImage = setData;
   const [dragActive, setDragActive] = useState(false);

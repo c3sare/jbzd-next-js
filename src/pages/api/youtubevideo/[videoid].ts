@@ -12,6 +12,6 @@ export default async function handler(
     `https://www.googleapis.com/youtube/v3/videos?part=id&id=${req.query.videoid}&key=${process.env.YOUTUBE_API_KEY}`
   ).then((data) => data.json());
 
-  if (youtube_data.items.length > 0) res.json({ videoExist: true });
+  if (youtube_data?.items?.length > 0) res.json({ videoExist: true });
   else res.json({ videoExist: false });
 }

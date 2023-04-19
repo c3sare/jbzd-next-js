@@ -13,7 +13,7 @@ const Index = () => {
 
   const options = [
     null,
-    <AddPost key={1} />,
+    <AddPost setOption={setCurrentOption} key={1} />,
     <TopFilter key={2} />,
     <PostFilter key={3} />,
   ];

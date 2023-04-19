@@ -3,8 +3,15 @@ import { TiUpload } from "react-icons/ti";
 import { useRef, useState } from "react";
 import style from "@/styles/addpost.module.css";
 
-const ImageContainer = (props: any) => {
-  const { data, setData, index } = props;
+const ImageContainer = ({
+  data,
+  setData,
+  index,
+}: {
+  data: string | File | null;
+  setData: (data: string | File | null, index: number) => void;
+  index: number;
+}) => {
   const currentImage = data;
   const setCurrentImage = setData;
   const [dragActive, setDragActive] = useState(false);
@@ -91,7 +98,7 @@ const ImageContainer = (props: any) => {
     </label>
   ) : (
     <div className={style.imageContainer}>
-      <img src={URL.createObjectURL(currentImage)} alt="Podgląd" />
+      <img src={URL.createObjectURL(currentImage as File)} alt="Podgląd" />
       <button onClick={handleClearImage} className={style.changeImage}>
         Zmień
       </button>

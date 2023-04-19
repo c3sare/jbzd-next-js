@@ -1,8 +1,15 @@
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const TextContainer = (props: any) => {
-  const { data, setData, index } = props;
+const TextContainer = ({
+  data,
+  setData,
+  index,
+}: {
+  data: string | File | null;
+  setData: (data: string | File | null, index: number) => void;
+  index: number;
+}) => {
   const modules = {
     toolbar: [
       [
@@ -30,7 +37,7 @@ const TextContainer = (props: any) => {
     <ReactQuill
       modules={modules}
       theme="snow"
-      value={data}
+      value={(data as string) || ""}
       onChange={(e) => setData(e, index)}
     />
   );

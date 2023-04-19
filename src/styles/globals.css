@@ -40,3 +40,15 @@ main {
   width: calc(100% - 30px);
   max-width: 1150px;
 }
+
+#departments {
+  position: relative;
+}
+
+#departments:hover svg {
+  transform: rotate(180deg);
+}
+
+#departments:hover > div {
+  display: flex;
+}

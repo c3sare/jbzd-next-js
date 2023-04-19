@@ -9,8 +9,15 @@ function youtube_parser(url: string) {
   return match && match[7].length === 11 ? match[7] : false;
 }
 
-const YoutubeContainer = (props: any) => {
-  const { data, setData, index } = props;
+const YoutubeContainer = ({
+  data,
+  setData,
+  index,
+}: {
+  data: string | File | null;
+  setData: (data: string | File | null, index: number) => void;
+  index: number;
+}): JSX.Element => {
   const [url, setUrl] = useState("");
 
   useEffect(() => {
@@ -39,7 +46,10 @@ const YoutubeContainer = (props: any) => {
         </>
       ) : (
         <>
-          <YouTube opts={{ width: "100%", height: "310px" }} videoId={data} />
+          <YouTube
+            opts={{ width: "100%", height: "310px" }}
+            videoId={data as string}
+          />
           <button
             className={style.changeVideoBtn}
             onClick={() => {
