@@ -23,7 +23,7 @@ function isValidHttpUrl(link: string) {
 }
 
 interface AddPostInterface {
-  category: number | null;
+  category: string | null;
   linking: boolean;
   linkingUrl?: string;
   memContainers: {
@@ -36,12 +36,33 @@ interface AddPostInterface {
   title: string;
 }
 
+interface Category {
+  _id: string;
+  name: string;
+  nsfw: boolean;
+  slug: string;
+  asPage: boolean;
+  color: string;
+  hide: boolean;
+}
+
 const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
-  const { data, isLoading, error } = useSwr("/api/categories");
-  const normalCategories = data.filter(
-    (item: any) => !item.nsfw && !item.asPage
-  );
-  const nsfwCategories = data.filter((item: any) => item.nsfw && item.asPage);
+  const {
+    data,
+    isLoading,
+    error,
+  }: { data: Category[] | undefined; isLoading: boolean; error: any } =
+    useSwr("/api/categories");
+  const normalCategories = data
+    ? data.filter((item: any) => !item.nsfw && !item.asPage)
+    : [];
+  const nsfwCategories = data
+    ? data.filter(
+        (item: any) =>
+          (item.nsfw && item.asPage && !item.hide) ||
+          (item.asPage && !item.hide)
+      )
+    : [];
 
   const {
     control,
@@ -52,7 +73,13 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<AddPostInterface>();
+  } = useForm<AddPostInterface>({
+    defaultValues: {
+      title: "",
+      tags: [],
+      memContainers: [],
+    },
+  });
   const {
     fields: fieldsTag,
     append: appendTag,
@@ -170,123 +197,125 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
 
   return (
     <div className={style.addPostContainer}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <h3>Wpisz tytuł</h3>
-          <input
-            {...register("title", {
-              required: "To pole jest wymagane!",
-              minLength: 2,
-              maxLength: 70,
-            })}
-            placeholder="Wpisz tytuł"
-            type="text"
-          />
-          {errors?.title && (
-            <p className={style.error}>{String(errors.title?.message)}</p>
-          )}
-        </div>
-        {fieldsMemContainers.map((item, i) => {
-          return (
-            <div className={style.memElement} key={item.id}>
-              {React.createElement(types[item.type], {
-                data: memContainers[i].data,
-                setData: (data: string | File | null, index: number) => {
-                  setValue(`memContainers.${index}.data`, data);
-                },
-                index: i,
+      {!isLoading && !error && (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <h3>Wpisz tytuł</h3>
+            <input
+              {...register("title", {
+                required: "To pole jest wymagane!",
+                minLength: 2,
+                maxLength: 70,
               })}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  removeMemContainer(i);
-                }}
-              >
-                <FaTrashAlt /> Usuń element
+              placeholder="Wpisz tytuł"
+              type="text"
+            />
+            {errors?.title && (
+              <p className={style.error}>{String(errors.title?.message)}</p>
+            )}
+          </div>
+          {fieldsMemContainers.map((item, i) => {
+            return (
+              <div className={style.memElement} key={item.id}>
+                {React.createElement(types[item.type], {
+                  data: memContainers[i].data,
+                  setData: (data: string | File | null, index: number) => {
+                    setValue(`memContainers.${index}.data`, data);
+                  },
+                  index: i,
+                })}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    removeMemContainer(i);
+                  }}
+                >
+                  <FaTrashAlt /> Usuń element
+                </button>
+                <button className={style.moveButton}>
+                  <BiMove />
+                </button>
+              </div>
+            );
+          })}
+          <div>
+            <h3>Co chcesz dodać?</h3>
+            <div className={style.contentType}>
+              <button onClick={(e) => handleAddMemItem(e, "image")}>
+                <FaRegImage />
+                <span>Obrazek/Gif</span>
               </button>
-              <button className={style.moveButton}>
-                <BiMove />
+              <button onClick={(e) => handleAddMemItem(e, "text")}>
+                <IoDocumentText />
+                <span>Tekst</span>
+              </button>
+              <button onClick={(e) => handleAddMemItem(e, "video")}>
+                <FaVideo />
+                <span>Video MP4</span>
+              </button>
+              <button onClick={(e) => handleAddMemItem(e, "youtube")}>
+                <FaYoutube />
+                <span>Youtube</span>
               </button>
             </div>
-          );
-        })}
-        <div>
-          <h3>Co chcesz dodać?</h3>
-          <div className={style.contentType}>
-            <button onClick={(e) => handleAddMemItem(e, "image")}>
-              <FaRegImage />
-              <span>Obrazek/Gif</span>
-            </button>
-            <button onClick={(e) => handleAddMemItem(e, "text")}>
-              <IoDocumentText />
-              <span>Tekst</span>
-            </button>
-            <button onClick={(e) => handleAddMemItem(e, "video")}>
-              <FaVideo />
-              <span>Video MP4</span>
-            </button>
-            <button onClick={(e) => handleAddMemItem(e, "youtube")}>
-              <FaYoutube />
-              <span>Youtube</span>
-            </button>
+            {errors?.memContainers && (
+              <p className={style.error}>
+                {String(errors.memContainers?.root?.message)}
+              </p>
+            )}
           </div>
-          {errors?.memContainers && (
-            <p className={style.error}>
-              {String(errors.memContainers?.root?.message)}
-            </p>
-          )}
-        </div>
-        <div>
-          <h3>Dodaj tagi</h3>
-          <input
-            type="text"
-            placeholder="Wpisz tagi ..."
-            value={currentTag}
-            onChange={handleTagname}
-            onKeyDown={handleAddTagKeys}
-          />
-          <div className={style.tags}>
-            {fieldsTag.map((item, i) => (
-              <span className={style.tagItem} key={item.id}>
-                <span className={style.title}>{tags[i].value}</span>
-                <button onClick={(e) => handleDeleteTag(e, i)}>
-                  <IoClose />
-                </button>
-              </span>
-            ))}
-          </div>
-          {errors?.tags && (
-            <p className={style.error}>{String(errors.tags?.root?.message)}</p>
-          )}
-          <span className={style.info}>
-            Aby dodać kolejny tag należy dodać przecinek albo nacisnąć TAB.
-          </span>
-        </div>
-        <div className={style.categories}>
-          <h3>
-            Gdzie chcesz dodać treść?{" "}
-            <span className={style.optional}>{"(opcjonalnie)"}</span>
-            <div>
-              {normalCategories.map((item, i) => (
-                <label
-                  key={i}
-                  className={
-                    Number(categoriesWatch) === i && categoriesWatch !== null
-                      ? style.active
-                      : ""
-                  }
-                >
-                  <input
-                    {...register("category")}
-                    name="category"
-                    type="radio"
-                    value={i}
-                  />
-                  {item.name}
-                </label>
+          <div>
+            <h3>Dodaj tagi</h3>
+            <input
+              type="text"
+              placeholder="Wpisz tagi ..."
+              value={currentTag}
+              onChange={handleTagname}
+              onKeyDown={handleAddTagKeys}
+            />
+            <div className={style.tags}>
+              {fieldsTag.map((item, i) => (
+                <span className={style.tagItem} key={item.id}>
+                  <span className={style.title}>{tags[i].value}</span>
+                  <button onClick={(e) => handleDeleteTag(e, i)}>
+                    <IoClose />
+                  </button>
+                </span>
               ))}
-              {categoriesWatch! < normalCategories.length &&
-                categoriesWatch !== null && (
+            </div>
+            {errors?.tags && (
+              <p className={style.error}>
+                {String(errors.tags?.root?.message)}
+              </p>
+            )}
+            <span className={style.info}>
+              Aby dodać kolejny tag należy dodać przecinek albo nacisnąć TAB.
+            </span>
+          </div>
+          <div className={style.categories}>
+            <h3>
+              Gdzie chcesz dodać treść?{" "}
+              <span className={style.optional}>{"(opcjonalnie)"}</span>
+              <div>
+                {normalCategories.map((item, i) => (
+                  <label
+                    key={i}
+                    className={
+                      categoriesWatch === item.slug ? style.active : ""
+                    }
+                  >
+                    <input
+                      {...register("category")}
+                      name="category"
+                      type="radio"
+                      value={item.slug}
+                    />
+                    {item.name}
+                  </label>
+                ))}
+                {normalCategories.filter(
+                  (item: any) => item.slug === categoriesWatch!
+                ).length > 0 && (
                   <button
                     onClick={handleClearCategory}
                     className={style.emptyButton}
@@ -294,32 +323,31 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
                     wyczyść
                   </button>
                 )}
-            </div>
-            <div>
-              <span style={{ fontSize: "12px", color: "#de2127" }}>nsfw:</span>
+              </div>
               <div>
-                {nsfwCategories.map((item, i) => (
-                  <label
-                    key={i}
-                    className={
-                      Number(categoriesWatch) ===
-                        Number(i + normalCategories.length) &&
-                      categoriesWatch !== null
-                        ? style.active
-                        : ""
-                    }
-                  >
-                    <input
-                      {...register("category")}
-                      name="category"
-                      type="radio"
-                      value={normalCategories.length + i}
-                    />
-                    {item.name}
-                  </label>
-                ))}
-                {categoriesWatch! >= normalCategories.length &&
-                  categoriesWatch !== null && (
+                <span style={{ fontSize: "12px", color: "#de2127" }}>
+                  nsfw:
+                </span>
+                <div>
+                  {nsfwCategories.map((item, i) => (
+                    <label
+                      key={i}
+                      className={
+                        categoriesWatch === item.slug ? style.active : ""
+                      }
+                    >
+                      <input
+                        {...register("category")}
+                        name="category"
+                        type="radio"
+                        value={item.slug}
+                      />
+                      {item.name}
+                    </label>
+                  ))}
+                  {nsfwCategories.filter(
+                    (item) => item.slug === categoriesWatch
+                  ).length > 0 && (
                     <button
                       onClick={handleClearCategory}
                       className={style.emptyButton}
@@ -327,54 +355,55 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
                       wyczyść
                     </button>
                   )}
+                </div>
               </div>
-            </div>
-            <div className={style.linking}>
-              <label>
-                <input
-                  type="checkbox"
-                  {...register("linking")}
-                  defaultChecked={false}
-                />
-                {!linking ? "Pokaż linkowanie" : "Schowaj linkowanie"}
-              </label>
-              {linking &&
-                (linkingUrl === undefined ? (
-                  <>
-                    <input
-                      placeholder="Wpisz link"
-                      type="url"
-                      onChange={(e) => {
-                        if (isValidHttpUrl(e.target.value))
-                          setValue("linkingUrl", e.target.value);
-                      }}
-                    />
-                    {errors?.linkingUrl && (
-                      <p className={style.error}>
-                        {String(errors?.linkingUrl?.message)}
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <CheckUrl data={linkingUrl} setData={setLinkingUrl} />
-                ))}
-            </div>
-          </h3>
-        </div>
-        <div className={style.addCancelButtons}>
-          <button className={style.submit} type="submit">
-            Dodaj
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setOption(0);
-            }}
-          >
-            Anuluj
-          </button>
-        </div>
-      </form>
+              <div className={style.linking}>
+                <label>
+                  <input
+                    type="checkbox"
+                    {...register("linking")}
+                    defaultChecked={false}
+                  />
+                  {!linking ? "Pokaż linkowanie" : "Schowaj linkowanie"}
+                </label>
+                {linking &&
+                  (linkingUrl === undefined ? (
+                    <>
+                      <input
+                        placeholder="Wpisz link"
+                        type="url"
+                        onChange={(e) => {
+                          if (isValidHttpUrl(e.target.value))
+                            setValue("linkingUrl", e.target.value);
+                        }}
+                      />
+                      {errors?.linkingUrl && (
+                        <p className={style.error}>
+                          {String(errors?.linkingUrl?.message)}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <CheckUrl data={linkingUrl} setData={setLinkingUrl} />
+                  ))}
+              </div>
+            </h3>
+          </div>
+          <div className={style.addCancelButtons}>
+            <button className={style.submit} type="submit">
+              Dodaj
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setOption(0);
+              }}
+            >
+              Anuluj
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 };

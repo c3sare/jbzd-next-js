@@ -6,6 +6,7 @@ interface Category {
   slug: string;
   asPage: boolean;
   color: string;
+  hide: boolean;
 }
 
 const categorySchema = new Schema<Category>({
@@ -14,6 +15,7 @@ const categorySchema = new Schema<Category>({
   slug: { type: String, required: true },
   asPage: { type: Boolean, required: true },
   color: { type: String, required: true },
+  hide: { type: Boolean, required: true },
 });
 
 export default models.Category || model<Category>("Category", categorySchema);
