@@ -155,9 +155,9 @@
 
 .departmentsMenu {
   display: none;
-  padding: 10px 0;
   background: #181818;
-  top: 45px;
+  top: 43px;
+  padding: 15px 0;
   right: 0;
   position: absolute;
   -ms-flex-wrap: nowrap;
@@ -166,6 +166,7 @@
   box-shadow: 2px 2px 4px #000;
   border-top: 1px solid #252525;
   cursor: auto;
+  width: 420px;
 }
 
 .departmentsMenuMobile {
@@ -176,24 +177,35 @@
   flex-wrap: nowrap;
 }
 
+.departmentsMenu > ul > span,
+.departmentsMenuMobile > ul > span {
+  color: #c03e3e;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-left: 20px;
+}
+
 .departmentsMenu ul,
 .departmentsMenuMobile ul {
-  width: 150px;
+  width: 50%;
   list-style: none;
-  padding: 15px;
+  padding: 0;
   margin: 0;
 }
 
 .departmentsMenu ul li,
 .departmentsMenuMobile ul li {
   text-align: left;
-  padding: 4px 0;
+  font-size: 15px;
+  line-height: 25px;
 }
 
 .departmentsMenu ul li > a,
 .departmentsMenuMobile ul li > a {
   color: white;
   text-decoration: none;
+  margin-left: 20px;
 }
 
 .departmentsMenu ul li > a:hover,

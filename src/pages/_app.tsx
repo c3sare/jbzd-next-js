@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import "react-quill/dist/quill.snow.css";
 import type { AppProps } from "next/app";
 import { SWRConfig } from "swr";
+import React from "react";
+import Context from "@/context/Context";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -15,9 +17,11 @@ export default function App({ Component, pageProps }: AppProps) {
         },
       }}
     >
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Context>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </Context>
     </SWRConfig>
   );
 }

@@ -6,7 +6,7 @@ hr {
 
 body {
   margin: 0;
-  padding-top: 40px;
+  padding-top: 65px;
   background: #252525;
   font-family: Open Sans, sans-serif;
   font-size: 14px;
@@ -35,10 +35,26 @@ img {
 }
 
 main {
-  margin: 0 auto;
-  padding: 0 15px;
-  width: calc(100% - 30px);
-  max-width: 1150px;
+  width: 100%;
+  padding: 15px 0 25px;
+  border-right: 1px solid #1d1d1d;
+  flex: 0 0 750px;
+  max-width: 750px;
+  background: #252525;
+}
+
+@media screen and (max-width: 768px) {
+  main {
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 1120px) {
+  main {
+    flex: 1;
+    max-width: 750px;
+    border-right: none;
+  }
 }
 
 #departments {
@@ -51,4 +67,10 @@ main {
 
 #departments:hover > div {
   display: flex;
+}
+
+button,
+input,
+textarea {
+  outline: none !important;
 }

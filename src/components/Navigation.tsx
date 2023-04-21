@@ -15,30 +15,68 @@ import {
   MdSettings,
 } from "react-icons/md";
 import { GiDiceSixFacesTwo } from "react-icons/gi";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
-import { Category, categories } from "../data/categories";
 import Image from "next/image";
+import { CategoryContext } from "@/context/categories";
+import { LoginContext } from "@/context/login";
 
 const Navigation = () => {
   const [showSearch, setShowSearch] = useState<Boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<Boolean>(false);
+  const categories = useContext(CategoryContext);
+  const { login, logged } = useContext(LoginContext);
 
-  const categoryContainer = categories.map(
-    (group: Category[], index: number) => (
-      <ul key={index}>
-        {group.map((category: Category, indexCategory: number) => (
+  const normalCategories =
+    categories !== null
+      ? categories.filter((item) => !item.nsfw && !item.asPage)
+      : [];
+  const nsfwCategories =
+    categories !== null ? categories.filter((item: any) => item.nsfw) : [];
+  const pageCategories =
+    categories !== null
+      ? categories.filter((item) => item.asPage && !item.nsfw)
+      : [];
+
+  const categoriesContainer = (
+    <>
+      <ul>
+        {normalCategories.map((category, indexCategory) => (
           <li key={indexCategory}>
             <Link
               style={category.color ? { color: category.color } : {}}
-              href={category.to}
+              href={"/kategoria/" + category.slug}
+            >
+              {category.name}
+            </Link>
+          </li>
+        ))}
+        <hr />
+        {pageCategories.map((category, indexCategory) => (
+          <li key={indexCategory}>
+            <Link
+              style={category.color ? { color: category.color } : {}}
+              href={category.slug}
             >
               {category.name}
             </Link>
           </li>
         ))}
       </ul>
-    )
+      <ul>
+        <span>nsfw:</span>
+        {nsfwCategories.map((category, indexCategory) => (
+          <li key={indexCategory}>
+            <Link
+              style={category.color ? { color: category.color } : {}}
+              href={category.slug}
+            >
+              {category.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 
   return (
@@ -69,12 +107,12 @@ const Navigation = () => {
         <div className={style.right}>
           <Link href="/oczekujace">Oczekujące</Link>
           <Link href="/losowe">Losowe</Link>
-          <Link href="/upload">Dodaj</Link>
+          {logged && <Link href="/upload">Dodaj</Link>}
           <span className={style.navLink} id="departments">
             Działy <MdArrowDropDown />
-            <div className={style.departmentsMenu}>{categoryContainer}</div>
+            <div className={style.departmentsMenu}>{categoriesContainer}</div>
           </span>
-          <Link id="coins" href="/">
+          <Link id="coins" href="/" onClick={(e) => e.preventDefault()}>
             <Image
               height={20}
               style={{ marginRight: "10px" }}
@@ -83,12 +121,16 @@ const Navigation = () => {
             />{" "}
             0
           </Link>
-          <Link id="icon" href="/">
-            <MdEmail />
-          </Link>
-          <Link id="icon" href="/">
-            <MdNotifications />
-          </Link>
+          {logged && (
+            <>
+              <Link id="icon" href="/">
+                <MdEmail />
+              </Link>
+              <Link id="icon" href="/">
+                <MdNotifications />
+              </Link>
+            </>
+          )}
           <span
             className={style.mobileMenu}
             onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -177,7 +219,9 @@ const Navigation = () => {
               <span>Ustawienia</span>
             </Link>
           </div>
-          <div className={style.departmentsMenuMobile}>{categoryContainer}</div>
+          <div className={style.departmentsMenuMobile}>
+            {categoriesContainer}
+          </div>
         </div>
       )}
     </div>

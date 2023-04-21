@@ -10,7 +10,7 @@ import VideoContainer from "./AddPostComponents/VideoContainer";
 import YoutubeContainer from "./AddPostComponents/YoutubeContainer";
 import { useForm, useFieldArray } from "react-hook-form";
 import CheckUrl from "./AddPostComponents/CheckUrl";
-import useSwr from "swr";
+import { CategoryContext } from "@/context/categories";
 
 function isValidHttpUrl(link: string) {
   let url;
@@ -36,33 +36,25 @@ interface AddPostInterface {
   title: string;
 }
 
-interface Category {
-  _id: string;
-  name: string;
-  nsfw: boolean;
-  slug: string;
-  asPage: boolean;
-  color: string;
-  hide: boolean;
-}
-
 const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
-  const {
-    data,
-    isLoading,
-    error,
-  }: { data: Category[] | undefined; isLoading: boolean; error: any } =
-    useSwr("/api/categories");
-  const normalCategories = data
-    ? data.filter((item: any) => !item.nsfw && !item.asPage)
-    : [];
-  const nsfwCategories = data
-    ? data.filter(
-        (item: any) =>
-          (item.nsfw && item.asPage && !item.hide) ||
-          (item.asPage && !item.hide)
-      )
-    : [];
+  const data = React.useContext(CategoryContext);
+
+  const categories = data !== null ? data : [];
+
+  const normalCategories = categories.filter(
+    (item: any) => !item.nsfw && !item.asPage
+  );
+
+  const nsfwCategories = categories.filter(
+    (item: any) =>
+      (item.nsfw &&
+        item.asPage &&
+        !item.hide &&
+        !normalCategories.find((iteem) => iteem.slug === item.slug)) ||
+      (item.asPage &&
+        !item.hide &&
+        !normalCategories.find((iteem) => iteem.slug === item.slug))
+  );
 
   const {
     control,
@@ -197,7 +189,7 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
 
   return (
     <div className={style.addPostContainer}>
-      {!isLoading && !error && (
+      {data !== null && (
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <h3>Wpisz tytuł</h3>
