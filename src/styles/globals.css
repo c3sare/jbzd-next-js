@@ -4,9 +4,13 @@ hr {
   border: none;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  padding-top: 65px;
+  padding-top: 45px;
   background: #252525;
   font-family: Open Sans, sans-serif;
   font-size: 14px;

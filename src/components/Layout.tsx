@@ -6,10 +6,20 @@ import style from "@/styles/Layout.module.css";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import RemindPasswordForm from "./RemindPasswordForm";
+import { LoginContext } from "@/context/login";
+import { NotifyContext } from "@/context/notify";
+import Image from "next/image";
+import Link from "next/link";
+import defaultAvatar from "@/images/avatars/default.jpg";
+import { AiOutlinePoweroff, AiFillFlag } from "react-icons/ai";
+import { BiImage } from "react-icons/bi";
+import { FaRegComment } from "react-icons/fa";
 
 export default function Layout({ children }: any) {
   const [currentForm, setCurrentForm] = React.useState(0);
   const dispatch: React.Dispatch<any> = React.useContext(CategoryReducer);
+  const { logged, login } = React.useContext(LoginContext);
+  const notifys = React.useContext(NotifyContext);
 
   const forms = [LoginForm, RegisterForm, RemindPasswordForm];
 
@@ -24,20 +34,75 @@ export default function Layout({ children }: any) {
       );
   }, [dispatch]);
 
+  const loginPanel = (
+    <div className={style.login}>
+      <div className={style.desktop}>
+        {React.createElement(forms[currentForm], { setCurrentForm })}
+      </div>
+    </div>
+  );
+
   return (
     <>
-      <Navigation />
+      <Navigation loginPanel={loginPanel} />
       <div className={style.contentWrapper}>
         <main>{children}</main>
         <aside className={style.sidebar}>
-          <div className={style.login}>
-            <div className={style.desktop}>
-              {React.createElement(forms[currentForm], { setCurrentForm })}
+          {logged ? (
+            <div className={style.profile}>
+              <div className={style.profileInfo}>
+                <Link href={"/uzytkownik/" + login}>
+                  <Image src={defaultAvatar} alt="Avatar" />
+                </Link>
+                <section className={style.profileInformations}>
+                  <div className={style.profileHeader}>
+                    <span>
+                      <Link href={"/uzytkownicy/" + login}>{login}</Link>
+                      <Link href="/wyloguj">
+                        <AiOutlinePoweroff />
+                      </Link>
+                    </span>
+                  </div>
+                  <section className={style.profileDetails}>
+                    <p className={style.profileDetail}>
+                      <BiImage /> 0 / 0
+                    </p>
+                    <p className={style.profileDetail}>
+                      <FaRegComment /> 0
+                    </p>
+                    <p className={style.profileDetail}>
+                      <AiFillFlag /> 22.04.2023
+                    </p>
+                  </section>
+                </section>
+              </div>
+              <section className={style.profileNav}>
+                <Link href={"/uzytkownik/" + login}>Mój profil</Link>
+                <Link href="/uzytkownik/ustawienia">Ustawienia</Link>
+                <Link href="/ulubione">Ulubione</Link>
+              </section>
             </div>
-          </div>
+          ) : (
+            loginPanel
+          )}
         </aside>
       </div>
       <Footer />
+      <div className={style.notifycations}>
+        <span>
+          {notifys.map((item) => (
+            <div
+              className={style.notifycationWraper}
+              key={item.id}
+              onClick={() => item.closeFn()}
+            >
+              <div className={style.notifyContainer + " " + item.type}>
+                {item.text}
+              </div>
+            </div>
+          ))}
+        </span>
+      </div>
     </>
   );
 }

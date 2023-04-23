@@ -36,8 +36,8 @@
   align-items: center;
 }
 
-.navContent > .right > a:not(.logo),
-.navContent > .left > a:not(.logo),
+.navContent > .right > a:not(.logo):not(.coins),
+.navContent > .left > a:not(.logo):not(.coins),
 .navContent > .left > .navLink,
 .navContent > .right > .navLink {
   text-decoration: none;
@@ -45,18 +45,6 @@
   padding: 12px 10px;
   font-size: 16px;
   cursor: pointer;
-}
-
-.navContent > .right > a#coins {
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border: none !important;
-  margin: 2px;
-  padding: 2px 10px;
-  font-size: 18px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
 }
 
 .navContent > .right > a#icon {
@@ -67,8 +55,8 @@
   align-items: center;
 }
 
-.navContent > .left > a:hover:not(.logo),
-.navContent > .right > a:hover:not(.logo),
+.navContent > .left > a:hover:not(.logo):not(.coins),
+.navContent > .right > a:hover:not(.logo):not(.coins),
 .navContent > .right > span.navLink:hover,
 .navContent > .left > span.navLink:hover {
   padding-bottom: 11px;
@@ -143,7 +131,7 @@
 }
 
 @media only screen and (max-width: 800px) {
-  .navContent a:not(#coins):not(#icon):not(.logo),
+  .navContent a:not(#coins):not(#icon):not(.logo):not(.coins),
   .navLink {
     display: none !important;
   }
@@ -166,15 +154,17 @@
   box-shadow: 2px 2px 4px #000;
   border-top: 1px solid #252525;
   cursor: auto;
-  width: 420px;
+  white-space: nowrap;
 }
 
 .departmentsMenuMobile {
   display: flex;
   overflow: auto;
   padding: 10px 0;
+  margin: 10px 0;
   -ms-flex-wrap: nowrap;
   flex-wrap: nowrap;
+  background-color: #181818;
 }
 
 .departmentsMenu > ul > span,
@@ -192,13 +182,15 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  min-width: 210px;
 }
 
 .departmentsMenu ul li,
 .departmentsMenuMobile ul li {
   text-align: left;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 25px;
+  margin-bottom: 4px;
 }
 
 .departmentsMenu ul li > a,
@@ -286,4 +278,74 @@
   border-radius: 50%;
   width: 35px;
   height: auto;
+}
+
+.inactive {
+  background-color: transparent !important;
+  color: #8f8f8f !important;
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none !important;
+}
+
+.coins {
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: none !important;
+  margin: 2px;
+  padding: 2px 10px;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+}
+
+.registerButton {
+  width: 100%;
+  display: block;
+  text-align: center;
+  line-height: 30px;
+  color: #fff;
+  background: #8f8f8f;
+  border-radius: 4px;
+}
+
+.quota {
+  color: #8f8f8f;
+  font-size: 13px;
+  text-align: center;
+}
+
+.quota a {
+  color: white;
+}
+
+.mobileButton {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.mobileLogin {
+  display: none;
+}
+
+@media screen and (max-width: 450px) {
+  .mobileLogin {
+    display: block;
+    padding: 15px 0;
+  }
+
+  .loginButtonsContainer {
+    padding: 15px;
+  }
+}
+
+.loginInfo {
+  display: flex;
+}
+
+.loginInfo a:last-child {
+  font-size: 16px;
 }

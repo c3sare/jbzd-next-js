@@ -19,7 +19,14 @@ export default function LoginForm({ setCurrentForm }: any) {
           className={errors.login ? style.errorInput : ""}
           type="text"
           placeholder="Podaj nick lub email"
-          {...register("login", { required: "Podaj login lub email!" })}
+          {...register("login", {
+            required: "Podaj login lub email!",
+            pattern: {
+              value:
+                /^(?:[A-Z\d][A-Z\d_-]{5,10}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i,
+              message: "Nieprawidłowy nick lub email!",
+            },
+          })}
         />
         {errors.login && (
           <span className={style.error}>{errors.login?.message as string}</span>
@@ -30,7 +37,13 @@ export default function LoginForm({ setCurrentForm }: any) {
           className={errors.password ? style.errorInput : ""}
           type="password"
           placeholder="Hasło"
-          {...register("password", { required: "Wprowadź hasło!" })}
+          {...register("password", {
+            required: "Wprowadź hasło!",
+            pattern: {
+              value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+              message: "Nieprawidłowe hasło!",
+            },
+          })}
         />
         {errors.password && (
           <span className={style.error}>

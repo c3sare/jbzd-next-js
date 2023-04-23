@@ -158,6 +158,10 @@
   max-width: none;
 }
 
+.loginForm .buttonSubmit:disabled {
+  opacity: 0.5;
+}
+
 .formGroupLinks {
   display: flex;
   justify-content: space-between;
@@ -168,6 +172,12 @@
 .formGroupCheckbox {
   display: flex;
   gap: 10px;
+  position: relative;
+}
+
+.formGroupCheckbox:hover .error {
+  display: block;
+  opacity: 1;
 }
 
 .formLabel {
@@ -203,8 +213,19 @@
   width: 100%;
 }
 
-.loginForm input.errorInput {
+.loginForm .errorInput {
   border: 1px solid #c03e3e !important;
+}
+
+@media screen and (max-width: 450px) {
+  .loginForm {
+    display: none !important;
+  }
+
+  .mobileLogin {
+    display: block;
+    padding: 15px 0;
+  }
 }
 
 .formGroupCheckbox input {
@@ -237,4 +258,116 @@
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent transparent #c03e3e;
+}
+
+@media screen and (max-width: 450px) {
+  .login {
+    display: none !important;
+  }
+}
+
+.notifycations {
+  width: 300px;
+  top: 0px;
+  right: 0px;
+  display: block;
+  position: fixed;
+  z-index: 99999;
+}
+
+.notifycationWraper {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  transition: all 300ms ease 0s;
+}
+
+.notifyContainer {
+  font-size: 12px;
+  padding: 10px;
+  margin: 0 5px 5px;
+  color: #fff;
+  background: #44a4fc;
+  border-left: 5px solid #187fe7;
+  display: block;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.profile {
+  padding: 25px 10px;
+  padding-top: 10px;
+}
+
+.profileInfo {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profileInfo > a > img {
+  width: 118px;
+}
+
+.profileInformations {
+  flex: 1;
+  margin-left: 5px;
+}
+
+.profileHeader {
+  position: relative;
+  color: #fff;
+  background: #181818;
+  padding: 8px 10px;
+}
+
+.profileHeader > span {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  justify-content: space-between;
+}
+
+.profileHeader a {
+  color: white;
+  text-decoration: none;
+}
+
+.profileDetails {
+  font-size: 12px;
+  color: #fff;
+  padding-top: 10px;
+}
+
+.profileDetail {
+  margin: 0px 0 8px;
+  display: flex;
+}
+
+.profileDetail > svg {
+  margin-right: 4px;
+  font-size: 16px;
+}
+
+.profileNav {
+  display: flex;
+  background: #252525;
+  height: 40px;
+}
+
+.profileNav > a {
+  display: flex;
+  flex: 1 1;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.profileNav > a:hover {
+  background: #181818;
 }

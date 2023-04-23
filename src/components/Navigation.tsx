@@ -20,11 +20,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { CategoryContext } from "@/context/categories";
 import { LoginContext } from "@/context/login";
+import { NotifyReducer } from "@/context/notify";
+import { uniqueId } from "@/utils/uniqueId";
+import { AiOutlinePoweroff } from "react-icons/ai";
+import createNotifycation from "@/utils/createNotifycation";
 
-const Navigation = () => {
+const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
   const [showSearch, setShowSearch] = useState<Boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<Boolean>(false);
   const categories = useContext(CategoryContext);
+  const notifyDispatch = useContext(NotifyReducer);
   const { login, logged } = useContext(LoginContext);
 
   const normalCategories =
@@ -51,31 +56,37 @@ const Navigation = () => {
             </Link>
           </li>
         ))}
-        <hr />
-        {pageCategories.map((category, indexCategory) => (
-          <li key={indexCategory}>
-            <Link
-              style={category.color ? { color: category.color } : {}}
-              href={category.slug}
-            >
-              {category.name}
-            </Link>
-          </li>
-        ))}
+        {logged && (
+          <>
+            <hr />
+            {pageCategories.map((category, indexCategory) => (
+              <li key={indexCategory}>
+                <Link
+                  style={category.color ? { color: category.color } : {}}
+                  href={category.slug}
+                >
+                  {category.name}
+                </Link>
+              </li>
+            ))}
+          </>
+        )}
       </ul>
-      <ul>
-        <span>nsfw:</span>
-        {nsfwCategories.map((category, indexCategory) => (
-          <li key={indexCategory}>
-            <Link
-              style={category.color ? { color: category.color } : {}}
-              href={category.slug}
-            >
-              {category.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {logged && (
+        <ul>
+          <span>nsfw:</span>
+          {nsfwCategories.map((category, indexCategory) => (
+            <li key={indexCategory}>
+              <Link
+                style={category.color ? { color: category.color } : {}}
+                href={category.slug}
+              >
+                {category.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 
@@ -112,7 +123,20 @@ const Navigation = () => {
             Działy <MdArrowDropDown />
             <div className={style.departmentsMenu}>{categoriesContainer}</div>
           </span>
-          <Link id="coins" href="/" onClick={(e) => e.preventDefault()}>
+          <Link
+            className={style.coins}
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              if (!logged) {
+                createNotifycation(
+                  notifyDispatch,
+                  "info",
+                  "Nie jesteś zalogowany!"
+                );
+              }
+            }}
+          >
             <Image
               height={20}
               style={{ marginRight: "10px" }}
@@ -169,11 +193,31 @@ const Navigation = () => {
       )}
       {showMobileMenu && (
         <div className={style.mobileMenuContainer}>
-          <div className={style.loginInfo}>
-            <Link href="/login">
-              <Image src={defaultAvatar} alt="Avatar" />
-              <span>Niezalogowany</span>
-            </Link>
+          {logged ? (
+            <div className={style.loginInfo}>
+              <Link href={"/uzytkownik/" + login}>
+                <Image src={defaultAvatar} alt="Avatar" />
+                <span>{login}</span>
+              </Link>
+              <Link href="/wyloguj">
+                <AiOutlinePoweroff />
+              </Link>
+            </div>
+          ) : (
+            loginPanel
+          )}
+          <div className={style.mobileLogin}>
+            <div className={style.loginButtonsContainer}>
+              <div className={style.mobileButton}>
+                <Link href="/login" className={style.registerButton}>
+                  Zaloguj się
+                </Link>
+              </div>
+              <div className={style.quota}>
+                <Link href="/rejestracja">Załóż konto</Link> i korzystaj z
+                dodatkowych funkcji
+              </div>
+            </div>
           </div>
           <div className={style.mainMenuMobileContainer}>
             <Link href="/mikroblog">
@@ -194,7 +238,7 @@ const Navigation = () => {
               </span>
               <span>Oczekujące</span>
             </Link>
-            <Link href="/ulubione">
+            <Link href="/ulubione" className={!logged ? style.inactive : ""}>
               <span className={style.iconMenu}>
                 <MdStar />
               </span>
@@ -206,13 +250,18 @@ const Navigation = () => {
               </span>
               <span>Losowe</span>
             </Link>
-            <Link href="/upload">
-              <span className={style.iconMenu}>
-                <MdOutlineFileUpload />
-              </span>
-              <span>Upload</span>
-            </Link>
-            <Link href="/uzytkownik/ustawienia">
+            {logged && (
+              <Link href="/upload">
+                <span className={style.iconMenu}>
+                  <MdOutlineFileUpload />
+                </span>
+                <span>Upload</span>
+              </Link>
+            )}
+            <Link
+              href="/uzytkownik/ustawienia"
+              className={!logged ? style.inactive : ""}
+            >
               <span className={style.iconMenu}>
                 <MdSettings />
               </span>

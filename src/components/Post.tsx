@@ -10,11 +10,13 @@ import coin from "@/images/coin.png";
 import Link from "next/link";
 import avatar from "@/images/avatars/default.jpg";
 import Image from "next/image";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { LoginContext } from "@/context/login";
 
 const Post = (props: any) => {
   const { post } = props;
   const [showButtons, setShowButtons] = useState(false);
+  const { logged, login } = useContext(LoginContext);
   return (
     <div className={style.post} key={post.id}>
       <div className={style.avatar}>
@@ -44,34 +46,42 @@ const Post = (props: any) => {
             )}
           </div>
           <div className={style.otherLikes}>
-            <div className={style.likeContainer}>
-              <div className={style.image}>
-                <Image width={25} src={fingerLike} alt="Wypierdalajka" />
-                <span>Wypierdalajka</span>
+            {post.mid_finger_like > 0 && (
+              <div className={style.likeContainer}>
+                <div className={style.image}>
+                  <Image width={25} src={fingerLike} alt="Wypierdalajka" />
+                  <span>Wypierdalajka</span>
+                </div>
+                <span>{post.mid_finger_like}</span>
               </div>
-              <span>{post.mid_finger_like}</span>
-            </div>
-            <div className={style.likeContainer}>
-              <div className={style.image}>
-                <Image width={25} src={rockLike} alt="Kamienna Dzida" />
-                <span>Kamienna&nbsp;Dzida</span>
+            )}
+            {post.rock_like > 0 && (
+              <div className={style.likeContainer}>
+                <div className={style.image}>
+                  <Image width={25} src={rockLike} alt="Kamienna Dzida" />
+                  <span>Kamienna&nbsp;Dzida</span>
+                </div>
+                <span>{post.rock_like}</span>
               </div>
-              <span>{post.rock_like}</span>
-            </div>
-            <div className={style.likeContainer}>
-              <div className={style.image}>
-                <Image width={25} src={silverLike} alt="Srebrna Dzida" />
-                <span>Srebrna&nbsp;Dzida</span>
+            )}
+            {post.silver_like > 0 && (
+              <div className={style.likeContainer}>
+                <div className={style.image}>
+                  <Image width={25} src={silverLike} alt="Srebrna Dzida" />
+                  <span>Srebrna&nbsp;Dzida</span>
+                </div>
+                <span>{post.silver_like}</span>
               </div>
-              <span>{post.silver_like}</span>
-            </div>
-            <div className={style.likeContainer}>
-              <div className={style.image}>
-                <Image width={25} src={goldLike} alt="Złota Dzida" />
-                <span>Złota&nbsp;Dzida</span>
+            )}
+            {post.gold_like > 0 && (
+              <div className={style.likeContainer}>
+                <div className={style.image}>
+                  <Image width={25} src={goldLike} alt="Złota Dzida" />
+                  <span>Złota&nbsp;Dzida</span>
+                </div>
+                <span>{post.gold_like}</span>
               </div>
-              <span>{post.gold_like}</span>
-            </div>
+            )}
           </div>
         </div>
         <Image src={post.img} width={500} height={500} alt={post.title} />
@@ -152,9 +162,11 @@ const Post = (props: any) => {
         <button>
           <FaComment />
         </button>
-        <button className={style.star}>
-          <FaStar />
-        </button>
+        {logged && (
+          <button className={style.star}>
+            <FaStar />
+          </button>
+        )}
         <span>+{post.likes}</span>
         <button className={style.plus}>+</button>
         {/* class added - active */}
