@@ -16,6 +16,7 @@
     "bcrypt": "^5.1.0",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
+    "iron-session": "^6.3.1",
     "link-preview-generator": "^1.1.0",
     "mongoose": "^7.0.4",
     "next": "13.3.0",
@@ -30,6 +31,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/nodemailer": "^6.4.7"
   }
 }

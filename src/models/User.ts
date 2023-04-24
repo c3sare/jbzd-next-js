@@ -17,6 +17,8 @@ interface User {
     newComments: boolean;
   };
   coins: number;
+  token: string;
+  confirmed: boolean;
 }
 
 const userSchema = new Schema<User>({

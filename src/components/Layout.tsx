@@ -6,7 +6,7 @@ import style from "@/styles/Layout.module.css";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import RemindPasswordForm from "./RemindPasswordForm";
-import { LoginContext } from "@/context/login";
+import { LoginContext, LoginReducer } from "@/context/login";
 import { NotifyContext } from "@/context/notify";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,11 +14,14 @@ import defaultAvatar from "@/images/avatars/default.jpg";
 import { AiOutlinePoweroff, AiFillFlag } from "react-icons/ai";
 import { BiImage } from "react-icons/bi";
 import { FaRegComment } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 export default function Layout({ children }: any) {
+  const router = useRouter();
   const [currentForm, setCurrentForm] = React.useState(0);
   const dispatch: React.Dispatch<any> = React.useContext(CategoryReducer);
   const { logged, login } = React.useContext(LoginContext);
+  const dispatchLogin = React.useContext(LoginReducer);
   const notifys = React.useContext(NotifyContext);
 
   const forms = [LoginForm, RegisterForm, RemindPasswordForm];
@@ -33,6 +36,22 @@ export default function Layout({ children }: any) {
         })
       );
   }, [dispatch]);
+
+  React.useEffect(() => {
+    fetch("/api/checklogin")
+      .then((data) => data.json())
+      .then((data) => {
+        if (data.logged) {
+          if (logged !== data.logged) {
+            dispatchLogin({ type: "LOGIN", login: data });
+          }
+        } else {
+          if (logged) {
+            fetch("/api/logout");
+          }
+        }
+      });
+  }, [dispatchLogin, logged, router.pathname]);
 
   const loginPanel = (
     <div className={style.login}>

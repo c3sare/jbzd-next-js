@@ -7,13 +7,35 @@ export default function LoginForm({ setCurrentForm }: any) {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm();
 
+  const sendData = async (data: any) => {
+    const fetcher = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (fetcher.status === 200) {
+      const res = await fetcher.json();
+      console.log(res);
+    } else {
+      setError("login", {
+        type: "custom",
+        message: "Nieprawidłowe dane logowania!",
+      });
+      setError("password", {
+        type: "custom",
+        message: "Nieprawidłowe dane logowania!",
+      });
+    }
+  };
+
   return (
-    <form
-      className={style.loginForm}
-      onSubmit={handleSubmit((data) => console.log(data))}
-    >
+    <form className={style.loginForm} onSubmit={handleSubmit(sendData)}>
       <div className={style.formGroup}>
         <input
           className={errors.login ? style.errorInput : ""}

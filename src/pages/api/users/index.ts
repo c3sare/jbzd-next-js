@@ -1,8 +1,10 @@
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import currentDate from "@/utils/currentDate";
+import sendMail from "@/utils/sendMail";
+import { uniqueId } from "@/utils/uniqueId";
 import type { NextApiRequest, NextApiResponse } from "next";
-import nodemailer from "nodemailer";
+import bcrypt from "bcrypt";
 
 interface RegisterForm {
   username: string;
@@ -74,12 +76,16 @@ export default async function handler(
         .json({ field: "email", message: "Taki email jest już używany!" });
     }
 
+    const token = uniqueId();
+
+    const genPassword = bcrypt.hashSync(password, 10);
+
     const addUser = await User.collection.insertOne({
       username,
       email,
       createDate: currentDate(),
       avatar: "default.jpg",
-      password,
+      password: genPassword,
       birthday: "",
       city: "",
       country: "",
@@ -92,13 +98,24 @@ export default async function handler(
         newComments: true,
       },
       coins: 0,
-      token: "123456789",
+      token,
+      confirmed: false,
     });
 
     if (!addUser)
       return res.status(500).json({
         message: "Wystąpił nieoczekiwany błąd przy dodawaniu użytkownika!",
       });
+
+    sendMail(
+      email,
+      "Potwierdź stworzenie konta",
+      `Dzień dobry, proszę o potwierdzenie swojego adresu e-mail użytego do stworzenia konta w naszym serwisie! ${
+        req.headers.referer?.slice(0, req.headers.referer.indexOf("://")) +
+        "://" +
+        req.headers.host
+      }/confirmaccount/${token}`
+    );
 
     return res.status(200).json({ message: "Zapytanie wykonane prawidłowo!" });
   }

@@ -40,7 +40,7 @@ export default function RegisterForm({ setCurrentForm }: any) {
       createNotifycation(
         notifyDispatch,
         "info",
-        "Konto zostało utworzone, możesz się zalogować!"
+        "Konto zostało utworzone, potwierdź utworzenie przez podany adres e-mail!"
       );
     } else {
       setLoading(false);
