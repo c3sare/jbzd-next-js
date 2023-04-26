@@ -1,5 +1,8 @@
+import { NotifyReducer } from "@/context/notify";
 import style from "@/styles/Layout.module.css";
+import createNotifycation from "@/utils/createNotifycation";
 import Link from "next/link";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 
 export default function LoginForm({ setCurrentForm }: any) {
@@ -10,6 +13,8 @@ export default function LoginForm({ setCurrentForm }: any) {
     setError,
   } = useForm();
 
+  const dispatchNotify = useContext(NotifyReducer);
+
   const sendData = async (data: any) => {
     const fetcher = await fetch("/api/login", {
       method: "POST",
@@ -19,18 +24,23 @@ export default function LoginForm({ setCurrentForm }: any) {
       body: JSON.stringify(data),
     });
 
+    const res = await fetcher.json();
+
     if (fetcher.status === 200) {
-      const res = await fetcher.json();
       console.log(res);
     } else {
-      setError("login", {
-        type: "custom",
-        message: "Nieprawidłowe dane logowania!",
-      });
-      setError("password", {
-        type: "custom",
-        message: "Nieprawidłowe dane logowania!",
-      });
+      if (fetcher.status === 403) {
+        setError("login", {
+          type: "custom",
+          message: "Nieprawidłowe dane logowania!",
+        });
+        setError("password", {
+          type: "custom",
+          message: "Nieprawidłowe dane logowania!",
+        });
+      } else if (fetcher.status === 500) {
+        createNotifycation(dispatchNotify, "info", res.message);
+      }
     }
   };
 

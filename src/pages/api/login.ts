@@ -31,6 +31,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!find)
       return res.status(404).json({ message: "Nie znaleziono takiego konta!" });
 
+    if (find.confirmed)
+      return res.status(500).json({
+        message: "Konto nie zostało potwierdzone przez adres e-mail!",
+      });
+
     const comparePWD = await bcrypt.compare(password, find.password);
 
     if (!comparePWD)

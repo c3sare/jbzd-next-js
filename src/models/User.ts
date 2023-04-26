@@ -33,6 +33,8 @@ const userSchema = new Schema<User>({
   name: { type: String },
   notify: { type: Object, required: true },
   coins: { type: Number, required: true },
+  token: { type: String },
+  confirmed: { type: Boolean, required: true },
 });
 
 export default models.User || model<User>("User", userSchema);
