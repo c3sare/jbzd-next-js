@@ -3,13 +3,18 @@ import posts from "@/data/posts";
 import Post from "@/components/Post";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoMdFunnel } from "react-icons/io";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AddPost from "@/components/AddPost";
 import TopFilter from "@/components/TopFilter";
 import PostFilter from "@/components/PostFilter";
+import { LoginContext } from "@/context/login";
+import { NotifyReducer } from "@/context/notify";
+import createNotifycation from "@/utils/createNotifycation";
 
 const Index = () => {
   const [currentOption, setCurrentOption] = useState<number>(0);
+  const { logged } = useContext(LoginContext);
+  const notifyDispatch = useContext(NotifyReducer);
 
   const options = [
     null,
@@ -26,7 +31,19 @@ const Index = () => {
   return (
     <>
       <div className={style.buttonsMain}>
-        <button className={style.addMem} onClick={() => setOption(1)}>
+        <button
+          className={style.addMem}
+          onClick={() => {
+            if (!logged)
+              createNotifycation(
+                notifyDispatch,
+                "info",
+                "Dostęp dla zalogowanych!"
+              );
+
+            setOption(1);
+          }}
+        >
           + Dodaj dzidę
         </button>
         <button onClick={() => setOption(2)}>
