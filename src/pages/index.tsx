@@ -35,7 +35,7 @@ const Index = () => {
           className={style.addMem}
           onClick={() => {
             if (!logged)
-              createNotifycation(
+              return createNotifycation(
                 notifyDispatch,
                 "info",
                 "Dostęp dla zalogowanych!"

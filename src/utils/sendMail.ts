@@ -15,7 +15,7 @@ export default function sendMail(to: string, subject: string, text: string) {
     from: process.env.EMAIL,
     to,
     envelope: {
-      from: `Jbzd Clone <${process.env.EMAIL}>`,
+      from: `Jbzd <${process.env.EMAIL}>`,
       to,
     },
     subject,
