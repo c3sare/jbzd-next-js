@@ -34,25 +34,38 @@ const Index = () => {
         <button
           className={style.addMem}
           onClick={() => {
-            if (!logged)
+            if (!logged) {
+              setOption(0);
               return createNotifycation(
                 notifyDispatch,
                 "info",
                 "Dostęp dla zalogowanych!"
               );
+            }
 
             setOption(1);
           }}
         >
           + Dodaj dzidę
         </button>
-        <button onClick={() => setOption(2)}>
-          <FaRegCalendarAlt /> Top +{currentOption === 2 && options[2]}
-        </button>
-        <button onClick={() => setOption(3)}>
-          <IoMdFunnel /> Filtruj
+        <div style={{ position: "relative", display: "inline-block" }}>
+          <button
+            onClick={() => setOption(2)}
+            className={currentOption === 2 ? style.active : ""}
+          >
+            <FaRegCalendarAlt /> Top +
+          </button>
+          {currentOption === 2 && options[2]}
+        </div>
+        <div style={{ position: "relative", display: "inline-block" }}>
+          <button
+            onClick={() => setOption(3)}
+            className={currentOption === 3 ? style.active : ""}
+          >
+            <IoMdFunnel /> Filtruj
+          </button>
           {currentOption === 3 && options[3]}
-        </button>
+        </div>
       </div>
       {currentOption === 1 && <AddPost setOption={setOption} />}
       <div className={style.posts}>

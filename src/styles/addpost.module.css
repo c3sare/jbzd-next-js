@@ -357,3 +357,19 @@ p.error {
   color: rgb(222, 33, 39);
   font-size: 11px;
 }
+
+.postFilter {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #3c3c3c;
+}
+
+.topFilter {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #3c3c3c;
+}
