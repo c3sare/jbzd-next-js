@@ -360,16 +360,210 @@ p.error {
 
 .postFilter {
   position: absolute;
-  top: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  top: calc(100% + 5px);
+  z-index: 10;
+  background: #3c3c3c;
+  padding: 20px;
   left: 50%;
-  transform: translateX(-50%);
-  background-color: #3c3c3c;
+  transform: translate(-50%);
+  flex-direction: column;
 }
 
 .topFilter {
+  width: 660px;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 5px);
+  z-index: 10;
+  background: #3c3c3c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
   left: 50%;
-  transform: translateX(-50%);
-  background-color: #3c3c3c;
+  transform: translate(-50%);
+  color: #fff;
+  flex-direction: column;
+}
+
+.contentFiltersFilter {
+  margin-bottom: 0;
+  gap: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.contentFiltersFilter > input {
+  width: 100%;
+  background: #1f1f1f;
+  padding: 0 10px;
+  line-height: 38px;
+  height: 38px;
+  border: 0;
+  color: #777;
+}
+
+.filterCheckboxes {
+  gap: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #fff;
+  flex-wrap: nowrap;
+}
+
+.filterCheckboxes > label {
+  display: flex;
+  align-items: center;
+}
+
+.filterCheckboxes > label:hover {
+  cursor: pointer;
+}
+
+.filterCheckboxes > label > span:nth-child(2) {
+  padding-bottom: 5px;
+}
+
+.filterCheckboxes > label > span:first-child {
+  font-size: 20px;
+  color: #a4a7aa;
+  margin-right: 3px;
+}
+
+.contentFiltersButton {
+  width: 100%;
+}
+
+.contentFiltersButton > button {
+  width: 100%;
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  height: 34px;
+  padding: 0 15px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #c03e3f;
+}
+
+.presets {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.presets button {
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  height: 34px;
+  padding: 0 15px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+}
+
+.presets button.active,
+.presets button:hover {
+  background: #c03e3f;
+}
+
+.datePickerContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.datePickerContainer > b {
+  width: 100%;
+  text-align: center;
+}
+
+.datePickerContainer > div {
+  width: calc(50% - 20px);
+}
+
+.datePickerContainer > div > span {
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.submitButtons {
+  width: 100%;
+  display: flex;
+  gap: 0 10px;
+}
+
+.submitButtons button {
+  width: 30%;
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  height: 34px;
+  padding: 0 15px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #2d2d2d;
+}
+
+.submitButtons button.submit {
+  width: 70%;
+  background: #c03e3f;
+}
+
+@media screen and (max-width: 660px) {
+  .topFilter {
+    width: 100%;
+    position: relative;
+    bottom: -5px;
+    top: auto;
+  }
+
+  .presets {
+    flex-wrap: wrap;
+  }
+
+  .datePickerContainer > div {
+    width: 100%;
+    max-width: 290px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .postFilter {
+    position: relative;
+    bottom: -5px;
+    top: auto;
+  }
+
+  .filterCheckboxes {
+    flex-wrap: wrap;
+  }
 }

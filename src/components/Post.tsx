@@ -118,46 +118,48 @@ const Post = (props: any) => {
         <div></div>
       </div>
       <div className={style.buttonsPost}>
-        {showButtons && (
-          <div className={style.buttonsCoins}>
-            <button>
-              <Image src={fingerLike} width={25} alt="Wypierdalajka" />
-              <span>
-                420
-                <Image src={coin} width={15} alt="Moneta" />
-              </span>
-            </button>
-            <button>
-              <Image src={goldLike} width={25} alt="Złota Dzida" />
-              <span>
-                1000
-                <Image src={coin} width={15} alt="Moneta" />
-              </span>
-            </button>
-            <button>
-              <Image src={silverLike} width={25} alt="Srebrna Dzida" />
-              <span>
-                400
-                <Image src={coin} width={15} alt="Moneta" />
-              </span>
-            </button>
-            <button>
-              <Image src={rockLike} width={25} alt="Kamienna Dzida" />
-              <span>
-                100
-                <Image src={coin} width={15} alt="Moneta" />
-              </span>
-            </button>
-          </div>
-        )}
         <button
           className={style.coins}
           onClick={() => setShowButtons(!showButtons)}
         >
-          <FaCaretUp
-            style={showButtons ? { transform: "rotate(180deg)" } : {}}
-          />
-          <Image width={25} src={coins} alt="Monety" />
+          <span>
+            <FaCaretUp
+              style={showButtons ? { transform: "rotate(180deg)" } : {}}
+            />
+            <Image width={25} src={coins} alt="Monety" />
+          </span>
+          {showButtons && (
+            <div className={style.buttonsCoins}>
+              <button>
+                <Image src={fingerLike} width={25} alt="Wypierdalajka" />
+                <span>
+                  420
+                  <Image src={coin} width={15} alt="Moneta" />
+                </span>
+              </button>
+              <button>
+                <Image src={goldLike} width={25} alt="Złota Dzida" />
+                <span>
+                  1000
+                  <Image src={coin} width={15} alt="Moneta" />
+                </span>
+              </button>
+              <button>
+                <Image src={silverLike} width={25} alt="Srebrna Dzida" />
+                <span>
+                  400
+                  <Image src={coin} width={15} alt="Moneta" />
+                </span>
+              </button>
+              <button>
+                <Image src={rockLike} width={25} alt="Kamienna Dzida" />
+                <span>
+                  100
+                  <Image src={coin} width={15} alt="Moneta" />
+                </span>
+              </button>
+            </div>
+          )}
         </button>
         <button>
           <FaComment />
@@ -167,8 +169,11 @@ const Post = (props: any) => {
             <FaStar />
           </button>
         )}
-        <span>+{post.likes}</span>
-        <button className={style.plus}>+</button>
+        <span className={style.likeCounter}>+{post.likes}</span>
+        <button className={style.plus}>
+          <span className={style.plusIcon}>+</span>
+          <span className={style.text}>+{post.likes}</span>
+        </button>
         {/* class added - active */}
       </div>
     </div>

@@ -49,12 +49,31 @@
   justify-content: flex-end;
 }
 
+@media screen and (max-width: 768px) {
+  .buttonsPost {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .buttonsPost > :last-child {
+    -webkit-box-flex: 2;
+    -ms-flex-positive: 2;
+    flex-grow: 2;
+  }
+}
+
 .post > .buttonsPost > * {
   margin: 8px 0;
 }
 
-.post > .buttonsPost > button,
-.post > .buttonsPost > .buttonsCoins > button {
+.buttonsCoins {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+}
+
+.post > .buttonsPost button,
+.buttonsCoins > button {
   color: rgba(255, 255, 255, 0.7);
   font-size: 20px;
   cursor: pointer;
@@ -65,13 +84,13 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
-.post > .buttonsPost > .buttonsCoins > button {
+.buttonsCoins > button {
   opacity: 0.6;
   padding: 3px;
   display: block;
 }
 
-.post > .buttonsPost > .buttonsCoins > button:hover {
+.buttonsCoins > button:hover {
   opacity: 1;
 }
 
@@ -95,6 +114,7 @@
 .post > .buttonsPost > .coins {
   background: rgba(255, 255, 255, 0.05);
   height: 55px;
+  position: relative;
 }
 
 .post > .buttonsPost > .coins > img {
@@ -112,6 +132,23 @@
 
 .post > .buttonsPost > .plus.added {
   background: linear-gradient(180deg, #94b425 0, #8dac20 50%, #87a61c);
+}
+
+.post > .buttonsPost > .plus > .text {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .post > .buttonsPost > .plus > .plusIcon {
+    display: none !important;
+  }
+  .post > .buttonsPost > .plus > .text {
+    display: initial;
+  }
+
+  .likeCounter {
+    display: none;
+  }
 }
 
 .memDetails {
@@ -229,7 +266,6 @@
   gap: 10px 5px;
   margin-left: 57px;
   flex-wrap: nowrap;
-  margin-bottom: 20px;
 }
 
 .buttonsMain button {
@@ -277,4 +313,50 @@
   display: block;
   max-width: 100%;
   margin: 0 auto;
+}
+
+.filterComponents {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+@media screen and (max-width: 450px) {
+  .buttonsMain {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+
+  .buttonsMain > button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .avatar {
+    display: none;
+  }
+
+  .post {
+    flex-wrap: wrap;
+  }
+
+  .contentPost {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .contentPost img {
+    width: 100%;
+  }
+
+  .buttonsPost {
+    position: relative;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    padding-top: 5px;
+    flex-direction: row !important;
+  }
 }

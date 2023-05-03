@@ -48,24 +48,22 @@ const Index = () => {
         >
           + Dodaj dzidę
         </button>
-        <div style={{ position: "relative", display: "inline-block" }}>
-          <button
-            onClick={() => setOption(2)}
-            className={currentOption === 2 ? style.active : ""}
-          >
-            <FaRegCalendarAlt /> Top +
-          </button>
-          {currentOption === 2 && options[2]}
-        </div>
-        <div style={{ position: "relative", display: "inline-block" }}>
-          <button
-            onClick={() => setOption(3)}
-            className={currentOption === 3 ? style.active : ""}
-          >
-            <IoMdFunnel /> Filtruj
-          </button>
-          {currentOption === 3 && options[3]}
-        </div>
+        <button
+          onClick={() => setOption(2)}
+          className={currentOption === 2 ? style.active : ""}
+        >
+          <FaRegCalendarAlt /> Top +
+        </button>
+        <button
+          onClick={() => setOption(3)}
+          className={currentOption === 3 ? style.active : ""}
+        >
+          <IoMdFunnel /> Filtruj
+        </button>
+      </div>
+      <div className={style.filterComponents}>
+        {currentOption === 2 && options[2]}
+        {currentOption === 3 && options[3]}
       </div>
       {currentOption === 1 && <AddPost setOption={setOption} />}
       <div className={style.posts}>
