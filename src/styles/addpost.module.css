@@ -267,8 +267,18 @@ button.changeVideoBtn {
   margin: 0 0 8px 0;
 }
 
-.youtube input {
+.youtubeInput {
   background: #313131 !important;
+  width: calc(100% - 20px);
+  max-width: 100%;
+  resize: none;
+  display: inline-block;
+  line-height: 38px;
+  color: #fff;
+  padding: 0 10px;
+  border: 1px solid #1f1f1f;
+  font-family: Open Sans;
+  outline: 0;
 }
 
 .ql-toolbar {

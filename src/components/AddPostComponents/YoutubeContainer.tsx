@@ -38,6 +38,7 @@ const YoutubeContainer = ({
         <>
           <h3>Link do filmu Youtube</h3>
           <input
+            className={style.youtubeInput}
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}

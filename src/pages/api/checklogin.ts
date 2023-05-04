@@ -6,7 +6,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     const session = req.session.user;
     if (!session?.logged)
-      return res.status(400).json({ logged: false, login: "" } as any);
+      return res.status(200).json({ logged: false, login: "" } as any);
 
     res.status(200).json(session);
   } else {

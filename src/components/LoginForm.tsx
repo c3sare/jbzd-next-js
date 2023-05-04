@@ -1,4 +1,3 @@
-import { LoginReducer } from "@/context/login";
 import { NotifyReducer } from "@/context/notify";
 import style from "@/styles/Layout.module.css";
 import createNotifycation from "@/utils/createNotifycation";
@@ -6,7 +5,7 @@ import Link from "next/link";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 
-export default function LoginForm({ setCurrentForm }: any) {
+export default function LoginForm({ setCurrentForm, mutate }: any) {
   const {
     register,
     handleSubmit,
@@ -15,7 +14,6 @@ export default function LoginForm({ setCurrentForm }: any) {
   } = useForm();
 
   const dispatchNotify = useContext(NotifyReducer);
-  const loginDispatch = useContext(LoginReducer);
 
   const sendData = async (data: any) => {
     const fetcher = await fetch("/api/login", {
@@ -29,7 +27,7 @@ export default function LoginForm({ setCurrentForm }: any) {
     const res = await fetcher.json();
 
     if (fetcher.status === 200) {
-      loginDispatch({ type: "LOGIN", login: res });
+      mutate();
       createNotifycation(dispatchNotify, "info", "Pomyślnie zalogowano!");
     } else {
       if (fetcher.status === 403) {

@@ -11,6 +11,44 @@ import YoutubeContainer from "./AddPostComponents/YoutubeContainer";
 import { useForm, useFieldArray } from "react-hook-form";
 import CheckUrl from "./AddPostComponents/CheckUrl";
 import { CategoryContext } from "@/context/categories";
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle,
+} from "react-sortable-hoc";
+
+const DragHandle = SortableHandle(() => (
+  <button className={style.moveButton}>
+    <BiMove />
+  </button>
+));
+
+const SortableItem = SortableElement(
+  ({ types, item, memContainers, i, setValue, removeMemContainer }: any) => (
+    <div className={style.memElement} key={item.id}>
+      {React.createElement(types[item.type], {
+        data: memContainers[i].data,
+        setData: (data: string | File | null, index: number) => {
+          setValue(`memContainers.${index}.data`, data);
+        },
+        index: i,
+      })}
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          removeMemContainer(i);
+        }}
+      >
+        <FaTrashAlt /> Usuń element
+      </button>
+      <DragHandle />
+    </div>
+  )
+);
+
+const SortableContainerElement = SortableContainer(({ children }: any) => {
+  return <div>{children}</div>;
+});
 
 function isValidHttpUrl(link: string) {
   let url;
@@ -89,6 +127,7 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
     fields: fieldsMemContainers,
     append: appendMemContainer,
     remove: removeMemContainer,
+    move: moveMemContainer,
   } = useFieldArray({
     control,
     name: "memContainers",
@@ -187,6 +226,16 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
     });
   };
 
+  const onSortEnd = ({
+    oldIndex,
+    newIndex,
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  }) => {
+    moveMemContainer(oldIndex, newIndex);
+  };
+
   return (
     <div className={style.addPostContainer}>
       {data !== null && (
@@ -206,30 +255,22 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
               <p className={style.error}>{String(errors.title?.message)}</p>
             )}
           </div>
-          {fieldsMemContainers.map((item, i) => {
-            return (
-              <div className={style.memElement} key={item.id}>
-                {React.createElement(types[item.type], {
-                  data: memContainers[i].data,
-                  setData: (data: string | File | null, index: number) => {
-                    setValue(`memContainers.${index}.data`, data);
-                  },
-                  index: i,
-                })}
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    removeMemContainer(i);
-                  }}
-                >
-                  <FaTrashAlt /> Usuń element
-                </button>
-                <button className={style.moveButton}>
-                  <BiMove />
-                </button>
-              </div>
-            );
-          })}
+          <SortableContainerElement onSortEnd={onSortEnd} useDragHandle>
+            {fieldsMemContainers.map((item, i) => {
+              return (
+                <SortableItem
+                  key={item.id}
+                  index={i}
+                  types={types}
+                  item={item}
+                  memContainers={memContainers}
+                  i={i}
+                  setValue={setValue}
+                  removeMemContainer={removeMemContainer}
+                />
+              );
+            })}
+          </SortableContainerElement>
           <div>
             <h3>Co chcesz dodać?</h3>
             <div className={style.contentType}>

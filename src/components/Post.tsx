@@ -16,7 +16,7 @@ import { LoginContext } from "@/context/login";
 const Post = (props: any) => {
   const { post } = props;
   const [showButtons, setShowButtons] = useState(false);
-  const { logged, login } = useContext(LoginContext);
+  const { logged } = useContext(LoginContext);
   return (
     <div className={style.post} key={post.id}>
       <div className={style.avatar}>

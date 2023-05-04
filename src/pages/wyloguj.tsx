@@ -2,15 +2,18 @@ import { LoginReducer } from "@/context/login";
 import { withSessionSSR } from "@/lib/AuthSession/session";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
+import { useSWRConfig } from "swr";
 
 export default function Wyloguj({ logout, message }: any) {
   const router = useRouter();
+  const { mutate } = useSWRConfig();
   const [time, setTime] = useState(5);
   const loginDispatch = useContext(LoginReducer);
 
   useEffect(() => {
     if (logout) {
       loginDispatch({ type: "LOGOUT" });
+      mutate("/api/checklogin");
     }
 
     const interval = setInterval(() => {

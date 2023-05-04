@@ -1,7 +1,7 @@
 import style from "@/styles/addpost.module.css";
 import { useRouter } from "next/router";
 import { DayPicker } from "react-day-picker";
-import dateFns, { compareAsc, format } from "date-fns";
+import { compareAsc, format } from "date-fns";
 import pl from "date-fns/locale/pl";
 import { useState } from "react";
 
@@ -41,8 +41,9 @@ const TopFilter = () => {
   return (
     <form className={style.topFilter}>
       <div className={style.presets}>
-        {presets.map((preset) => (
+        {presets.map((preset, i) => (
           <button
+            key={i}
             className={
               currentSet === (preset !== "Nowe" ? preset : "")
                 ? style.active
@@ -84,7 +85,11 @@ const TopFilter = () => {
         </div>
       </div>
       <div className={style.submitButtons}>
-        <button className={style.submit} onClick={setCustomDates}>
+        <button
+          style={{ width: "70%" }}
+          className={startDate && endDate ? style.submit : ""}
+          onClick={setCustomDates}
+        >
           Filtruj
         </button>
         <button onClick={(e) => setDatePreset(e, "")}>Reset</button>

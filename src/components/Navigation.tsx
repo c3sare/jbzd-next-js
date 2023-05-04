@@ -21,7 +21,6 @@ import Image from "next/image";
 import { CategoryContext } from "@/context/categories";
 import { LoginContext } from "@/context/login";
 import { NotifyReducer } from "@/context/notify";
-import { uniqueId } from "@/utils/uniqueId";
 import { AiOutlinePoweroff } from "react-icons/ai";
 import createNotifycation from "@/utils/createNotifycation";
 
