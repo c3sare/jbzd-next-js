@@ -1,0 +1,195 @@
+.user {
+  max-width: 600px;
+  margin-left: 55px;
+  border-radius: 3px;
+  color: #fff;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 15px 15px 0;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  max-width: 118px;
+  border-radius: 50%;
+}
+
+.userInfo {
+  padding-left: 15px;
+  flex: 1;
+}
+
+.userInfo header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.userInfo header h2 {
+  font-weight: 400;
+  font-size: 28px;
+  margin: 0;
+}
+
+.userDetails {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.userDetails > div {
+  margin-right: 25px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.userDetails > div > span > svg {
+  color: #8f8f8f;
+  font-size: 20px;
+}
+
+.profileBadges {
+  margin-bottom: 10px;
+}
+
+.profileBadges > div {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  color: #fff;
+}
+
+.profileBadges > div > span {
+  display: flex;
+  font-size: 16px;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+}
+
+.userProfileActions {
+  margin-bottom: 10px;
+}
+
+.userRanks {
+  width: 125px;
+  border-radius: 5px;
+  padding: 5px 10px;
+  background: #1f1f1f;
+}
+
+.rank {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  position: relative;
+  padding-right: 10px;
+  text-decoration: none;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  max-width: 600px;
+  margin-left: 55px;
+  margin-bottom: 25px;
+}
+
+.actions > button {
+  flex: 1;
+  height: 40px;
+  color: #fff;
+  border-radius: 3px;
+  line-height: 40px;
+  text-align: center;
+  background: #1f1f1f;
+  border: none;
+  cursor: pointer;
+}
+
+.actions > button:first-child {
+  margin-right: 2px;
+}
+
+.actions button.active {
+  background: #c03e3e;
+}
+
+.breadcrumbs {
+  margin-bottom: 15px;
+  color: #777;
+  font-size: 14px;
+  padding-left: 55px;
+}
+
+.breadcrumbs > span {
+  font-size: 12px;
+  position: relative;
+}
+
+.breadcrumbs > span a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.breadcrumbs > span:not(:last-child):after {
+  content: ">";
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.posts {
+  margin-bottom: 20px;
+  margin-left: 45px;
+}
+
+.posts > select {
+  width: 100%;
+  max-width: 600px;
+  background: #1f1f1f;
+  padding: 0 10px;
+  line-height: 38px;
+  height: 38px;
+  border: 0;
+  color: #fff;
+  font-size: 16px;
+}
+
+.loader {
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  position: relative;
+  margin: 0 auto;
+  animation: loading-rotating ease 1.5s infinite;
+}
+
+.loader:after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 1);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(50%);
+}
+
+@keyframes loading-rotating {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0);
+  }
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}

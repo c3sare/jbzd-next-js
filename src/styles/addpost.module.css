@@ -178,7 +178,6 @@
   color: #fff;
   font-size: 13px;
   gap: 10px;
-  margin: 10px 0;
   cursor: pointer;
   background: #252525;
   position: relative;
@@ -217,7 +216,7 @@
 }
 
 .memElement {
-  margin-top: 15px;
+  padding-top: 15px;
   position: relative;
 }
 
@@ -352,7 +351,7 @@ button.changeVideoBtn {
   font-weight: 700;
   position: absolute;
   right: 5px;
-  top: 6px;
+  top: 21px;
   z-index: 10;
   font-size: 16px;
   -webkit-box-pack: center;

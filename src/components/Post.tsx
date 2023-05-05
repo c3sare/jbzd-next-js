@@ -28,8 +28,7 @@ const Post = (props: any) => {
         <div className={style.postHeader}>
           <h2>{post.title}</h2>
           <span className={style.iconComments}>
-            <FaComment />
-            {post.comments.length}
+            <FaComment />0
           </span>
         </div>
         <div className={style.memDetails}>
@@ -46,45 +45,41 @@ const Post = (props: any) => {
             )}
           </div>
           <div className={style.otherLikes}>
-            {post.mid_finger_like > 0 && (
-              <div className={style.likeContainer}>
-                <div className={style.image}>
-                  <Image width={25} src={fingerLike} alt="Wypierdalajka" />
-                  <span>Wypierdalajka</span>
-                </div>
-                <span>{post.mid_finger_like}</span>
-              </div>
-            )}
-            {post.rock_like > 0 && (
+            {post.rock > 0 && (
               <div className={style.likeContainer}>
                 <div className={style.image}>
                   <Image width={25} src={rockLike} alt="Kamienna Dzida" />
                   <span>Kamienna&nbsp;Dzida</span>
                 </div>
-                <span>{post.rock_like}</span>
+                <span>{post.rock}</span>
               </div>
             )}
-            {post.silver_like > 0 && (
+            {post.silver > 0 && (
               <div className={style.likeContainer}>
                 <div className={style.image}>
                   <Image width={25} src={silverLike} alt="Srebrna Dzida" />
                   <span>Srebrna&nbsp;Dzida</span>
                 </div>
-                <span>{post.silver_like}</span>
+                <span>{post.silver}</span>
               </div>
             )}
-            {post.gold_like > 0 && (
+            {post.gold > 0 && (
               <div className={style.likeContainer}>
                 <div className={style.image}>
                   <Image width={25} src={goldLike} alt="Złota Dzida" />
                   <span>Złota&nbsp;Dzida</span>
                 </div>
-                <span>{post.gold_like}</span>
+                <span>{post.gold}</span>
               </div>
             )}
           </div>
         </div>
-        <Image src={post.img} width={500} height={500} alt={post.title} />
+        <Image
+          src={"/images/upload/" + post.image}
+          width={600}
+          height={500}
+          alt={post.title}
+        />
         {/* <div className={style.comments">
               {post.comments.map((comment) => (
                 <div className={style.comment" key={comment.id}>
@@ -131,13 +126,6 @@ const Post = (props: any) => {
           {showButtons && (
             <div className={style.buttonsCoins}>
               <button>
-                <Image src={fingerLike} width={25} alt="Wypierdalajka" />
-                <span>
-                  420
-                  <Image src={coin} width={15} alt="Moneta" />
-                </span>
-              </button>
-              <button>
                 <Image src={goldLike} width={25} alt="Złota Dzida" />
                 <span>
                   1000
@@ -169,10 +157,10 @@ const Post = (props: any) => {
             <FaStar />
           </button>
         )}
-        <span className={style.likeCounter}>+{post.likes}</span>
+        <span className={style.likeCounter}>+{post.pluses}</span>
         <button className={style.plus}>
           <span className={style.plusIcon}>+</span>
-          <span className={style.text}>+{post.likes}</span>
+          <span className={style.text}>+{post.pluses}</span>
         </button>
         {/* class added - active */}
       </div>
