@@ -1,4 +1,9 @@
-import { Schema, models, model } from "mongoose";
+import { Schema, models, model, Types } from "mongoose";
+
+interface MemContainer {
+  type: string;
+  data: string;
+}
 
 interface Post {
   title: string;
@@ -9,7 +14,8 @@ interface Post {
   rock: number;
   silver: number;
   gold: number;
-  image: string;
+  memContainers: Types.DocumentArray<MemContainer>;
+  accepted: boolean;
 }
 
 const postSchema = new Schema<Post>({
@@ -21,7 +27,13 @@ const postSchema = new Schema<Post>({
   rock: { type: Number, required: true },
   silver: { type: Number, required: true },
   gold: { type: Number, required: true },
-  image: { type: String, required: true },
+  memContainers: [
+    {
+      type: String,
+      data: String,
+    },
+  ],
+  accepted: { type: Boolean, required: true },
 });
 
 export default models.Post || model<Post>("Post", postSchema);

@@ -52,12 +52,13 @@ const ImageContainer = ({
   };
 
   const handleOnChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.files![0]);
     if (
-      ["image/png", "image/jpg", "images/jpeg"].includes(
-        e.target.files![0].type
-      )
-    )
+      ["image/png", "image/jpg", "image/jpeg"].includes(e.target.files![0].type)
+    ) {
+      console.log(e.target.files![0]);
       setCurrentImage(e.target.files![0], index);
+    }
   };
 
   return currentImage === null ? (

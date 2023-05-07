@@ -1,5 +1,4 @@
 import style from "@/styles/posts.module.css";
-import posts from "@/data/posts";
 import Post from "@/components/Post";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoMdFunnel } from "react-icons/io";
@@ -7,14 +6,19 @@ import { useContext, useState } from "react";
 import AddPost from "@/components/AddPost";
 import TopFilter from "@/components/TopFilter";
 import PostFilter from "@/components/PostFilter";
-import { LoginContext } from "@/context/login";
-import { NotifyReducer } from "@/context/notify";
 import createNotifycation from "@/utils/createNotifycation";
+import Posts from "@/models/Post";
+import dbConnect from "@/lib/dbConnect";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
+import Comment from "@/models/Comment";
+import getHomePagePosts from "@/utils/getHomePagePosts";
 
-const Index = () => {
+const Index = ({ posts }: any) => {
   const [currentOption, setCurrentOption] = useState<number>(0);
-  const { logged } = useContext(LoginContext);
-  const notifyDispatch = useContext(NotifyReducer);
+  const {
+    login: { logged },
+    setNotifys,
+  } = useContext(GlobalContext) as GlobalContextInterface;
 
   const options = [
     null,
@@ -37,7 +41,7 @@ const Index = () => {
             if (!logged) {
               setOption(0);
               return createNotifycation(
-                notifyDispatch,
+                setNotifys,
                 "info",
                 "Dostęp dla zalogowanych!"
               );
@@ -67,7 +71,7 @@ const Index = () => {
       </div>
       {currentOption === 1 && <AddPost setOption={setOption} />}
       <div className={style.posts}>
-        {posts.map((postMain, i) => (
+        {posts.map((postMain: any, i: number) => (
           <Post key={i} post={postMain} />
         ))}
       </div>
@@ -76,3 +80,11 @@ const Index = () => {
 };
 
 export default Index;
+
+export async function getServerSideProps() {
+  await dbConnect();
+  const posts = await getHomePagePosts();
+
+  console.log(posts);
+  return { props: { posts: JSON.parse(JSON.stringify(posts)) } };
+}

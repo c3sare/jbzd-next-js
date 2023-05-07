@@ -95,7 +95,7 @@ const MemContainersSortable = ({
                   >
                     <SortableItem
                       types={types}
-                      item={item}
+                      item={memContainers[i]}
                       memContainers={memContainers}
                       i={i}
                       setValue={setValue}

@@ -1,4 +1,4 @@
-import { NotifyReducer } from "@/context/notify";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import style from "@/styles/Layout.module.css";
 import createNotifycation from "@/utils/createNotifycation";
 import Link from "next/link";
@@ -13,7 +13,7 @@ export default function LoginForm({ setCurrentForm, mutate }: any) {
     setError,
   } = useForm();
 
-  const dispatchNotify = useContext(NotifyReducer);
+  const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
 
   const sendData = async (data: any) => {
     const fetcher = await fetch("/api/login", {
@@ -28,7 +28,7 @@ export default function LoginForm({ setCurrentForm, mutate }: any) {
 
     if (fetcher.status === 200) {
       mutate();
-      createNotifycation(dispatchNotify, "info", "Pomyślnie zalogowano!");
+      createNotifycation(setNotifys, "info", "Pomyślnie zalogowano!");
     } else {
       if (fetcher.status === 403) {
         setError("login", {
@@ -40,7 +40,7 @@ export default function LoginForm({ setCurrentForm, mutate }: any) {
           message: "Nieprawidłowe dane logowania!",
         });
       } else if (fetcher.status === 500) {
-        createNotifycation(dispatchNotify, "info", res.message);
+        createNotifycation(setNotifys, "info", res.message);
       }
     }
   };

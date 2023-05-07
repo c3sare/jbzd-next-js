@@ -20,7 +20,7 @@ export default async function handler(
         .json({ message: "Podany użytkownik nie istnieje!" });
 
     if (category === "all") {
-      const posts = await Post.find({ author: username });
+      const posts = await Post.collection.find({ author: username }).toArray();
 
       res.status(200).json(posts);
     } else {
@@ -31,7 +31,9 @@ export default async function handler(
           .status(404)
           .json({ message: "Podana kategoria nie istnieje!" });
 
-      const posts = await Post.find({ author: username, category });
+      const posts = await Post.collection
+        .find({ author: username, category })
+        .toArray();
 
       res.status(200).json(posts);
     }

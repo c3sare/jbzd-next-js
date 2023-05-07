@@ -1,42 +1,37 @@
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 import React from "react";
-import { CategoryReducer } from "@/context/categories";
 import style from "@/styles/Layout.module.css";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import RemindPasswordForm from "./RemindPasswordForm";
-import { LoginContext, LoginReducer } from "@/context/login";
-import { NotifyContext } from "@/context/notify";
 import ProfileInfo from "./ProfileInfo";
 import useSWR from "swr";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
 export default function Layout({ children }: any) {
+  const {
+    login: { login, logged },
+    setLogin,
+    notifys,
+    setCategories,
+  } = React.useContext(GlobalContext) as GlobalContextInterface;
   const { data = { logged: false, login: "" }, mutate } =
     useSWR("/api/checklogin");
   const [currentForm, setCurrentForm] = React.useState(0);
-  const dispatch: React.Dispatch<any> = React.useContext(CategoryReducer);
-  const { logged, login } = React.useContext(LoginContext);
-  const dispatchLogin = React.useContext(LoginReducer);
-  const notifys = React.useContext(NotifyContext);
 
   const forms = [LoginForm, RegisterForm, RemindPasswordForm];
 
   React.useEffect(() => {
     fetch("/api/categories")
       .then((data) => data.json())
-      .then((data) =>
-        dispatch({
-          type: "ADD",
-          categories: [...data],
-        })
-      );
-  }, [dispatch]);
+      .then((data) => setCategories(data));
+  }, []);
 
   React.useEffect(() => {
-    if (data.logged) dispatchLogin({ type: "LOGIN", login: data });
-    else dispatchLogin({ type: "LOGOUT" });
-  }, [data, dispatchLogin]);
+    if (data.logged) setLogin(data);
+    else setLogin({ logged: false, login: "" });
+  }, [data]);
 
   const loginPanel = (
     <div className={style.login}>

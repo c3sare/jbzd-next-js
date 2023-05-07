@@ -1,4 +1,4 @@
-import { NotifyReducer } from "@/context/notify";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import style from "@/styles/Layout.module.css";
 import createNotifycation from "@/utils/createNotifycation";
 import Link from "next/link";
@@ -28,7 +28,7 @@ const StepOne = ({ setCurrentForm, setStep }: any) => {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const notifyDispatch = useContext(NotifyReducer);
+  const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
 
   const sendData = async (data: any) => {
     const fetcher = await fetch("/api/users/changepwd", {
@@ -42,13 +42,13 @@ const StepOne = ({ setCurrentForm, setStep }: any) => {
     if (fetcher.status === 200) {
       setStep(2);
       createNotifycation(
-        notifyDispatch,
+        setNotifys,
         "info",
         "Na podany adres e-mail został wysłany klucz zmiany hasła!"
       );
     } else {
       const data = await fetcher.json();
-      createNotifycation(notifyDispatch, "info", data.message);
+      createNotifycation(setNotifys, "info", data.message);
     }
   };
 
@@ -119,7 +119,7 @@ const StepTwo = ({ setCurrentForm }: any) => {
     getValues,
   } = useForm<ChangePWDInterface>({ defaultValues: { token: "" } });
 
-  const notifyDispatch = useContext(NotifyReducer);
+  const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
 
   const sendData = async (data: any) => {
     const fetcher = await fetch("/api/users/changepwd", {
@@ -132,14 +132,14 @@ const StepTwo = ({ setCurrentForm }: any) => {
 
     if (fetcher.status === 200) {
       createNotifycation(
-        notifyDispatch,
+        setNotifys,
         "info",
         "Hasło zostało pomyślnie zmienione!"
       );
       setCurrentForm(0);
     } else {
       createNotifycation(
-        notifyDispatch,
+        setNotifys,
         "info",
         "Wystąpił problem przy zmianie hasła!"
       );

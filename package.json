@@ -15,9 +15,11 @@
     "array-move": "^4.0.0",
     "aws-sdk": "^2.1363.0",
     "bcrypt": "^5.1.0",
+    "cloudinary": "^1.36.4",
     "date-fns": "^2.30.0",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
+    "formidable": "^2.1.1",
     "iron-session": "^6.3.1",
     "link-preview-generator": "^1.1.0",
     "mongoose": "^7.0.4",
@@ -36,6 +38,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/formidable": "^2.0.5",
     "@types/nodemailer": "^6.4.7",
     "@types/react-beautiful-dnd": "^13.1.4"
   }

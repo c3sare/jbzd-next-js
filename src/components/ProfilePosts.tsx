@@ -1,15 +1,15 @@
-import { CategoryContext } from "@/context/categories";
 import style from "@/styles/userprofile.module.css";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import Post from "./Post";
 import Loading from "./Loading";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
 const ProfilePosts = ({ username }: { username: string }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [category, setCategory] = useState<string>("all");
-  const categories = useContext(CategoryContext);
+  const { categories } = useContext(GlobalContext) as GlobalContextInterface;
   const [posts, setPosts] = useState<any[]>([]);
 
   const categoriesSelect = categories

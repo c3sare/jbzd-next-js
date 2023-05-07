@@ -4,7 +4,7 @@ import "react-quill/dist/quill.snow.css";
 import type { AppProps } from "next/app";
 import { SWRConfig } from "swr";
 import React from "react";
-import Context from "@/context/Context";
+import ContextNew from "@/context/ContextNew";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -17,11 +17,11 @@ export default function App({ Component, pageProps }: AppProps) {
         },
       }}
     >
-      <Context>
+      <ContextNew>
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      </Context>
+      </ContextNew>
     </SWRConfig>
   );
 }

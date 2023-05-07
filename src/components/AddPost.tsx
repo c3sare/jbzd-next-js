@@ -9,8 +9,8 @@ import VideoContainer from "./AddPostComponents/VideoContainer";
 import YoutubeContainer from "./AddPostComponents/YoutubeContainer";
 import { useForm, useFieldArray } from "react-hook-form";
 import CheckUrl from "./AddPostComponents/CheckUrl";
-import { CategoryContext } from "@/context/categories";
 import MemContainersSortable from "./MemContainersSortable";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
 function isValidHttpUrl(link: string) {
   let url;
@@ -37,7 +37,9 @@ interface AddPostInterface {
 }
 
 const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
-  const data = React.useContext(CategoryContext);
+  const { categories: data } = React.useContext(
+    GlobalContext
+  ) as GlobalContextInterface;
 
   const categories = data !== null ? data : [];
 
@@ -89,7 +91,6 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
     fields: fieldsMemContainers,
     append: appendMemContainer,
     remove: removeMemContainer,
-    move: moveMemContainer,
   } = useFieldArray({
     control,
     name: "memContainers",
@@ -122,7 +123,29 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
   };
 
   const onSubmit = (data: AddPostInterface) => {
-    console.log(data);
+    const fd = new FormData();
+    fd.append("title", data.title);
+    fd.append("category", data.category || "");
+    fd.append("linking", `${data.linking}`);
+    if (data.linking && data.linkingUrl) {
+      fd.append("linkingUrl", data.linkingUrl);
+    }
+    fd.append("tags", JSON.stringify(data.tags.map((item) => item.value)));
+    const memContainersWithoutFiles = data.memContainers.map((item) => ({
+      type: item.type,
+      data: ["image", "video"].includes(item.type) ? "" : item.data,
+    }));
+    fd.append("memContainers", JSON.stringify(memContainersWithoutFiles));
+    data.memContainers.forEach((item, i) => {
+      fd.append(`file_${i}`, item.data as Blob);
+    });
+
+    fetch("/api/posts", {
+      method: "POST",
+      body: fd,
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res));
   };
 
   const [currentTag, setCurrentTag] = useState<string>("");

@@ -1,4 +1,4 @@
-import { NotifyContext, NotifyReducer } from "@/context/notify";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import style from "@/styles/Layout.module.css";
 import createNotifycation from "@/utils/createNotifycation";
 import Link from "next/link";
@@ -23,7 +23,7 @@ export default function RegisterForm({ setCurrentForm }: any) {
     clearErrors,
     setError,
   } = useForm<RegisterForm>();
-  const notifyDispatch = useContext(NotifyReducer);
+  const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
 
   const sendFormData = async (data: RegisterForm) => {
     setLoading(true);
@@ -38,7 +38,7 @@ export default function RegisterForm({ setCurrentForm }: any) {
     if (fetcher.status === 200) {
       setCurrentForm(0);
       createNotifycation(
-        notifyDispatch,
+        setNotifys,
         "info",
         "Konto zostało utworzone, potwierdź utworzenie przez podany adres e-mail!"
       );

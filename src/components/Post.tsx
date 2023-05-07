@@ -1,7 +1,6 @@
 import style from "@/styles/posts.module.css";
 import alongAgo from "@/utils/alongAgoFunction";
 import { FaComment, FaStar, FaCaretUp } from "react-icons/fa";
-import fingerLike from "@/images/likes/like_mid_finger.png";
 import rockLike from "@/images/likes/like_rock.png";
 import silverLike from "@/images/likes/like_silver.png";
 import goldLike from "@/images/likes/like_gold.png";
@@ -10,17 +9,65 @@ import coin from "@/images/coin.png";
 import Link from "next/link";
 import avatar from "@/images/avatars/default.jpg";
 import Image from "next/image";
-import { useContext, useState } from "react";
-import { LoginContext } from "@/context/login";
+import { useContext, useState, Fragment } from "react";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
+import useSWR from "swr";
+import createNotifycation from "@/utils/createNotifycation";
 
 const Post = (props: any) => {
   const { post } = props;
   const [showButtons, setShowButtons] = useState(false);
-  const { logged } = useContext(LoginContext);
+  const {
+    login: { logged },
+    categories,
+    setNotifys,
+  } = useContext(GlobalContext) as GlobalContextInterface;
+
+  const category =
+    props.category === ""
+      ? {}
+      : categories.length > 0
+      ? categories.find((item) => item.slug === post.category)
+      : {};
+
+  const { data, error, isLoading, mutate } = useSWR(
+    "/api/posts/stats/" + post._id
+  );
+
+  const handlePlusPost = (id: string) => {
+    if (!logged)
+      return createNotifycation(
+        setNotifys,
+        "info",
+        "Ta strona wymaga zalogowania"
+      );
+
+    fetch(`/api/post/${id}/plus`, { method: "POST" })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => mutate());
+  };
+
+  const handleFavouritePost = (id: string) => {
+    if (!logged)
+      return createNotifycation(
+        setNotifys,
+        "info",
+        "Ta strona wymaga zalogowania"
+      );
+
+    fetch(`/api/post/${id}/favourite`, { method: "POST" })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => mutate());
+  };
+
   return (
-    <div className={style.post} key={post.id}>
+    <div className={style.post} key={post._id}>
       <div className={style.avatar}>
-        <Link href={`/user/${post.userId}/${encodeURI(post.userName)}`}>
+        <Link href={`/uzytkownik/${post.author}`}>
           <Image src={avatar} alt="Avatar" />
         </Link>
       </div>
@@ -28,58 +75,83 @@ const Post = (props: any) => {
         <div className={style.postHeader}>
           <h2>{post.title}</h2>
           <span className={style.iconComments}>
-            <FaComment />0
+            <FaComment />
+            {!error && !isLoading ? data.comments : "..."}
           </span>
         </div>
         <div className={style.memDetails}>
           <div className={style.userAddTimeDetails}>
             <span className={style.userName}>{post.userName}</span>
-            <span className={style.addTime}>{alongAgo(post.addDate)}</span>
+            <span className={style.addTime}>{alongAgo(post.addTime)}</span>
             {post.category !== "" && (
               <Link
-                href={`/kategoria/${post.category.toLowerCase()}`}
+                href={`/${
+                  category.asPage ? "" : "kategoria/"
+                }${post.category.toLowerCase()}`}
                 style={{ color: "#bd3c3c" }}
               >
-                {post.category}
+                {category.name}
               </Link>
             )}
           </div>
           <div className={style.otherLikes}>
-            {post.rock > 0 && (
-              <div className={style.likeContainer}>
-                <div className={style.image}>
-                  <Image width={25} src={rockLike} alt="Kamienna Dzida" />
-                  <span>Kamienna&nbsp;Dzida</span>
-                </div>
-                <span>{post.rock}</span>
-              </div>
-            )}
-            {post.silver > 0 && (
-              <div className={style.likeContainer}>
-                <div className={style.image}>
-                  <Image width={25} src={silverLike} alt="Srebrna Dzida" />
-                  <span>Srebrna&nbsp;Dzida</span>
-                </div>
-                <span>{post.silver}</span>
-              </div>
-            )}
-            {post.gold > 0 && (
-              <div className={style.likeContainer}>
-                <div className={style.image}>
-                  <Image width={25} src={goldLike} alt="Złota Dzida" />
-                  <span>Złota&nbsp;Dzida</span>
-                </div>
-                <span>{post.gold}</span>
-              </div>
-            )}
+            {!error && !isLoading
+              ? data.rock > 0 && (
+                  <div className={style.likeContainer}>
+                    <div className={style.image}>
+                      <Image width={25} src={rockLike} alt="Kamienna Dzida" />
+                      <span>Kamienna&nbsp;Dzida</span>
+                    </div>
+                    <span>{data.rock}</span>
+                  </div>
+                )
+              : null}
+            {!error && !isLoading
+              ? data.silver > 0 && (
+                  <div className={style.likeContainer}>
+                    <div className={style.image}>
+                      <Image width={25} src={silverLike} alt="Srebrna Dzida" />
+                      <span>Srebrna&nbsp;Dzida</span>
+                    </div>
+                    <span>{data.silver}</span>
+                  </div>
+                )
+              : null}
+            {!error && !isLoading
+              ? data.gold > 0 && (
+                  <div className={style.likeContainer}>
+                    <div className={style.image}>
+                      <Image width={25} src={goldLike} alt="Złota Dzida" />
+                      <span>Złota&nbsp;Dzida</span>
+                    </div>
+                    <span>{data.gold}</span>
+                  </div>
+                )
+              : null}
           </div>
         </div>
-        <Image
-          src={"/images/upload/" + post.image}
-          width={600}
-          height={500}
-          alt={post.title}
-        />
+        {post.memContainers.map((item: any, i: number) => {
+          if (item.type === "image") {
+            return (
+              <Image
+                key={i}
+                src={item.data}
+                width={600}
+                height={500}
+                alt={post.title}
+              />
+            );
+          } else if (item.type === "video") {
+            return (
+              <video key={i} width="600" controls>
+                <source src={item.data} type="video/mp4" />
+                Twoja przeglądarka nie wspiera Video HTML5
+              </video>
+            );
+          } else {
+            return <Fragment key={i}></Fragment>;
+          }
+        })}
         {/* <div className={style.comments">
               {post.comments.map((comment) => (
                 <div className={style.comment" key={comment.id}>
@@ -153,14 +225,26 @@ const Post = (props: any) => {
           <FaComment />
         </button>
         {logged && (
-          <button className={style.star}>
+          <button
+            className={
+              style.star + (data?.isFavourite ? " " + style.active : "")
+            }
+            onClick={() => handleFavouritePost(post._id)}
+          >
             <FaStar />
           </button>
         )}
-        <span className={style.likeCounter}>+{post.pluses}</span>
-        <button className={style.plus}>
+        <span className={style.likeCounter}>
+          +{!error && !isLoading ? data.pluses : 0}
+        </span>
+        <button
+          className={style.plus + (data?.isPlused ? " " + style.added : "")}
+          onClick={() => handlePlusPost(post._id)}
+        >
           <span className={style.plusIcon}>+</span>
-          <span className={style.text}>+{post.pluses}</span>
+          <span className={style.text}>
+            +{!error && !isLoading ? data.pluses : 0}
+          </span>
         </button>
         {/* class added - active */}
       </div>

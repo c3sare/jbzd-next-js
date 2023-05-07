@@ -18,18 +18,18 @@ import { GiDiceSixFacesTwo } from "react-icons/gi";
 import { useContext, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { CategoryContext } from "@/context/categories";
-import { LoginContext } from "@/context/login";
-import { NotifyReducer } from "@/context/notify";
 import { AiOutlinePoweroff } from "react-icons/ai";
 import createNotifycation from "@/utils/createNotifycation";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
 const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
   const [showSearch, setShowSearch] = useState<Boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<Boolean>(false);
-  const categories = useContext(CategoryContext);
-  const notifyDispatch = useContext(NotifyReducer);
-  const { login, logged } = useContext(LoginContext);
+  const {
+    categories,
+    login: { login, logged },
+    setNotifys,
+  } = useContext(GlobalContext) as GlobalContextInterface;
 
   const normalCategories =
     categories !== null
@@ -62,7 +62,7 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
               <li key={indexCategory}>
                 <Link
                   style={category.color ? { color: category.color } : {}}
-                  href={category.slug}
+                  href={"/" + category.slug}
                 >
                   {category.name}
                 </Link>
@@ -78,7 +78,7 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
             <li key={indexCategory}>
               <Link
                 style={category.color ? { color: category.color } : {}}
-                href={category.slug}
+                href={"/" + category.slug}
               >
                 {category.name}
               </Link>
@@ -129,7 +129,7 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
               e.preventDefault();
               if (!logged) {
                 createNotifycation(
-                  notifyDispatch,
+                  setNotifys,
                   "info",
                   "Nie jesteś zalogowany!"
                 );

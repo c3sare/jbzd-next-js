@@ -7,10 +7,12 @@ import { BiImage } from "react-icons/bi";
 import { FaRegComment } from "react-icons/fa";
 import useSWR from "swr";
 import { useContext } from "react";
-import { LoginContext } from "@/context/login";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
 const ProfileInfo = ({ login }: { login: string }) => {
-  const { logged } = useContext(LoginContext);
+  const {
+    login: { logged },
+  } = useContext(GlobalContext) as GlobalContextInterface;
   const { isLoading, data, error } = useSWR(logged ? "/api/profile" : null);
 
   return (

@@ -1,31 +1,24 @@
 import { uniqueId } from "./uniqueId";
 
 export default function createNotifycation(
-  dispatch: any,
+  setNotify: any,
   type: string,
   message: string
 ) {
   const id = uniqueId();
   let timeout: any;
-  dispatch({
-    type: "ADD",
-    notify: {
-      id: id,
-      text: message,
-      type: type,
-      closeFn: () => {
-        dispatch({
-          type: "DELETE",
-          id,
-        });
-        clearTimeout(timeout);
-      },
+  const newNotify = {
+    id: id,
+    text: message,
+    type: type,
+    closeFn: () => {
+      setNotify((state: any[]) => state.filter((item) => item.id !== id));
+      clearTimeout(timeout);
     },
-  });
+  };
+  setNotify((state: any[]) => [...state, newNotify]);
+
   timeout = setTimeout(() => {
-    dispatch({
-      type: "DELETE",
-      id,
-    });
+    setNotify((state: any[]) => state.filter((item) => item.id !== id));
   }, 5000);
 }
