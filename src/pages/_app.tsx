@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import "@/styles/globals.css";
+import "plyr-react/plyr.css";
 import "react-quill/dist/quill.snow.css";
 import type { AppProps } from "next/app";
 import { SWRConfig } from "swr";

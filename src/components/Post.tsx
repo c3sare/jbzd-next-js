@@ -13,6 +13,7 @@ import { useContext, useState, Fragment } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import useSWR from "swr";
 import createNotifycation from "@/utils/createNotifycation";
+import VideoPlayer from "./VideoPlayer";
 
 const Post = (props: any) => {
   const { post } = props;
@@ -142,12 +143,7 @@ const Post = (props: any) => {
               />
             );
           } else if (item.type === "video") {
-            return (
-              <video key={i} width="600" controls>
-                <source src={item.data} type="video/mp4" />
-                Twoja przeglądarka nie wspiera Video HTML5
-              </video>
-            );
+            return <VideoPlayer key={i} url={item.data} />;
           } else {
             return <Fragment key={i}></Fragment>;
           }
@@ -187,6 +183,7 @@ const Post = (props: any) => {
       <div className={style.buttonsPost}>
         <button
           className={style.coins}
+          aria-label="Nagradzanie"
           onClick={() => setShowButtons(!showButtons)}
         >
           <span>
@@ -197,21 +194,21 @@ const Post = (props: any) => {
           </span>
           {showButtons && (
             <div className={style.buttonsCoins}>
-              <button>
+              <button aria-label="Nagródź złotą dzidą">
                 <Image src={goldLike} width={25} alt="Złota Dzida" />
                 <span>
                   1000
                   <Image src={coin} width={15} alt="Moneta" />
                 </span>
               </button>
-              <button>
+              <button aria-label="Nagródź srebrną dzidą">
                 <Image src={silverLike} width={25} alt="Srebrna Dzida" />
                 <span>
                   400
                   <Image src={coin} width={15} alt="Moneta" />
                 </span>
               </button>
-              <button>
+              <button aria-label="Nagródź kamienną dzidą">
                 <Image src={rockLike} width={25} alt="Kamienna Dzida" />
                 <span>
                   100
@@ -221,11 +218,12 @@ const Post = (props: any) => {
             </div>
           )}
         </button>
-        <button>
+        <button aria-label="Przejdź do komentarzy">
           <FaComment />
         </button>
         {logged && (
           <button
+            aria-label="Dodaj dzidę do ulubionych"
             className={
               style.star + (data?.isFavourite ? " " + style.active : "")
             }
@@ -238,6 +236,7 @@ const Post = (props: any) => {
           +{!error && !isLoading ? data.pluses : 0}
         </span>
         <button
+          aria-label="Zaplusuj dzidę"
           className={style.plus + (data?.isPlused ? " " + style.added : "")}
           onClick={() => handlePlusPost(post._id)}
         >
