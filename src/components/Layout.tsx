@@ -8,6 +8,7 @@ import RemindPasswordForm from "./RemindPasswordForm";
 import ProfileInfo from "./ProfileInfo";
 import useSWR from "swr";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
+import Head from "next/head";
 
 export default function Layout({ children }: any) {
   const {
@@ -43,6 +44,9 @@ export default function Layout({ children }: any) {
 
   return (
     <>
+      <Head>
+        <title>Jbzd Clone</title>
+      </Head>
       <Navigation loginPanel={loginPanel} />
       <div className={style.contentWrapper}>
         <main>{children}</main>
