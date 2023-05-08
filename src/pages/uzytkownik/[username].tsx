@@ -7,9 +7,10 @@ import style from "@/styles/userprofile.module.css";
 import { TfiCup } from "react-icons/tfi";
 import { AiFillPicture, AiFillFlag } from "react-icons/ai";
 import { FaComment } from "react-icons/fa";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import ProfilePosts from "@/components/ProfilePosts";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
 interface ProfileData {
   profile: {
@@ -26,6 +27,9 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
   const [tab, setTab] = useState<number>(
     [0, 1].includes(Number(router.query?.tab)) ? Number(router.query?.tab) : 0
   );
+  const {
+    login: { logged, login },
+  } = useContext(GlobalContext) as GlobalContextInterface;
 
   return (
     <>
@@ -105,6 +109,9 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
               />
             </span>
             <span>0</span>
+            {login !== profile?.username && logged && (
+              <button className={style.userVote}>+</button>
+            )}
           </div>
           <Link href="/ranking" className={style.rank}>
             <span>
