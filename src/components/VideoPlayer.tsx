@@ -1,23 +1,6 @@
 import Plyr from "plyr-react";
 
 const VideoPlayer = ({ url }: { url: string }) => {
-  const videoOptions = {
-    controls: [
-      "play-large",
-      "play",
-      "progress",
-      "current-time",
-      "mute",
-      "volume",
-      "settings",
-      "pip",
-      "fullscreen",
-      "download",
-    ],
-    download: url,
-    urls: [url],
-  };
-
   return (
     <div style={{ maxWidth: "600px" }}>
       <Plyr
@@ -30,7 +13,20 @@ const VideoPlayer = ({ url }: { url: string }) => {
             },
           ],
         }}
-        options={videoOptions}
+        options={{
+          controls: [
+            "play-large",
+            "play",
+            "progress",
+            "current-time",
+            "mute",
+            "volume",
+            "settings",
+            "pip",
+            "fullscreen",
+            "download",
+          ],
+        }}
       />
     </div>
   );
