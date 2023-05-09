@@ -2,7 +2,7 @@ import Plyr from "plyr-react";
 
 const VideoPlayer = ({ url }: { url: string }) => {
   return (
-    <div style={{ maxWidth: "600px" }}>
+    <div style={{ maxWidth: "100%", width: "600px" }}>
       <Plyr
         source={{
           type: "video",

@@ -9,7 +9,7 @@ import coin from "@/images/coin.png";
 import Link from "next/link";
 import avatar from "@/images/avatars/default.jpg";
 import Image from "next/image";
-import { useContext, useState, Fragment } from "react";
+import { useContext, useState, Fragment, useMemo } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import useSWR from "swr";
 import createNotifycation from "@/utils/createNotifycation";
@@ -25,7 +25,7 @@ const Post = (props: any) => {
   } = useContext(GlobalContext) as GlobalContextInterface;
 
   const category =
-    props.category === ""
+    post.category === ""
       ? {}
       : categories.length > 0
       ? categories.find((item) => item.slug === post.category)
@@ -64,6 +64,28 @@ const Post = (props: any) => {
       })
       .finally(() => mutate());
   };
+
+  const allPostElements = useMemo(
+    () =>
+      post.memContainers.map((item: any, i: number) => {
+        if (item.type === "image") {
+          return (
+            <Image
+              key={i}
+              src={item.data}
+              width={600}
+              height={500}
+              alt={post.title}
+            />
+          );
+        } else if (item.type === "video") {
+          return <VideoPlayer key={i} url={item.data} />;
+        } else {
+          return <Fragment key={i}></Fragment>;
+        }
+      }),
+    [post]
+  );
 
   return (
     <div className={style.post} key={post._id}>
@@ -131,23 +153,7 @@ const Post = (props: any) => {
               : null}
           </div>
         </div>
-        {post.memContainers.map((item: any, i: number) => {
-          if (item.type === "image") {
-            return (
-              <Image
-                key={i}
-                src={item.data}
-                width={600}
-                height={500}
-                alt={post.title}
-              />
-            );
-          } else if (item.type === "video") {
-            return <VideoPlayer key={i} url={item.data} />;
-          } else {
-            return <Fragment key={i}></Fragment>;
-          }
-        })}
+        {allPostElements}
         {/* <div className={style.comments">
               {post.comments.map((comment) => (
                 <div className={style.comment" key={comment.id}>

@@ -86,11 +86,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       addTime: new Date(),
       author: session.login,
       category: data.category,
-      pluses: 0,
-      rock: 0,
-      silver: 0,
-      gold: 0,
       memContainers: dataToInsert.memContainers,
+      accepted: false,
+      tags: JSON.parse(data.tags),
     });
 
     if (!insert)

@@ -29,6 +29,7 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
     categories,
     login: { login, logged },
     setNotifys,
+    coins,
   } = useContext(GlobalContext) as GlobalContextInterface;
 
   const normalCategories =
@@ -116,8 +117,22 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
         </div>
         <div className={style.right}>
           <Link href="/oczekujace">Oczekujące</Link>
+          {logged && (
+            <span className={style.navLink} id="observed">
+              Obserwowane <MdArrowDropDown />
+              <div className={style.departmentsMenu}>
+                <ul>
+                  <li>
+                    <Link href="/obserwowane/dzialy">Działy</Link>
+                  </li>
+                  <li>
+                    <Link href="/obserwowane/uzytkownicy">Użytkownicy</Link>
+                  </li>
+                </ul>
+              </div>
+            </span>
+          )}
           <Link href="/losowe">Losowe</Link>
-          {logged && <Link href="/upload">Dodaj</Link>}
           <span className={style.navLink} id="departments">
             Działy <MdArrowDropDown />
             <div className={style.departmentsMenu}>{categoriesContainer}</div>
@@ -142,7 +157,7 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
               src={coin}
               alt="Moneta"
             />{" "}
-            0
+            {coins}
           </Link>
           {logged && (
             <>

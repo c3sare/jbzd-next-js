@@ -8,12 +8,18 @@ import { FaRegComment } from "react-icons/fa";
 import useSWR from "swr";
 import { useContext } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
+import { format } from "date-fns";
 
 const ProfileInfo = ({ login }: { login: string }) => {
   const {
     login: { logged },
   } = useContext(GlobalContext) as GlobalContextInterface;
   const { isLoading, data, error } = useSWR(logged ? "/api/profile" : null);
+
+  const date = format(
+    data?.createDate ? new Date(data?.createDate) : new Date(),
+    "dd.MM.yyyy"
+  );
 
   return (
     <div className={style.profile}>
@@ -37,13 +43,13 @@ const ProfileInfo = ({ login }: { login: string }) => {
                 </div>
                 <section className={style.profileDetails}>
                   <p className={style.profileDetail}>
-                    <BiImage /> {data.posts}
+                    <BiImage /> {data.acceptedPosts} / {data.allPosts}
                   </p>
                   <p className={style.profileDetail}>
                     <FaRegComment /> {data.comments}
                   </p>
                   <p className={style.profileDetail}>
-                    <AiFillFlag /> {data.createDate}
+                    <AiFillFlag /> {date}
                   </p>
                 </section>
               </section>

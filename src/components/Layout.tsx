@@ -6,38 +6,27 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import RemindPasswordForm from "./RemindPasswordForm";
 import ProfileInfo from "./ProfileInfo";
-import useSWR from "swr";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import Head from "next/head";
 
 export default function Layout({ children }: any) {
   const {
     login: { login, logged },
-    setLogin,
+    refreshLogin,
     notifys,
-    setCategories,
   } = React.useContext(GlobalContext) as GlobalContextInterface;
-  const { data = { logged: false, login: "" }, mutate } =
-    useSWR("/api/checklogin");
+
   const [currentForm, setCurrentForm] = React.useState(0);
 
   const forms = [LoginForm, RegisterForm, RemindPasswordForm];
 
-  React.useEffect(() => {
-    fetch("/api/categories")
-      .then((data) => data.json())
-      .then((data) => setCategories(data));
-  }, []);
-
-  React.useEffect(() => {
-    if (data.logged) setLogin(data);
-    else setLogin({ logged: false, login: "" });
-  }, [data]);
-
   const loginPanel = (
     <div className={style.login}>
       <div className={style.desktop}>
-        {React.createElement(forms[currentForm], { setCurrentForm, mutate })}
+        {React.createElement(forms[currentForm], {
+          setCurrentForm,
+          mutate: refreshLogin,
+        })}
       </div>
     </div>
   );

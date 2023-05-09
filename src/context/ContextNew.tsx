@@ -1,19 +1,17 @@
 import React from "react";
+import useSWR from "swr";
 
 export interface GlobalContextInterface {
   categories: any[];
-  setCategories: any;
   login: {
     login: string;
     logged: boolean;
   };
-  setLogin: any;
+  refreshLogin: any;
   notifys: any[];
   setNotifys: any;
-  favourites: string[];
-  setFavourites: any;
-  plused: string[];
-  setPlused: any;
+  coins: number;
+  refreshCoins: any;
 }
 
 export const GlobalContext = React.createContext<GlobalContextInterface | null>(
@@ -21,28 +19,22 @@ export const GlobalContext = React.createContext<GlobalContextInterface | null>(
 );
 
 export default function Context({ children }: any) {
-  const [categories, setCategories] = React.useState([]);
-  const [login, setLogin] = React.useState({
-    logged: false,
-    login: "",
-  });
+  const { data: categories = [] } = useSWR("/api/categories");
+  const { data: login = { logged: false, login: "" }, mutate: refreshLogin } =
+    useSWR("/api/checklogin");
+  const { data: coins = 0, mutate: refreshCoins } = useSWR("/api/coins");
   const [notifys, setNotifys] = React.useState([]);
-  const [favourites, setFavourites] = React.useState([]);
-  const [plused, setPlused] = React.useState([]);
 
   return (
     <GlobalContext.Provider
       value={{
         categories,
-        setCategories,
         login,
-        setLogin,
+        refreshLogin,
         notifys,
         setNotifys,
-        favourites,
-        setFavourites,
-        plused,
-        setPlused,
+        coins,
+        refreshCoins,
       }}
     >
       {children}

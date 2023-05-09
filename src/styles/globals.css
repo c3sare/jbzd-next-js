@@ -69,15 +69,18 @@ main {
   }
 }
 
-#departments {
+#departments,
+#observed {
   position: relative;
 }
 
-#departments:hover svg {
+#departments:hover svg,
+#observed:hover svg {
   transform: rotate(180deg);
 }
 
-#departments:hover > div {
+#departments:hover > div,
+#observed:hover > div {
   display: flex;
 }
 
