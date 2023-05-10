@@ -1,3 +1,10 @@
+.settingsContainer {
+  max-width: 650px;
+  margin-bottom: 25px;
+  color: #fff;
+  position: relative;
+}
+
 .tabs {
   margin-bottom: 5px;
   border: 0;
@@ -39,4 +46,105 @@
 
 .tabs > li.active {
   transform: translateY(0);
+}
+
+.tabContainer {
+  padding: 35px 15px;
+  background: #313131;
+  border: 1px solid #313131;
+  color: #fff;
+}
+
+.userDataForm {
+  margin-bottom: 20px;
+}
+
+.formGroup {
+  margin-bottom: 5px;
+  position: relative;
+}
+
+.formGroup:hover > span.errorMsg {
+  display: block;
+  opacity: 1;
+}
+
+.formGroup > span.errorMsg {
+  display: none;
+  position: absolute;
+  right: 50%;
+  transform: translateX(50%);
+  top: calc(100% + 8px);
+  background-color: #c03e3e;
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 11px;
+  width: auto;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1;
+}
+
+.formGroup > span.errorMsg:after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  right: 50%;
+  transform: translateX(50%);
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #c03e3e transparent;
+}
+
+.formGroup > input,
+.formGroup > select {
+  width: 100%;
+  background: #1f1f1f;
+  padding: 0 10px;
+  line-height: 38px;
+  height: 38px;
+  border: 0;
+  color: #777;
+}
+
+.formButtons {
+  text-align: center;
+}
+
+.formButtons button {
+  width: 100%;
+  max-width: none;
+  display: block;
+  margin: 0 auto;
+  background: #c03e3e;
+  border: 0;
+  color: #fff;
+  height: 30px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+input.error {
+  border: 1px solid #c03e3e !important;
+}
+
+.avatar {
+  color: #fff;
+  text-align: center;
+}
+
+.avatar .formButtons {
+  margin-top: 25px;
+}
+
+.avatar > div > canvas {
+  width: 204px !important;
+  height: 204px !important;
+  margin-bottom: 25px;
+}
+
+.avatar > div > input {
+  display: none;
 }

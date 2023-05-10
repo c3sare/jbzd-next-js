@@ -1,5 +1,9 @@
 import { useState } from "react";
 import style from "@/styles/usersettings.module.css";
+import UserData from "@/components/UserSettingsComponents/UserData";
+import UserPreferences from "@/components/UserSettingsComponents/UserPreferences";
+import Notifycations from "@/components/UserSettingsComponents/Notifycations";
+import Premium from "@/components/UserSettingsComponents/Premium";
 
 const UserSettings = () => {
   const [currentTab, setCurrentTab] = useState<number>(0);
@@ -7,33 +11,35 @@ const UserSettings = () => {
   const tabs = [
     {
       name: "Dane",
-      component: <div></div>,
+      component: <UserData />,
     },
     {
       name: "Preferencje",
-      component: <div></div>,
+      component: <UserPreferences />,
     },
     {
       name: "Notyfikacje",
-      component: <div></div>,
+      component: <Notifycations />,
     },
     {
       name: "Premium",
-      component: <div></div>,
+      component: <Premium />,
     },
   ];
 
   return (
-    <div>
-      <ul className={style.tabs}>
-        {tabs.map((tab, i) => (
-          <li className={currentTab === i ? style.active : ""}>
-            <button onClick={() => setCurrentTab(i)}>{tab.name}</button>
-          </li>
-        ))}
-      </ul>
-      <div>{tabs[currentTab].component}</div>
-    </div>
+    <section>
+      <div className={style.settingsContainer}>
+        <ul className={style.tabs}>
+          {tabs.map((tab, i) => (
+            <li key={i} className={currentTab === i ? style.active : ""}>
+              <button onClick={() => setCurrentTab(i)}>{tab.name}</button>
+            </li>
+          ))}
+        </ul>
+        <div className={style.tabContainer}>{tabs[currentTab].component}</div>
+      </div>
+    </section>
   );
 };
 
