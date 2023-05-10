@@ -2,18 +2,15 @@ import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import { withSessionSSR } from "@/lib/AuthSession/session";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { useSWRConfig } from "swr";
 
 export default function Wyloguj({ logout, message }: any) {
   const router = useRouter();
-  const { mutate } = useSWRConfig();
   const [time, setTime] = useState(5);
-  const { setLogin } = useContext(GlobalContext) as GlobalContextInterface;
+  const { refreshLogin } = useContext(GlobalContext) as GlobalContextInterface;
 
   useEffect(() => {
     if (logout) {
-      setLogin({ login: "", logged: false });
-      mutate("/api/checklogin");
+      refreshLogin();
     }
 
     const interval = setInterval(() => {
