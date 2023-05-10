@@ -57,6 +57,8 @@
 
 .userDataForm {
   margin-bottom: 20px;
+  border-bottom: 4px solid #252525;
+  padding-bottom: 20px;
 }
 
 .formGroup {
@@ -133,6 +135,8 @@ input.error {
 .avatar {
   color: #fff;
   text-align: center;
+  border-bottom: 4px solid #252525;
+  padding-bottom: 20px;
 }
 
 .avatar .formButtons {
@@ -147,4 +151,14 @@ input.error {
 
 .avatar > div > input {
   display: none;
+}
+
+.formDeleteAccount {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.formDeleteAccount a {
+  color: #c03e3f;
+  text-decoration: none;
 }

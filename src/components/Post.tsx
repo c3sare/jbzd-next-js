@@ -32,7 +32,8 @@ const Post = (props: any) => {
       : {};
 
   const { data, error, isLoading, mutate } = useSWR(
-    "/api/posts/stats/" + post._id
+    "/api/posts/stats/" + post._id,
+    { refreshInterval: 0 }
   );
 
   const handlePlusPost = (id: string) => {
@@ -251,7 +252,6 @@ const Post = (props: any) => {
             +{!error && !isLoading ? data.pluses : 0}
           </span>
         </button>
-        {/* class added - active */}
       </div>
     </div>
   );

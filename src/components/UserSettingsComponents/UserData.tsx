@@ -5,6 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import Loading from "../Loading";
 import React from "react";
+import Link from "next/link";
 
 interface FormDataInterface {
   name: string;
@@ -188,7 +189,7 @@ const Canvas = ({
     ctx?.drawImage(img, scale, scale, 204 * zoom, 204 * zoom);
   });
 
-  return <canvas ref={canvas} height={`${height}`} width={`${width}`} />;
+  return <canvas ref={canvas} height={height} width={width} />;
 };
 
 const Avatar = ({
@@ -242,6 +243,115 @@ const Avatar = ({
   );
 };
 
+const ChangePassword = ({
+  setLoading,
+  addNotify,
+}: {
+  setLoading: any;
+  addNotify: any;
+}) => {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    getValues,
+    setValue,
+  } = useForm();
+
+  const sendData = async (data: any) => {
+    setLoading(true);
+    const req = await fetch("/api/user/changepwd", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const res = await req.json();
+
+    if (req.status === 200) {
+      addNotify(res.message);
+      setValue("currentPassword", "");
+      setValue("newPassword", "");
+      setValue("reNewPassword", "");
+    } else {
+      addNotify(res.message);
+    }
+    setLoading(false);
+  };
+
+  const passwordPattern = {
+    pattern: {
+      value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+      message: "Hasło musi zawierać 8 znaków, 1 literę i 1 cyfrę!",
+    },
+  };
+
+  const registerCurrentPassword = register("currentPassword", {
+    ...passwordPattern,
+    required: "Wprowadź aktualne hasło!",
+  });
+  const registerNewPassword = register("newPassword", {
+    ...passwordPattern,
+    required: "Wprowadź nowe hasło!",
+  });
+  const registerReNewPassword = register("reNewPassword", {
+    ...passwordPattern,
+    required: "Powtórz nowe hasło!",
+    validate: (value: string) => {
+      if (value === getValues("newPassword")) return true;
+      else return "Hasła nie są identyczne!";
+    },
+  });
+
+  return (
+    <form onSubmit={handleSubmit(sendData)} className={style.userDataForm}>
+      <div className={style.formGroup}>
+        <input
+          type="password"
+          placeholder="Aktualne hasło"
+          {...registerCurrentPassword}
+          {...(errors.currentPassword ? { className: style.error } : {})}
+        />
+        {errors.currentPassword && (
+          <span className={style.errorMsg}>
+            {errors.currentPassword?.message as string}
+          </span>
+        )}
+      </div>
+      <div className={style.formGroup}>
+        <input
+          type="password"
+          placeholder="Nowe hasło"
+          {...registerNewPassword}
+          {...(errors.newPassword ? { className: style.error } : {})}
+        />
+        {errors.newPassword && (
+          <span className={style.errorMsg}>
+            {errors.newPassword?.message as string}
+          </span>
+        )}
+      </div>
+      <div className={style.formGroup}>
+        <input
+          type="password"
+          placeholder="Powtórz nowe hasło"
+          {...registerReNewPassword}
+          {...(errors.reNewPassword ? { className: style.error } : {})}
+        />
+        {errors.reNewPassword && (
+          <span className={style.errorMsg}>
+            {errors.reNewPassword?.message as string}
+          </span>
+        )}
+      </div>
+      <div className={style.formButtons}>
+        <button type="submit">Zmień hasło</button>
+      </div>
+    </form>
+  );
+};
+
 const UserData = () => {
   const [loading, setLoading] = useState<boolean>();
   const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
@@ -273,6 +383,15 @@ const UserData = () => {
       )}
       <h3>Avatar</h3>
       <Avatar setLoading={setLoading} addNotify={addNotify} />
+      <h3>Hasło</h3>
+      <ChangePassword setLoading={setLoading} addNotify={addNotify} />
+      <h3>Usuwanie konta:</h3>
+      <div className={style.formDeleteAccount}>
+        <p>
+          Jeżeli chcesz usunąć swoje konto kliknij{" "}
+          <Link href="/uzytkownik/usuwanie">tutaj</Link>
+        </p>
+      </div>
     </section>
   );
 };
