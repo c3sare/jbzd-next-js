@@ -10,7 +10,7 @@ const Upload = ({ favourites }: any) => {
     <>
       <h1>Ulubione</h1>
       {favourites.map((post: any) => (
-        <Post post={post} />
+        <Post key={post._id} post={post} />
       ))}
     </>
   );
