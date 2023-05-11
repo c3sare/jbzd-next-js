@@ -6,20 +6,6 @@ import { useForm } from "react-hook-form";
 import Loading from "../Loading";
 import React from "react";
 import Link from "next/link";
-import NoSsrWrapper from "../no-ssr-wrapper";
-import dynamic from "next/dynamic";
-const Konva = dynamic(import("../Konva"), { ssr: false });
-
-function downloadURI(uri: any, name: string) {
-  var link = document.createElement("a");
-  link.download = name;
-  link.href = uri;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-const isSSR = () => typeof window === "undefined";
 
 interface FormDataInterface {
   name: string;
@@ -182,6 +168,62 @@ const UserDataForm = ({
   );
 };
 
+const Canvas = ({
+  url,
+  zoom,
+  height,
+  width,
+  setBlob,
+  onClick,
+}: {
+  url: string;
+  zoom: number;
+  height: number;
+  width: number;
+  setBlob: any;
+  onClick: any;
+}) => {
+  const [pos, setPos] = useState([0, 0]);
+  const move = useRef<boolean>(false);
+  const canvas = React.useRef<HTMLCanvasElement>(null);
+
+  React.useEffect(() => {
+    const ctx = canvas!.current!.getContext("2d");
+    const img = new Image();
+    img.onload = function () {
+      const h = img.naturalHeight;
+      const w = img.naturalWidth;
+      const width = (w > h ? 204 * (w / h) : 204) * zoom;
+      const height = (h > w ? 204 * (h / w) : 204) * zoom;
+      ctx!.clearRect(0, 0, 204, 204);
+      setPos([
+        width > 204 ? ((width - 204) / 2) * -1 : 0,
+        height > 204 ? ((height - 204) / 2) * -1 : 0,
+      ]);
+      ctx?.drawImage(img, pos[0], pos[1], width, height);
+      canvas!.current!.toBlob((blob) => {
+        setBlob(blob);
+      });
+    };
+    img.src = url;
+  }, [zoom, url]);
+
+  return (
+    <canvas
+      ref={canvas}
+      height={height}
+      width={width}
+      onClick={onClick}
+      onMouseDown={() => {
+        move.current = true;
+      }}
+      onMouseUp={() => {
+        move.current = false;
+      }}
+    />
+  );
+};
+
 const Avatar = ({
   setLoading,
   addNotify,
@@ -189,53 +231,39 @@ const Avatar = ({
   setLoading: any;
   addNotify: any;
 }) => {
-  const [zoom, setZoom] = useState(1);
-  const [file, setFile] = useState<string>("");
-  const canvasRef = useRef<any>(null);
-  const avatarCanvas = useMemo(
-    () =>
-      file !== "" && (
-        <NoSsrWrapper>
-          {!isSSR() && (
-            <Konva
-              canvasRef={canvasRef}
-              src={file}
-              zoom={zoom}
-              setFile={setFile}
-            />
-          )}
-        </NoSsrWrapper>
-      ),
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [zoom, setZoom] = useState<number>(1);
+  const [blob, setBlob] = useState<any>(null);
+
+  const canvas = useMemo(
+    () => (
+      <Canvas
+        zoom={zoom}
+        url={file ? URL.createObjectURL(file) : "/images/avatars/default.jpg"}
+        height={204}
+        width={204}
+        setBlob={setBlob}
+        onClick={() => fileInput.current!.click()}
+      />
+    ),
     [zoom, file]
   );
 
-  useEffect(() => {
-    fetch("/api/user/avatar")
-      .then((res) => res.json())
-      .then((res) => setFile(res.avatar));
-  }, []);
-
-  useEffect(() => {
-    setZoom(1);
-  }, [file]);
-
-  const handleSendAvatar = () => {
-    if (file === "") return;
-    fetch("/api/user/avatar", {
-      method: "POST",
-      body: JSON.stringify({ avatar: canvasRef.current!.toDataURL() }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
-  };
-
+  console.log(zoom);
   return (
     <div className={style.avatar}>
-      <div>{avatarCanvas}</div>
+      <div>
+        {canvas}
+        <input
+          ref={fileInput}
+          type="file"
+          accept="image/jpeg,image/png,image/gif"
+          onChange={(e) =>
+            e.target?.files?.[0] ? setFile(e.target.files[0]) : null
+          }
+        />
+      </div>
       <p>
         <small>
           <i>
@@ -256,7 +284,7 @@ const Avatar = ({
         onChange={(e) => setZoom(Number(e.target.value))}
       />
       <div className={style.formButtons}>
-        <button onClick={handleSendAvatar}>Zapisz</button>
+        <button>Zapisz</button>
       </div>
     </div>
   );

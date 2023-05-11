@@ -147,6 +147,8 @@ input.error {
   width: 204px !important;
   height: 204px !important;
   margin-bottom: 25px;
+  cursor: pointer;
+  border: 2px solid rgba(0, 0, 0, 0.3);
 }
 
 .avatar > div > input {
