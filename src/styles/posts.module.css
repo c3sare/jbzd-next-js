@@ -50,17 +50,6 @@
   justify-content: flex-end;
 }
 
-@media screen and (max-width: 768px) {
-  .buttonsPost {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .buttonsPost > :last-child {
-    flex-grow: 2;
-  }
-}
-
 .post > .buttonsPost > * {
   margin: 8px 0;
 }
@@ -81,6 +70,22 @@
   width: 50px;
   min-height: 40px;
   background: rgba(0, 0, 0, 0.5);
+}
+
+@media screen and (max-width: 768px) {
+  .buttonsPost {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .buttonsPost > :last-child {
+    flex-grow: 2;
+  }
+
+  .post > .buttonsPost button,
+  .buttonsCoins > button {
+    height: 55px;
+  }
 }
 
 .buttonsCoins > button {

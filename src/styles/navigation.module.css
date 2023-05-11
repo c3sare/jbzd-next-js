@@ -185,6 +185,12 @@
   min-width: 210px;
 }
 
+@media screen and (max-width: 680px) {
+  .departmentsMenuMobile ul {
+    min-width: auto;
+  }
+}
+
 .departmentsMenu ul li,
 .departmentsMenuMobile ul li {
   text-align: left;
@@ -212,6 +218,7 @@
   width: 100%;
   height: calc(100vh - 42px);
   background-color: #313131;
+  overflow-y: auto;
 }
 
 .mobileMenuContainer .mainMenuMobileContainer {
@@ -300,46 +307,6 @@
   align-items: center;
   color: white;
   text-decoration: none;
-}
-
-.registerButton {
-  width: 100%;
-  display: block;
-  text-align: center;
-  line-height: 30px;
-  color: #fff;
-  background: #8f8f8f;
-  border-radius: 4px;
-}
-
-.quota {
-  color: #8f8f8f;
-  font-size: 13px;
-  text-align: center;
-}
-
-.quota a {
-  color: white;
-}
-
-.mobileButton {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.mobileLogin {
-  display: none;
-}
-
-@media screen and (max-width: 450px) {
-  .mobileLogin {
-    display: block;
-    padding: 15px 0;
-  }
-
-  .loginButtonsContainer {
-    padding: 15px;
-  }
 }
 
 .loginInfo {

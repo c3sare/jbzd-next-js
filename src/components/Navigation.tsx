@@ -15,14 +15,16 @@ import {
   MdSettings,
 } from "react-icons/md";
 import { GiDiceSixFacesTwo } from "react-icons/gi";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AiOutlinePoweroff } from "react-icons/ai";
 import createNotifycation from "@/utils/createNotifycation";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
+import { useRouter } from "next/router";
 
 const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
+  const router = useRouter();
   const [showSearch, setShowSearch] = useState<Boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<Boolean>(false);
   const {
@@ -31,6 +33,10 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
     setNotifys,
     coins,
   } = useContext(GlobalContext) as GlobalContextInterface;
+
+  useEffect(() => {
+    if (showMobileMenu) setShowMobileMenu(false);
+  }, [router.pathname]);
 
   const normalCategories =
     categories !== null
@@ -220,19 +226,6 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
           ) : (
             loginPanel
           )}
-          <div className={style.mobileLogin}>
-            <div className={style.loginButtonsContainer}>
-              <div className={style.mobileButton}>
-                <Link href="/login" className={style.registerButton}>
-                  Zaloguj się
-                </Link>
-              </div>
-              <div className={style.quota}>
-                <Link href="/rejestracja">Załóż konto</Link> i korzystaj z
-                dodatkowych funkcji
-              </div>
-            </div>
-          </div>
           <div className={style.mainMenuMobileContainer}>
             <Link href="/mikroblog">
               <span className={style.iconMenu}>

@@ -10,15 +10,6 @@ import NoSsrWrapper from "../no-ssr-wrapper";
 import dynamic from "next/dynamic";
 const Konva = dynamic(import("../Konva"), { ssr: false });
 
-function downloadURI(uri: any, name: string) {
-  var link = document.createElement("a");
-  link.download = name;
-  link.href = uri;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
 const isSSR = () => typeof window === "undefined";
 
 interface FormDataInterface {

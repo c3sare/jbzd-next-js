@@ -218,10 +218,6 @@
 }
 
 @media screen and (max-width: 450px) {
-  .loginForm {
-    display: none !important;
-  }
-
   .mobileLogin {
     display: block;
     padding: 15px 0;
@@ -258,12 +254,6 @@
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent transparent #c03e3e;
-}
-
-@media screen and (max-width: 450px) {
-  .login {
-    display: none !important;
-  }
 }
 
 .notifycations {

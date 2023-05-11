@@ -7,10 +7,8 @@ import AddPost from "@/components/AddPost";
 import TopFilter from "@/components/TopFilter";
 import PostFilter from "@/components/PostFilter";
 import createNotifycation from "@/utils/createNotifycation";
-import Posts from "@/models/Post";
 import dbConnect from "@/lib/dbConnect";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
-import Comment from "@/models/Comment";
 import getHomePagePosts from "@/utils/getHomePagePosts";
 
 const Index = ({ posts }: any) => {
@@ -85,6 +83,5 @@ export async function getServerSideProps() {
   await dbConnect();
   const posts = await getHomePagePosts();
 
-  console.log(posts);
   return { props: { posts: JSON.parse(JSON.stringify(posts)) } };
 }

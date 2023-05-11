@@ -55,6 +55,7 @@ const Konva = ({
         y: height > 204 ? -(height - 204) / 2 : 0,
       });
     };
+    img.crossOrigin = "Anonymous";
     img.src = src;
   }, [src]);
 
