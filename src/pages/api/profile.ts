@@ -29,7 +29,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     res
       .status(200)
-      .json({ createDate: user.createDate, allPosts, acceptedPosts, comments });
+      .json({
+        avatar: user.avatar,
+        createDate: user.createDate,
+        allPosts,
+        acceptedPosts,
+        comments,
+      });
   } else {
     res.status(404).json({ message: "Page not found" });
   }

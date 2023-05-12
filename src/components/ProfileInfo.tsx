@@ -30,7 +30,16 @@ const ProfileInfo = ({ login }: { login: string }) => {
           <>
             <div className={style.profileInfo}>
               <Link href={"/uzytkownik/" + login}>
-                <Image src={defaultAvatar} alt="Avatar" />
+                <Image
+                  src={
+                    data?.avatar === "" && data?.avatar
+                      ? "/images/avatars/default.jpg"
+                      : data.avatar
+                  }
+                  width={118}
+                  height={118}
+                  alt="Avatar"
+                />
               </Link>
               <section className={style.profileInformations}>
                 <div className={style.profileHeader}>

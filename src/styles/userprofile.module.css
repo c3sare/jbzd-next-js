@@ -1,23 +1,24 @@
 .user {
   max-width: 600px;
-  margin-left: 55px;
   border-radius: 3px;
   color: #fff;
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
-  padding: 15px 15px 0;
-  margin-bottom: 20px;
+  padding: 15px;
+  margin: 0 66px 0 56px;
 }
 
 .avatar {
   max-width: 118px;
   border-radius: 50%;
+  margin: 0 auto;
 }
 
 .userInfo {
   padding-left: 15px;
   flex: 1;
+  margin: 0 auto;
 }
 
 .userInfo header {
@@ -103,10 +104,9 @@
 
 .actions > button {
   flex: 1;
-  height: 40px;
+  min-height: 40px;
   color: #fff;
   border-radius: 3px;
-  line-height: 40px;
   text-align: center;
   background: #1f1f1f;
   border: none;
@@ -125,7 +125,7 @@
   margin-bottom: 15px;
   color: #777;
   font-size: 14px;
-  padding-left: 55px;
+  margin: 15px 66px 15px 60px;
 }
 
 .breadcrumbs > span {
@@ -146,7 +146,7 @@
 
 .posts {
   margin-bottom: 20px;
-  margin-left: 45px;
+  margin-left: 56px;
 }
 
 .posts > select {
@@ -212,4 +212,50 @@
   justify-content: center;
   margin-left: 8px;
   border: none;
+}
+
+@media screen and (max-width: 768px) {
+  .user {
+    margin: 0 auto;
+  }
+
+  .actions {
+    margin: 0 auto;
+  }
+
+  .breadcrumbs {
+    margin: 15px auto;
+    max-width: 600px;
+  }
+
+  .posts {
+    margin: 0 auto 20px auto;
+    max-width: 600px;
+  }
+
+  .userRanks {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0 5px;
+  }
+
+  .userInfo header h2 {
+    margin: 0 auto;
+  }
+
+  .userDetails {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .profileBadges > div {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .actions {
+    flex-wrap: wrap;
+  }
 }

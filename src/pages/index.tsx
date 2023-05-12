@@ -9,7 +9,7 @@ import PostFilter from "@/components/PostFilter";
 import createNotifycation from "@/utils/createNotifycation";
 import dbConnect from "@/lib/dbConnect";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
-import getHomePagePosts from "@/utils/getHomePagePosts";
+import getPosts from "@/utils/getPosts";
 
 const Index = ({ posts }: any) => {
   const [currentOption, setCurrentOption] = useState<number>(0);
@@ -81,7 +81,7 @@ export default Index;
 
 export async function getServerSideProps() {
   await dbConnect();
-  const posts = await getHomePagePosts();
+  const posts = await getPosts({ accepted: true, userdetails: true });
 
   return { props: { posts: JSON.parse(JSON.stringify(posts)) } };
 }

@@ -27,7 +27,7 @@
 }
 
 .navContent {
-  width: calc(100% - 30px);
+  width: 100%;
   max-width: 1150px;
   margin: 0 auto;
   padding: 0 15px;
@@ -130,8 +130,8 @@
   cursor: pointer;
 }
 
-@media only screen and (max-width: 800px) {
-  .navContent a:not(#coins):not(#icon):not(.logo):not(.coins),
+@media only screen and (max-width: 980px) {
+  .navContent a:not(#coins):not(.icon):not(.logo):not(.coins),
   .navLink {
     display: none !important;
   }

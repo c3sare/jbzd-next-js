@@ -167,10 +167,10 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
           </Link>
           {logged && (
             <>
-              <Link id="icon" href="/">
+              <Link className={style.icon} href="/">
                 <MdEmail />
               </Link>
-              <Link id="icon" href="/">
+              <Link className={style.icon} href="/">
                 <MdNotifications />
               </Link>
             </>

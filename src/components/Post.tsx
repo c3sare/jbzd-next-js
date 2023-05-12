@@ -14,12 +14,13 @@ import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import useSWR from "swr";
 import createNotifycation from "@/utils/createNotifycation";
 import VideoPlayer from "./VideoPlayer";
+import { TfiCup } from "react-icons/tfi";
 
 const Post = (props: any) => {
   const { post } = props;
   const [showButtons, setShowButtons] = useState(false);
   const {
-    login: { logged },
+    login: { logged, login },
     categories,
     setNotifys,
   } = useContext(GlobalContext) as GlobalContextInterface;
@@ -88,11 +89,38 @@ const Post = (props: any) => {
     [post]
   );
 
+  const handleGiveBadge = async (type: "ROCK" | "SILVER" | "GOLD") => {
+    const req = await fetch("/api/post/" + post._id + "/badge", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type,
+      }),
+    });
+
+    const res = await req.json();
+    if (req.status === 200) {
+      createNotifycation(setNotifys, "info", res.message);
+      mutate();
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
+  const userAvatar = post.author.avatar === "" ? avatar : post.author.avatar;
+
   return (
     <div className={style.post} key={post._id}>
       <div className={style.avatar}>
-        <Link href={`/uzytkownik/${post.author}`}>
-          <Image src={avatar} alt="Avatar" />
+        <Link href={`/uzytkownik/${post.author?.username}`}>
+          <Image
+            height={40}
+            width={40}
+            src={post.author.avatar === "" ? avatar : post.author.avatar}
+            alt={post.author.username + " avatar"}
+          />
         </Link>
       </div>
       <div className={style.contentPost}>
@@ -105,7 +133,51 @@ const Post = (props: any) => {
         </div>
         <div className={style.memDetails}>
           <div className={style.userAddTimeDetails}>
-            <span className={style.userName}>{post.userName}</span>
+            <span className={style.userName}>
+              <span className={style.author}>{post.author.username}</span>
+              <div className={style.authorInfo}>
+                <div className={style.detailsAvatar}>
+                  <Image
+                    alt={post.author.username + " avatar"}
+                    width={45}
+                    height={45}
+                    src={userAvatar}
+                  />
+                </div>
+                <div className={style.userPostContent}>
+                  <div className={style.userPostName}>
+                    {post.author.username}
+                  </div>
+                  <div className={style.userPostInfo}>
+                    <div>
+                      <span>
+                        <Image
+                          src="/images/spear.png"
+                          width={22}
+                          height={22}
+                          alt="Dzida"
+                        />
+                      </span>
+                      <span>{post.author.spears}</span>
+                      {logged && <button className={style.userVote}>+</button>}
+                    </div>
+                    <div>
+                      <span>
+                        <TfiCup />
+                      </span>
+                      <span>1</span>
+                    </div>
+                  </div>
+                  <div className={style.userPostActions}>
+                    <button className={style.observed}>Obserwuj</button>
+                    <button className={style.blacklisted}>Czarna lista</button>
+                    <Link href={"/uzytkownik/" + post.author.username}>
+                      Profil
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </span>
             <span className={style.addTime}>{alongAgo(post.addTime)}</span>
             {post.category !== "" && (
               <Link
@@ -201,21 +273,30 @@ const Post = (props: any) => {
           </span>
           {showButtons && (
             <div className={style.buttonsCoins}>
-              <button aria-label="Nagródź złotą dzidą">
+              <button
+                aria-label="Nagródź złotą dzidą"
+                onClick={() => handleGiveBadge("GOLD")}
+              >
                 <Image src={goldLike} width={25} alt="Złota Dzida" />
                 <span>
                   1000
                   <Image src={coin} width={15} alt="Moneta" />
                 </span>
               </button>
-              <button aria-label="Nagródź srebrną dzidą">
+              <button
+                aria-label="Nagródź srebrną dzidą"
+                onClick={() => handleGiveBadge("SILVER")}
+              >
                 <Image src={silverLike} width={25} alt="Srebrna Dzida" />
                 <span>
                   400
                   <Image src={coin} width={15} alt="Moneta" />
                 </span>
               </button>
-              <button aria-label="Nagródź kamienną dzidą">
+              <button
+                aria-label="Nagródź kamienną dzidą"
+                onClick={() => handleGiveBadge("ROCK")}
+              >
                 <Image src={rockLike} width={25} alt="Kamienna Dzida" />
                 <span>
                   100

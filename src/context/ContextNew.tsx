@@ -19,10 +19,14 @@ export const GlobalContext = React.createContext<GlobalContextInterface | null>(
 );
 
 export default function Context({ children }: any) {
-  const { data: categories = [] } = useSWR("/api/categories");
+  const { data: categories = [] } = useSWR("/api/categories", {
+    refreshInterval: 0,
+  });
   const { data: login = { logged: false, login: "" }, mutate: refreshLogin } =
     useSWR("/api/checklogin");
-  const { data: coins = 0, mutate: refreshCoins } = useSWR("/api/coins");
+  const { data: coins = 0, mutate: refreshCoins } = useSWR("/api/coins", {
+    refreshInterval: 0,
+  });
   const [notifys, setNotifys] = React.useState([]);
 
   return (

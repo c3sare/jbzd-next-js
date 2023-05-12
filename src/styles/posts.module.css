@@ -8,6 +8,7 @@
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
+  margin-bottom: 40px;
 }
 
 .post > .avatar img {
@@ -223,7 +224,125 @@
 }
 
 .memDetails > .userAddTimeDetails > .userName {
+  display: inline-block;
+  position: relative;
+  padding: 8px 0;
+}
+
+.memDetails > .userAddTimeDetails > .userName > .author {
   color: rgb(222, 34, 33);
+}
+
+.detailsAvatar {
+  width: 45px;
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.detailsAvatar img {
+  border-radius: 50%;
+}
+
+.userPostContent {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.userPostName {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: rgb(222, 34, 33);
+}
+
+.userPostInfo {
+  width: 100%;
+  flex-wrap: nowrap;
+  gap: 5px;
+  margin-bottom: 5px;
+  justify-content: space-between;
+  display: flex;
+}
+
+.userPostInfo > div {
+  flex-grow: 1;
+  background: #252525;
+  line-height: 38px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 4px;
+  position: relative;
+  justify-content: space-between;
+  display: flex;
+}
+
+.userPostInfo > div:first-child {
+  padding-right: 25px;
+}
+
+.userPostActions {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.userPostActions button,
+.userPostActions a {
+  color: #8f8f8f;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background-color: transparent;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.userPostActions button.observed {
+  background-color: rgb(222, 34, 33);
+  color: white;
+}
+
+.userPostActions button.blacklisted {
+  background-color: black;
+  color: white;
+}
+
+.authorInfo {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: calc(100% - 60px);
+  width: 310px;
+  background: #313131;
+  border-radius: 3px;
+  padding: 15px;
+  z-index: 11;
+}
+
+.authorInfo:before {
+  width: 0;
+  height: 0;
+  content: "";
+  display: block;
+  border-style: solid;
+  border-width: 0 5px 5px;
+  border-color: transparent transparent #313131;
+  position: absolute;
+  left: 10px;
+  top: -5px;
+}
+
+.memDetails > .userAddTimeDetails > .userName:hover .authorInfo {
+  display: flex;
 }
 
 .contentPost a {
@@ -363,4 +482,22 @@
     padding-top: 5px;
     flex-direction: row !important;
   }
+}
+
+.userVote {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  position: absolute;
+  right: -5px;
+  color: #fff;
+  background: #c03e3e;
+  font-weight: 700;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  border: none;
+  cursor: pointer;
 }

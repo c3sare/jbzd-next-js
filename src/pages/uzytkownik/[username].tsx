@@ -11,6 +11,7 @@ import { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import ProfilePosts from "@/components/ProfilePosts";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
+import Head from "next/head";
 
 interface ProfileData {
   profile: {
@@ -33,11 +34,18 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
 
   return (
     <>
+      <Head>
+        <title>Profil użytkownika {profile.username}</title>
+      </Head>
       <section className={style.user}>
         <Image
           width={118}
           height={118}
-          src={`/images/avatars/${profile.avatar}`}
+          src={
+            profile.avatar === ""
+              ? "/images/avatars/default.jpg"
+              : profile.avatar
+          }
           alt="Avatar"
           className={style.avatar}
         />
@@ -121,27 +129,25 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
           </Link>
         </div>
       </section>
-      <section>
-        <section className={style.actions}>
-          <button
-            className={tab === 0 ? style.active : ""}
-            onClick={() => {
-              setTab(0);
-              router.push("/uzytkownik/" + profile.username + "?tab=0");
-            }}
-          >
-            Dzidy użytkownika
-          </button>
-          <button
-            className={tab === 1 ? style.active : ""}
-            onClick={() => {
-              setTab(1);
-              router.push("/uzytkownik/" + profile.username + "?tab=1");
-            }}
-          >
-            Komentarze użytkownika
-          </button>
-        </section>
+      <section className={style.actions}>
+        <button
+          className={tab === 0 ? style.active : ""}
+          onClick={() => {
+            setTab(0);
+            router.push("/uzytkownik/" + profile.username + "?tab=0");
+          }}
+        >
+          Dzidy użytkownika
+        </button>
+        <button
+          className={tab === 1 ? style.active : ""}
+          onClick={() => {
+            setTab(1);
+            router.push("/uzytkownik/" + profile.username + "?tab=1");
+          }}
+        >
+          Komentarze użytkownika
+        </button>
       </section>
       <div>
         <div className={style.breadcrumbs}>
