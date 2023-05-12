@@ -15,9 +15,11 @@ import useSWR from "swr";
 import createNotifycation from "@/utils/createNotifycation";
 import VideoPlayer from "./VideoPlayer";
 import { TfiCup } from "react-icons/tfi";
+import createSlug from "@/utils/createSlug";
+import YouTube from "react-youtube";
 
 const Post = (props: any) => {
-  const { post } = props;
+  const { post, single } = props;
   const [showButtons, setShowButtons] = useState(false);
   const {
     login: { logged, login },
@@ -36,6 +38,15 @@ const Post = (props: any) => {
     "/api/posts/stats/" + post._id,
     { refreshInterval: 0 }
   );
+
+  const LinkToPost = ({ children }: any) =>
+    single ? (
+      children
+    ) : (
+      <Link href={`/obr/${post._id}/${createSlug(post.title)}`}>
+        {children}
+      </Link>
+    );
 
   const handlePlusPost = (id: string) => {
     if (!logged)
@@ -72,16 +83,35 @@ const Post = (props: any) => {
       post.memContainers.map((item: any, i: number) => {
         if (item.type === "image") {
           return (
-            <Image
-              key={i}
-              src={item.data}
-              width={600}
-              height={500}
-              alt={post.title}
-            />
+            <LinkToPost>
+              <Image
+                key={i}
+                src={item.data}
+                width={600}
+                height={500}
+                alt={post.title}
+              />
+            </LinkToPost>
           );
         } else if (item.type === "video") {
           return <VideoPlayer key={i} url={item.data} />;
+        } else if (item.type === "youtube") {
+          return (
+            <YouTube
+              key={i}
+              opts={{ width: "600px", height: "310px" }}
+              videoId={item.data}
+            />
+          );
+        } else if (item.type === "text") {
+          return (
+            <LinkToPost>
+              <div
+                className={style.textBoard}
+                dangerouslySetInnerHTML={{ __html: item.data }}
+              ></div>
+            </LinkToPost>
+          );
         } else {
           return <Fragment key={i}></Fragment>;
         }
@@ -125,7 +155,10 @@ const Post = (props: any) => {
       </div>
       <div className={style.contentPost}>
         <div className={style.postHeader}>
-          <h2>{post.title}</h2>
+          <h2>
+            {" "}
+            <LinkToPost>{post.title}</LinkToPost>{" "}
+          </h2>
           <span className={style.iconComments}>
             <FaComment />
             {!error && !isLoading ? data.comments : "..."}

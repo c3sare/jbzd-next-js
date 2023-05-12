@@ -6,15 +6,18 @@ export default async function getPosts({
   accepted,
   category,
   userdetails,
+  username,
 }: {
   accepted?: boolean;
   category?: string;
   userdetails?: boolean;
+  username?: string;
 }) {
   const posts = await Post.collection
     .find({
-      ...(accepted ? { accepted } : {}),
+      ...(accepted !== undefined ? { accepted } : {}),
       ...(category ? { category } : {}),
+      ...(username ? { author: username } : {}),
     })
     .sort("addTime", -1)
     .toArray();

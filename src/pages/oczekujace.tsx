@@ -1,39 +1,23 @@
-import { useForm } from "react-hook-form";
+import style from "@/styles/posts.module.css";
+import Post from "@/components/Post";
+import dbConnect from "@/lib/dbConnect";
+import getPosts from "@/utils/getPosts";
 
-interface SendImageForm {
-  image: File[];
-}
-
-const Waitings = () => {
-  const { register, handleSubmit } = useForm<SendImageForm>();
-
-  const sendFile = (data: SendImageForm) => {
-    const file = data.image[0];
-
-    const fd = new FormData();
-    fd.append("image", file);
-
-    fetch("/api/upload", {
-      method: "POST",
-      body: fd,
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
-  };
-
+const Waitings = ({ posts }: any) => {
   return (
-    <>
-      <h1>21</h1>
-      <form onSubmit={handleSubmit(sendFile)}>
-        <input
-          type="file"
-          accept="image/*"
-          {...register("image", { required: "Nie podano żadnego pliku!" })}
-        />
-        <button type="submit">Wyślij</button>
-      </form>
-    </>
+    <div className={style.posts}>
+      {posts.map((postMain: any, i: number) => (
+        <Post key={i} post={postMain} />
+      ))}
+    </div>
   );
 };
 
 export default Waitings;
+
+export async function getServerSideProps() {
+  await dbConnect();
+  const posts = await getPosts({ accepted: false, userdetails: true });
+
+  return { props: { posts: JSON.parse(JSON.stringify(posts)) } };
+}
