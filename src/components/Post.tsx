@@ -83,9 +83,8 @@ const Post = (props: any) => {
       post.memContainers.map((item: any, i: number) => {
         if (item.type === "image") {
           return (
-            <LinkToPost>
+            <LinkToPost key={i}>
               <Image
-                key={i}
                 src={item.data}
                 width={600}
                 height={500}
@@ -105,7 +104,7 @@ const Post = (props: any) => {
           );
         } else if (item.type === "text") {
           return (
-            <LinkToPost>
+            <LinkToPost key={i}>
               <div
                 className={style.textBoard}
                 dangerouslySetInnerHTML={{ __html: item.data }}
@@ -116,7 +115,7 @@ const Post = (props: any) => {
           return <Fragment key={i}></Fragment>;
         }
       }),
-    [post]
+    [post, LinkToPost]
   );
 
   const handleGiveBadge = async (type: "ROCK" | "SILVER" | "GOLD") => {
