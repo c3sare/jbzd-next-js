@@ -32,6 +32,7 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
     login: { login, logged },
     setNotifys,
     coins,
+    profileData: { profileData },
   } = useContext(GlobalContext) as GlobalContextInterface;
 
   useEffect(() => {
@@ -213,10 +214,17 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
       )}
       {showMobileMenu && (
         <div className={style.mobileMenuContainer}>
-          {logged ? (
+          {logged && profileData ? (
             <div className={style.loginInfo}>
               <Link href={"/uzytkownik/" + login}>
-                <Image src={defaultAvatar} alt="Avatar" />
+                <Image
+                  width={35}
+                  height={35}
+                  src={
+                    !profileData?.avatar ? defaultAvatar : profileData?.avatar
+                  }
+                  alt="Avatar"
+                />
                 <span>{login}</span>
               </Link>
               <Link href="/wyloguj">
@@ -257,14 +265,6 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
               </span>
               <span>Losowe</span>
             </Link>
-            {logged && (
-              <Link href="/upload">
-                <span className={style.iconMenu}>
-                  <MdOutlineFileUpload />
-                </span>
-                <span>Upload</span>
-              </Link>
-            )}
             <Link
               href="/uzytkownik/ustawienia"
               className={!logged ? style.inactive : ""}

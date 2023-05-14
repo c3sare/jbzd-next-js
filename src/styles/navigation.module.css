@@ -261,7 +261,7 @@
   font-size: 30px;
 }
 
-@media screen and (min-width: 801px) {
+@media screen and (min-width: 980.99px) {
   .mobileMenuContainer {
     display: none !important;
   }

@@ -1,8 +1,9 @@
 import Plyr from "plyr-react";
+import { useMemo } from "react";
 
 const VideoPlayer = ({ url }: { url: string }) => {
-  return (
-    <div style={{ maxWidth: "100%", width: "600px" }}>
+  const plyr = useMemo(
+    () => (
       <Plyr
         source={{
           type: "video",
@@ -28,8 +29,11 @@ const VideoPlayer = ({ url }: { url: string }) => {
           ],
         }}
       />
-    </div>
+    ),
+    []
   );
+
+  return <div style={{ maxWidth: "100%", width: "600px" }}>{plyr}</div>;
 };
 
 export default VideoPlayer;

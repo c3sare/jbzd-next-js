@@ -1,20 +1,22 @@
 import style from "@/styles/Layout.module.css";
 import Link from "next/link";
 import Image from "next/image";
-import defaultAvatar from "@/images/avatars/default.jpg";
 import { AiOutlinePoweroff, AiFillFlag } from "react-icons/ai";
 import { BiImage } from "react-icons/bi";
 import { FaRegComment } from "react-icons/fa";
-import useSWR from "swr";
 import { useContext } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import { format } from "date-fns";
+import Loading from "./Loading";
 
 const ProfileInfo = ({ login }: { login: string }) => {
   const {
-    login: { logged },
+    profileData: {
+      isLoadingProfileData: isLoading,
+      profileData: data,
+      profileDataError: error,
+    },
   } = useContext(GlobalContext) as GlobalContextInterface;
-  const { isLoading, data, error } = useSWR(logged ? "/api/profile" : null);
 
   const date = format(
     data?.createDate ? new Date(data?.createDate) : new Date(),
@@ -71,7 +73,9 @@ const ProfileInfo = ({ login }: { login: string }) => {
           </>
         )
       ) : (
-        <div>Loading...</div>
+        <div>
+          <Loading />
+        </div>
       )}
     </div>
   );

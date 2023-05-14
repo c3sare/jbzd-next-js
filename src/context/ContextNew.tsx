@@ -12,6 +12,17 @@ export interface GlobalContextInterface {
   setNotifys: any;
   coins: number;
   refreshCoins: any;
+  profileData: {
+    isLoadingProfileData: boolean;
+    profileDataError: any;
+    profileData: {
+      avatar: string;
+      createDate: string;
+      allPosts: number;
+      acceptedPosts: number;
+      comments: number;
+    };
+  };
 }
 
 export const GlobalContext = React.createContext<GlobalContextInterface | null>(
@@ -27,6 +38,11 @@ export default function Context({ children }: any) {
   const { data: coins = 0, mutate: refreshCoins } = useSWR("/api/coins", {
     refreshInterval: 0,
   });
+  const {
+    isLoading: isLoadingProfileData,
+    data: profileData,
+    error: profileDataError,
+  } = useSWR(login?.logged ? "/api/profile" : null);
   const [notifys, setNotifys] = React.useState([]);
 
   return (
@@ -39,6 +55,7 @@ export default function Context({ children }: any) {
         setNotifys,
         coins,
         refreshCoins,
+        profileData: { isLoadingProfileData, profileData, profileDataError },
       }}
     >
       {children}

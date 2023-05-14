@@ -98,8 +98,9 @@ const Post = (props: any) => {
           return (
             <YouTube
               key={i}
-              opts={{ width: "600px", height: "310px" }}
+              opts={{ width: "100%", height: "338px" }}
               videoId={item.data}
+              style={{ width: "600px", maxWidth: "100%" }}
             />
           );
         } else if (item.type === "text") {
