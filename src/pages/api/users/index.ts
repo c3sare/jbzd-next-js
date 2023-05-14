@@ -84,7 +84,7 @@ export default async function handler(
       username,
       email,
       createDate: currentDate(),
-      avatar: "default.jpg",
+      avatar: "",
       password: genPassword,
       birthday: "",
       city: "",

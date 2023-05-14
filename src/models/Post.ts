@@ -10,9 +10,9 @@ interface Post {
   addTime: Date;
   author: string;
   category: string;
-  memContainers: Types.DocumentArray<MemContainer>;
+  memContainers?: Types.DocumentArray<MemContainer>;
   accepted: boolean;
-  tags: Types.DocumentArray<string>;
+  tags?: Types.DocumentArray<string>;
 }
 
 const postSchema = new Schema<Post>({
@@ -31,3 +31,6 @@ const postSchema = new Schema<Post>({
 });
 
 export default models.Post || model<Post>("Post", postSchema);
+
+export const Postsstats =
+  models.Postsstat || model<Post>("Postsstat", postSchema);

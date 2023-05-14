@@ -130,7 +130,7 @@
   cursor: pointer;
 }
 
-@media only screen and (max-width: 980px) {
+@media only screen and (max-width: 1132px) {
   .navContent a:not(#coins):not(.icon):not(.logo):not(.coins),
   .navLink {
     display: none !important;
@@ -261,7 +261,7 @@
   font-size: 30px;
 }
 
-@media screen and (min-width: 980.99px) {
+@media screen and (min-width: 1132px) {
   .mobileMenuContainer {
     display: none !important;
   }

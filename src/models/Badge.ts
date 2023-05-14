@@ -1,6 +1,6 @@
 import { Schema, models, model, Date } from "mongoose";
 
-interface Badge {
+export interface BadgeInterface {
   author: string;
   where: "POST" | "COMMENT" | "PROFILE";
   type: "PLUS" | "MINUS" | "ROCK" | "SILVER" | "GOLD" | "SPEAR";
@@ -8,7 +8,7 @@ interface Badge {
   addTime: Date;
 }
 
-const badgeSchema = new Schema<Badge>({
+const badgeSchema = new Schema<BadgeInterface>({
   author: { type: String, required: true },
   where: { type: String, required: true },
   type: { type: String, required: true },
@@ -16,4 +16,4 @@ const badgeSchema = new Schema<Badge>({
   addTime: { type: Date, required: true },
 });
 
-export default models.Badge || model<Badge>("Badge", badgeSchema);
+export default models.Badge || model<BadgeInterface>("Badge", badgeSchema);

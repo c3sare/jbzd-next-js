@@ -2,6 +2,7 @@ import { Schema, models, model } from "mongoose";
 
 export interface User {
   username: string;
+  email: string;
   createDate: string;
   avatar: string;
   password: string;
@@ -21,8 +22,9 @@ export interface User {
   confirmed: boolean;
 }
 
-const userSchema = new Schema<User>({
+export const userSchema = new Schema<User>({
   username: { type: String, required: true },
+  email: { type: String, required: true },
   createDate: { type: String, required: true },
   avatar: { type: String, required: true },
   password: { type: String, required: true },

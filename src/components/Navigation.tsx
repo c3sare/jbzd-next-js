@@ -11,7 +11,6 @@ import {
   MdArrowDropDown,
   MdAccessTime,
   MdStar,
-  MdOutlineFileUpload,
   MdSettings,
 } from "react-icons/md";
 import { GiDiceSixFacesTwo } from "react-icons/gi";
@@ -22,6 +21,7 @@ import { AiOutlinePoweroff } from "react-icons/ai";
 import createNotifycation from "@/utils/createNotifycation";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import { useRouter } from "next/router";
+import Loading from "./Loading";
 
 const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
   const router = useRouter();
@@ -32,7 +32,7 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
     login: { login, logged },
     setNotifys,
     coins,
-    profileData: { profileData },
+    profileData: { profileData, isLoadingProfileData, profileDataError },
   } = useContext(GlobalContext) as GlobalContextInterface;
 
   useEffect(() => {
@@ -97,6 +97,17 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
     </>
   );
 
+  const departmentsContainer = (
+    <>
+      <li>
+        <Link href="/obserwowane/dzialy">Działy</Link>
+      </li>
+      <li>
+        <Link href="/obserwowane/uzytkownicy">Użytkownicy</Link>
+      </li>
+    </>
+  );
+
   return (
     <div className={style.nav}>
       <div className={style.navContent}>
@@ -128,14 +139,7 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
             <span className={style.navLink} id="observed">
               Obserwowane <MdArrowDropDown />
               <div className={style.departmentsMenu}>
-                <ul>
-                  <li>
-                    <Link href="/obserwowane/dzialy">Działy</Link>
-                  </li>
-                  <li>
-                    <Link href="/obserwowane/uzytkownicy">Użytkownicy</Link>
-                  </li>
-                </ul>
+                <ul>{departmentsContainer}</ul>
               </div>
             </span>
           )}
@@ -214,23 +218,29 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
       )}
       {showMobileMenu && (
         <div className={style.mobileMenuContainer}>
-          {logged && profileData ? (
-            <div className={style.loginInfo}>
-              <Link href={"/uzytkownik/" + login}>
-                <Image
-                  width={35}
-                  height={35}
-                  src={
-                    !profileData?.avatar ? defaultAvatar : profileData?.avatar
-                  }
-                  alt="Avatar"
-                />
-                <span>{login}</span>
-              </Link>
-              <Link href="/wyloguj">
-                <AiOutlinePoweroff />
-              </Link>
-            </div>
+          {logged ? (
+            isLoadingProfileData ? (
+              <Loading />
+            ) : profileDataError ? (
+              <span>Wystąpił problem przy pobieraniu danych!</span>
+            ) : (
+              <div className={style.loginInfo}>
+                <Link href={"/uzytkownik/" + login}>
+                  <Image
+                    width={35}
+                    height={35}
+                    src={
+                      !profileData?.avatar ? defaultAvatar : profileData?.avatar
+                    }
+                    alt="Avatar"
+                  />
+                  <span>{login}</span>
+                </Link>
+                <Link href="/wyloguj">
+                  <AiOutlinePoweroff />
+                </Link>
+              </div>
+            )
           ) : (
             loginPanel
           )}
@@ -274,6 +284,14 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
               </span>
               <span>Ustawienia</span>
             </Link>
+          </div>
+          <div className={style.departmentsMenuMobile}>
+            <ul>
+              <li style={{ marginLeft: "20px", fontWeight: "700" }}>
+                Obserwowane:
+              </li>
+              {departmentsContainer}
+            </ul>
           </div>
           <div className={style.departmentsMenuMobile}>
             {categoriesContainer}

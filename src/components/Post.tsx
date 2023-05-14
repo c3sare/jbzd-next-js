@@ -39,14 +39,10 @@ const Post = (props: any) => {
     { refreshInterval: 0 }
   );
 
+  const postUrl = `/obr/${post._id}/${createSlug(post.title)}`;
+
   const LinkToPost = ({ children }: any) =>
-    single ? (
-      children
-    ) : (
-      <Link href={`/obr/${post._id}/${createSlug(post.title)}`}>
-        {children}
-      </Link>
-    );
+    single ? children : <Link href={postUrl}>{children}</Link>;
 
   const handlePlusPost = (id: string) => {
     if (!logged)
@@ -339,9 +335,11 @@ const Post = (props: any) => {
             </div>
           )}
         </button>
-        <button aria-label="Przejdź do komentarzy">
-          <FaComment />
-        </button>
+        <Link href={postUrl + "#komentarze"}>
+          <button aria-label="Przejdź do komentarzy">
+            <FaComment />
+          </button>
+        </Link>
         {logged && (
           <button
             aria-label="Dodaj dzidę do ulubionych"

@@ -34,7 +34,7 @@ const ProfileInfo = ({ login }: { login: string }) => {
               <Link href={"/uzytkownik/" + login}>
                 <Image
                   src={
-                    data?.avatar === "" && data?.avatar
+                    data?.avatar === "" || !data?.avatar
                       ? "/images/avatars/default.jpg"
                       : data.avatar
                   }
