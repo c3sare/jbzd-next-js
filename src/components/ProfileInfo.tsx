@@ -18,6 +18,7 @@ const ProfileInfo = ({ login }: { login: string }) => {
     },
   } = useContext(GlobalContext) as GlobalContextInterface;
 
+  console.log(data);
   const date = format(
     data?.createDate ? new Date(data?.createDate) : new Date(),
     "dd.MM.yyyy"

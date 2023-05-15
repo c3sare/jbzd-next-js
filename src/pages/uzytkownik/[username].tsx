@@ -1,6 +1,6 @@
 import Comment from "@/models/Comment";
 import Post from "@/models/Post";
-import User from "@/models/User";
+import User, { Usersprofiles } from "@/models/User";
 import Image from "next/image";
 import Link from "next/link";
 import style from "@/styles/userprofile.module.css";
@@ -12,18 +12,27 @@ import { useRouter } from "next/router";
 import ProfilePosts from "@/components/ProfilePosts";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import Head from "next/head";
+import { format } from "date-fns";
+import dbConnect from "@/lib/dbConnect";
 
 interface ProfileData {
   profile: {
+    _id: string;
     username: string;
-    createDate: string;
+    createDate: Date;
     avatar: string;
+    spears: number;
+    rank: number;
+    rock: number;
+    silver: number;
+    gold: number;
+    comments: number;
+    acceptedPosts: number;
+    allPosts: number;
   };
-  comments: number;
-  posts: number;
 }
 
-const UserProfile = ({ profile, comments, posts }: ProfileData) => {
+const UserProfile = ({ profile }: ProfileData) => {
   const router = useRouter();
   const [tab, setTab] = useState<number>(
     [0, 1].includes(Number(router.query?.tab)) ? Number(router.query?.tab) : 0
@@ -58,19 +67,21 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
               <span>
                 <AiFillPicture />
               </span>
-              <span>0 / {posts}</span>
+              <span>
+                {profile.acceptedPosts} / {profile.allPosts}
+              </span>
             </div>
             <div>
               <span>
                 <FaComment />
               </span>
-              <span>{comments}</span>
+              <span>{profile.comments}</span>
             </div>
             <div>
               <span>
                 <AiFillFlag />
               </span>
-              <span>{profile.createDate}</span>
+              <span>{format(new Date(profile.createDate), "dd.MM.yyyy")}</span>
             </div>
           </section>
           <div className={style.profileBadges}>
@@ -82,7 +93,7 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
                   width={28}
                   height={29}
                 />{" "}
-                0
+                {profile.gold}
               </span>
               <span>
                 <Image
@@ -91,7 +102,7 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
                   width={28}
                   height={29}
                 />{" "}
-                0
+                {profile.silver}
               </span>
               <span>
                 <Image
@@ -100,7 +111,7 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
                   width={28}
                   height={29}
                 />{" "}
-                0
+                {profile.rock}
               </span>
             </div>
           </div>
@@ -116,7 +127,7 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
                 alt="Dzida"
               />
             </span>
-            <span>0</span>
+            <span>{profile.spears}</span>
             {login !== profile?.username && logged && (
               <button className={style.userVote}>+</button>
             )}
@@ -125,7 +136,7 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
             <span>
               <TfiCup />
             </span>
-            <span>1</span>
+            <span>{profile.rank}</span>
           </Link>
         </div>
       </section>
@@ -170,28 +181,17 @@ const UserProfile = ({ profile, comments, posts }: ProfileData) => {
 
 export async function getServerSideProps({ query }: any) {
   const { username } = query;
+  await dbConnect();
+  const profile: any = await Usersprofiles.findOne({ username });
 
-  const userInfo = await User.findOne({ username });
-
-  if (!userInfo)
+  if (!profile)
     return {
       notFound: true,
     };
 
-  const user = {
-    username: userInfo.username,
-    createDate: userInfo.createDate,
-    avatar: userInfo.avatar,
-  };
-
-  const comments = await Comment.count({ author: username });
-  const posts = await Post.count({ author: username });
-
   return {
     props: {
-      profile: user,
-      comments,
-      posts,
+      profile: JSON.parse(JSON.stringify(profile)),
     },
   };
 }

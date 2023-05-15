@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import Category from "@/models/Category";
+import { Postsstats } from "@/models/Post";
 import User from "@/models/User";
-import getPosts from "@/utils/getPosts";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -20,9 +20,8 @@ export default async function handler(
         .json({ message: "Podany użytkownik nie istnieje!" });
 
     if (category === "all") {
-      const posts = await getPosts({
-        username: username as string,
-        userdetails: true,
+      const posts = await Postsstats.find({
+        author: username as string,
       });
 
       res.status(200).json(posts);
@@ -34,10 +33,9 @@ export default async function handler(
           .status(404)
           .json({ message: "Podana kategoria nie istnieje!" });
 
-      const posts = await getPosts({
-        username: username as string,
+      const posts = await Postsstats.find({
+        author: username as string,
         category: category as string,
-        userdetails: true,
       });
 
       res.status(200).json(posts);

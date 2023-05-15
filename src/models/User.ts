@@ -23,20 +23,23 @@ export interface User {
 }
 
 export const userSchema = new Schema<User>({
-  username: { type: String, required: true },
-  email: { type: String, required: true },
-  createDate: { type: String, required: true },
-  avatar: { type: String, required: true },
-  password: { type: String, required: true },
-  birthday: { type: String },
-  city: { type: String },
-  country: { type: String },
-  gender: { type: Number },
-  name: { type: String },
-  notify: { type: Object, required: true },
-  coins: { type: Number, required: true },
-  token: { type: String },
-  confirmed: { type: Boolean, required: true },
+  username: String,
+  email: String,
+  createDate: Date,
+  avatar: String,
+  password: String,
+  birthday: String,
+  city: String,
+  country: String,
+  gender: Number,
+  name: String,
+  notify: Object,
+  coins: Number,
+  token: String,
+  confirmed: Boolean,
 });
 
 export default models.User || model<User>("User", userSchema);
+
+export const Usersprofiles =
+  models.usersprofiles || model("usersprofiles", userSchema);

@@ -63,7 +63,7 @@ const ProfilePosts = ({ username }: { username: string }) => {
       {loading ? (
         <Loading />
       ) : (
-        posts.map((item) => <Post key={item.id} post={item} />)
+        posts.map((item) => <Post key={item._id} post={item} />)
       )}
     </>
   );
