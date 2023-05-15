@@ -20,8 +20,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         .json({ message: "Nieprawidłowy identyfikator posta!" });
 
     await dbConnect();
+
+    const postId = new Types.ObjectId(id as string);
+
     const isExist = await Post.exists({
-      _id: new Types.ObjectId(id as string),
+      _id: postId,
     });
 
     if (!isExist)
@@ -30,7 +33,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const checkIsPlused = await Badge.exists({
       where: "POST",
       type: "PLUS",
-      id,
+      id: postId,
       author: session.login,
     });
 
@@ -38,7 +41,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       const unplus = await Badge.deleteOne({
         where: "POST",
         type: "PLUS",
-        id,
+        id: postId,
         author: session.login,
       });
 
@@ -47,13 +50,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           .status(500)
           .json({ message: "Wystąpił problem przy wykonywaniu zapytania!" });
 
-      res.status(200).json({ method: "UNPLUS" });
+      const count = await Badge.count({
+        type: "PLUS",
+        where: "POST",
+        id: postId,
+      });
+
+      res.status(200).json({ method: "UNPLUS", count });
     } else {
       const plus = await Badge.collection.insertOne({
         author: session.login,
         where: "POST",
         type: "PLUS",
-        id,
+        id: postId,
         addTime: new Date(),
       });
 
@@ -62,7 +71,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           .status(500)
           .json({ message: "Wystąpił problem przy wykonywaniu zapytania!" });
 
-      res.status(200).json({ method: "PLUS" });
+      const count = await Badge.count({
+        type: "PLUS",
+        where: "POST",
+        id: postId,
+      });
+
+      res.status(200).json({ method: "PLUS", count });
     }
   } else {
     res.status(404).json({ message: "Page not found" });

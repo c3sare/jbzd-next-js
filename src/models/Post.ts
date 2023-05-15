@@ -1,7 +1,7 @@
 import { Schema, models, model, Types } from "mongoose";
 
 interface MemContainer {
-  type: string;
+  dtype: string;
   data: string;
 }
 
@@ -10,7 +10,7 @@ interface Post {
   addTime: Date;
   author: string;
   category: string;
-  memContainers?: Types.DocumentArray<MemContainer>;
+  memContainers: Types.DocumentArray<MemContainer>;
   accepted: boolean;
   tags?: Types.DocumentArray<string>;
 }
@@ -22,8 +22,8 @@ const postSchema = new Schema<Post>({
   category: String,
   memContainers: [
     {
-      type: String,
-      data: String,
+      type: { type: String },
+      data: { type: String },
     },
   ],
   accepted: Boolean,
@@ -32,5 +32,4 @@ const postSchema = new Schema<Post>({
 
 export default models.Post || model<Post>("Post", postSchema);
 
-export const Postsstats =
-  models.Postsstat || model<Post>("Postsstat", postSchema);
+export const Postsstats = models.Postsstat || model("Postsstat", postSchema);

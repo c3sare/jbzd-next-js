@@ -1,7 +1,7 @@
 import style from "@/styles/posts.module.css";
 import Post from "@/components/Post";
 import dbConnect from "@/lib/dbConnect";
-import getPosts from "@/utils/getPosts";
+import { Postsstats } from "@/models/Post";
 
 const Waitings = ({ posts }: any) => {
   return (
@@ -17,7 +17,9 @@ export default Waitings;
 
 export async function getServerSideProps() {
   await dbConnect();
-  const posts = await getPosts({ accepted: false, userdetails: true });
+  const posts = await Postsstats.find({ accepted: false }).sort({
+    createDate: -1,
+  });
 
   return { props: { posts: JSON.parse(JSON.stringify(posts)) } };
 }

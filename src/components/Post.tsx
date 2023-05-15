@@ -9,14 +9,17 @@ import coin from "@/images/coin.png";
 import Link from "next/link";
 import avatar from "@/images/avatars/default.jpg";
 import Image from "next/image";
-import { useContext, useState, Fragment, useMemo } from "react";
+import { useContext, useState, Fragment, useMemo, useCallback } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
-import useSWR from "swr";
 import createNotifycation from "@/utils/createNotifycation";
 import VideoPlayer from "./VideoPlayer";
 import { TfiCup } from "react-icons/tfi";
 import createSlug from "@/utils/createSlug";
 import YouTube from "react-youtube";
+
+interface BadgeInterface {
+  [key: string]: number;
+}
 
 const Post = (props: any) => {
   const { post, single } = props;
@@ -26,6 +29,25 @@ const Post = (props: any) => {
     categories,
     setNotifys,
   } = useContext(GlobalContext) as GlobalContextInterface;
+  const [badges, setBadges] = useState<BadgeInterface>({
+    plus: post.plus,
+    rock: post.rock,
+    silver: post.silver,
+    gold: post.gold,
+  });
+
+  const setBadge = (type: string, count: number) => {
+    setBadges((prevState) => {
+      let newState: BadgeInterface = { ...prevState };
+      if (["plus", "rock", "silver", "gold"].includes(type.toLowerCase()))
+        newState[type.toLowerCase()] = count;
+      else if (type.toLowerCase() === "unplus") {
+        newState["plus"] = count;
+      }
+
+      return newState;
+    });
+  };
 
   const category =
     post.category === ""
@@ -34,17 +56,15 @@ const Post = (props: any) => {
       ? categories.find((item) => item.slug === post.category)
       : {};
 
-  const { data, error, isLoading, mutate } = useSWR(
-    "/api/posts/stats/" + post._id,
-    { refreshInterval: 0 }
-  );
-
   const postUrl = `/obr/${post._id}/${createSlug(post.title)}`;
 
-  const LinkToPost = ({ children }: any) =>
-    single ? children : <Link href={postUrl}>{children}</Link>;
+  const LinkToPost = useCallback(
+    ({ children }: any) =>
+      single ? children : <Link href={postUrl}>{children}</Link>,
+    [postUrl, single]
+  );
 
-  const handlePlusPost = (id: string) => {
+  const handlePlusPost = async (id: string) => {
     if (!logged)
       return createNotifycation(
         setNotifys,
@@ -52,11 +72,14 @@ const Post = (props: any) => {
         "Ta strona wymaga zalogowania"
       );
 
-    fetch(`/api/post/${id}/plus`, { method: "POST" })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => mutate());
+    const req = await fetch(`/api/post/${id}/plus`, { method: "POST" });
+    const res = await req.json();
+
+    if (req.status === 200) {
+      setBadge(res.method, res.count);
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
   };
 
   const handleFavouritePost = (id: string) => {
@@ -67,11 +90,10 @@ const Post = (props: any) => {
         "Ta strona wymaga zalogowania"
       );
 
-    fetch(`/api/post/${id}/favourite`, { method: "POST" })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => mutate());
+    fetch(`/api/post/${id}/favourite`, { method: "POST" }).catch((err) => {
+      console.error(err);
+    });
+    // .finally(() => mutate());
   };
 
   const allPostElements = useMemo(
@@ -129,13 +151,13 @@ const Post = (props: any) => {
     const res = await req.json();
     if (req.status === 200) {
       createNotifycation(setNotifys, "info", res.message);
-      mutate();
+      // mutate();
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
   };
 
-  const userAvatar = post.author.avatar === "" ? avatar : post.author.avatar;
+  const userAvatar = post.user.avatar === "" ? avatar : post.user.avatar;
 
   return (
     <div className={style.post} key={post._id}>
@@ -144,8 +166,8 @@ const Post = (props: any) => {
           <Image
             height={40}
             width={40}
-            src={post.author.avatar === "" ? avatar : post.author.avatar}
-            alt={post.author.username + " avatar"}
+            src={post.user.avatar === "" ? avatar : post.user.avatar}
+            alt={post.user.username + " avatar"}
           />
         </Link>
       </div>
@@ -157,26 +179,24 @@ const Post = (props: any) => {
           </h2>
           <span className={style.iconComments}>
             <FaComment />
-            {!error && !isLoading ? data.comments : "..."}
+            {post.comments}
           </span>
         </div>
         <div className={style.memDetails}>
           <div className={style.userAddTimeDetails}>
             <span className={style.userName}>
-              <span className={style.author}>{post.author.username}</span>
+              <span className={style.author}>{post.user.username}</span>
               <div className={style.authorInfo}>
                 <div className={style.detailsAvatar}>
                   <Image
-                    alt={post.author.username + " avatar"}
+                    alt={post.user.username + " avatar"}
                     width={45}
                     height={45}
                     src={userAvatar}
                   />
                 </div>
                 <div className={style.userPostContent}>
-                  <div className={style.userPostName}>
-                    {post.author.username}
-                  </div>
+                  <div className={style.userPostName}>{post.user.username}</div>
                   <div className={style.userPostInfo}>
                     <div>
                       <span>
@@ -187,20 +207,22 @@ const Post = (props: any) => {
                           alt="Dzida"
                         />
                       </span>
-                      <span>{post.author.spears}</span>
-                      {logged && <button className={style.userVote}>+</button>}
+                      <span>{post.user.spears}</span>
+                      {logged && login !== post.user.username && (
+                        <button className={style.userVote}>+</button>
+                      )}
                     </div>
                     <div>
                       <span>
                         <TfiCup />
                       </span>
-                      <span>1</span>
+                      <span>{post.user.rank}</span>
                     </div>
                   </div>
                   <div className={style.userPostActions}>
                     <button className={style.observed}>Obserwuj</button>
                     <button className={style.blacklisted}>Czarna lista</button>
-                    <Link href={"/uzytkownik/" + post.author.username}>
+                    <Link href={"/uzytkownik/" + post.user.username}>
                       Profil
                     </Link>
                   </div>
@@ -220,39 +242,33 @@ const Post = (props: any) => {
             )}
           </div>
           <div className={style.otherLikes}>
-            {!error && !isLoading
-              ? data.rock > 0 && (
-                  <div className={style.likeContainer}>
-                    <div className={style.image}>
-                      <Image width={25} src={rockLike} alt="Kamienna Dzida" />
-                      <span>Kamienna&nbsp;Dzida</span>
-                    </div>
-                    <span>{data.rock}</span>
-                  </div>
-                )
-              : null}
-            {!error && !isLoading
-              ? data.silver > 0 && (
-                  <div className={style.likeContainer}>
-                    <div className={style.image}>
-                      <Image width={25} src={silverLike} alt="Srebrna Dzida" />
-                      <span>Srebrna&nbsp;Dzida</span>
-                    </div>
-                    <span>{data.silver}</span>
-                  </div>
-                )
-              : null}
-            {!error && !isLoading
-              ? data.gold > 0 && (
-                  <div className={style.likeContainer}>
-                    <div className={style.image}>
-                      <Image width={25} src={goldLike} alt="Złota Dzida" />
-                      <span>Złota&nbsp;Dzida</span>
-                    </div>
-                    <span>{data.gold}</span>
-                  </div>
-                )
-              : null}
+            {badges.rock > 0 && (
+              <div className={style.likeContainer}>
+                <div className={style.image}>
+                  <Image width={25} src={rockLike} alt="Kamienna Dzida" />
+                  <span>Kamienna&nbsp;Dzida</span>
+                </div>
+                <span>{badges.rock}</span>
+              </div>
+            )}
+            {badges.silver > 0 && (
+              <div className={style.likeContainer}>
+                <div className={style.image}>
+                  <Image width={25} src={silverLike} alt="Srebrna Dzida" />
+                  <span>Srebrna&nbsp;Dzida</span>
+                </div>
+                <span>{badges.silver}</span>
+              </div>
+            )}
+            {badges.gold > 0 && (
+              <div className={style.likeContainer}>
+                <div className={style.image}>
+                  <Image width={25} src={goldLike} alt="Złota Dzida" />
+                  <span>Złota&nbsp;Dzida</span>
+                </div>
+                <span>{badges.gold}</span>
+              </div>
+            )}
           </div>
         </div>
         {allPostElements}
@@ -343,26 +359,24 @@ const Post = (props: any) => {
         {logged && (
           <button
             aria-label="Dodaj dzidę do ulubionych"
-            className={
-              style.star + (data?.isFavourite ? " " + style.active : "")
-            }
+            // className={
+            //   style.star + (data?.isFavourite ? " " + style.active : "")
+            // }
+            className={style.star}
             onClick={() => handleFavouritePost(post._id)}
           >
             <FaStar />
           </button>
         )}
-        <span className={style.likeCounter}>
-          +{!error && !isLoading ? data.pluses : 0}
-        </span>
+        <span className={style.likeCounter}>+{badges.plus}</span>
         <button
           aria-label="Zaplusuj dzidę"
-          className={style.plus + (data?.isPlused ? " " + style.added : "")}
+          // className={style.plus + (data?.isPlused ? " " + style.added : "")}
+          className={style.plus}
           onClick={() => handlePlusPost(post._id)}
         >
           <span className={style.plusIcon}>+</span>
-          <span className={style.text}>
-            +{!error && !isLoading ? data.pluses : 0}
-          </span>
+          <span className={style.text}>+{badges.plus}</span>
         </button>
       </div>
     </div>

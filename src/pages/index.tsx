@@ -10,6 +10,7 @@ import createNotifycation from "@/utils/createNotifycation";
 import dbConnect from "@/lib/dbConnect";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import getPosts from "@/utils/getPosts";
+import { Postsstats } from "@/models/Post";
 
 const Index = ({ posts }: any) => {
   const [currentOption, setCurrentOption] = useState<number>(0);
@@ -81,7 +82,7 @@ export default Index;
 
 export async function getServerSideProps() {
   await dbConnect();
-  const posts = await getPosts({ accepted: true, userdetails: true });
+  const posts = await Postsstats.find({ accepted: true });
 
   return { props: { posts: JSON.parse(JSON.stringify(posts)) } };
 }

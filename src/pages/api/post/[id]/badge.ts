@@ -43,8 +43,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         .status(400)
         .json({ message: "Nie masz wystarczającej ilości monet!" });
 
+    const postId = new Types.ObjectId(id as string);
+
     const isExist = await Post.exists({
-      _id: new Types.ObjectId(id as string),
+      _id: postId,
     });
 
     if (!isExist)
@@ -53,7 +55,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const checkIsBadged = await Badge.exists({
       where: "POST",
       type,
-      id,
+      id: postId,
       author: session.login,
     });
 
@@ -64,7 +66,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         author: session.login,
         where: "POST",
         type,
-        id,
+        id: postId,
         addTime: new Date(),
       });
 
@@ -92,9 +94,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         GOLD: "złota dzida",
       };
 
+      const count = await Badge.count({ where: "POST", type, id: postId });
+
       res
         .status(200)
-        .json({ message: "Odznaka " + names[type] + " została przyznana!" });
+        .json({
+          message: "Odznaka " + names[type] + " została przyznana!",
+          count,
+          type,
+        });
     }
   } else {
     res.status(404).json({ message: "Page not found" });
