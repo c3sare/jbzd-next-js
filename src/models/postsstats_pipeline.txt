@@ -1,0 +1,156 @@
+// Requires official MongoShell 3.6+
+db = db.getSiblingDB("jbzd");
+db.getCollection("posts").aggregate(
+    [
+        {
+            "$lookup" : {
+                "from" : "usersposts",
+                "localField" : "author",
+                "foreignField" : "username",
+                "as" : "user"
+            }
+        }, 
+        {
+            "$set" : {
+                "user" : {
+                    "$first" : "$user"
+                }
+            }
+        }, 
+        {
+            "$lookup" : {
+                "from" : "badges",
+                "localField" : "_id",
+                "foreignField" : "id",
+                "as" : "badges"
+            }
+        }, 
+        {
+            "$lookup" : {
+                "from" : "comments",
+                "localField" : "_id",
+                "foreignField" : "post",
+                "as" : "comments"
+            }
+        }, 
+        {
+            "$set" : {
+                "plus" : {
+                    "$filter" : {
+                        "input" : "$badges",
+                        "as" : "badge",
+                        "cond" : {
+                            "$eq" : [
+                                "$$badge.type",
+                                "PLUS"
+                            ]
+                        }
+                    }
+                },
+                "rock" : {
+                    "$filter" : {
+                        "input" : "$badges",
+                        "as" : "badge",
+                        "cond" : {
+                            "$eq" : [
+                                "$$badge.type",
+                                "ROCK"
+                            ]
+                        }
+                    }
+                },
+                "silver" : {
+                    "$filter" : {
+                        "input" : "$badges",
+                        "as" : "badge",
+                        "cond" : {
+                            "$eq" : [
+                                "$$badge.type",
+                                "SILVER"
+                            ]
+                        }
+                    }
+                },
+                "gold" : {
+                    "$filter" : {
+                        "input" : "$badges",
+                        "as" : "badge",
+                        "cond" : {
+                            "$eq" : [
+                                "$$badge.type",
+                                "GOLD"
+                            ]
+                        }
+                    }
+                },
+                "comments" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$comments"
+                        },
+                        "then" : {
+                            "$size" : "$comments"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                }
+            }
+        }, 
+        {
+            "$unset" : [
+                "badges"
+            ]
+        }, 
+        {
+            "$set" : {
+                "plus" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$plus"
+                        },
+                        "then" : {
+                            "$size" : "$plus"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                },
+                "rock" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$rock"
+                        },
+                        "then" : {
+                            "$size" : "$rock"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                },
+                "silver" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$silver"
+                        },
+                        "then" : {
+                            "$size" : "$silver"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                },
+                "gold" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$gold"
+                        },
+                        "then" : {
+                            "$size" : "$gold"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                }
+            }
+        }
+    ], 
+    {
+        "allowDiskUse" : false
+    }
+);

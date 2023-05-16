@@ -1,25 +1,19 @@
-import { Schema, models, model } from "mongoose";
+import { Schema, models, model, ObjectId } from "mongoose";
 
 interface Comment {
   author: string;
-  post: string;
-  pluses: number;
-  rock: number;
-  silver: number;
-  gold: number;
+  post: ObjectId;
   addTime: Date;
-  precedent: string;
+  precedent: null | ObjectId;
+  text: string;
 }
 
 const commentSchema = new Schema<Comment>({
-  author: { type: String, required: true },
-  post: { type: String, required: true },
-  pluses: { type: Number, required: true },
-  rock: { type: Number, required: true },
-  silver: { type: Number, required: true },
-  gold: { type: Number, required: true },
-  addTime: { type: Date, required: true },
-  precedent: { type: String, required: true },
+  author: String,
+  post: Schema.Types.ObjectId,
+  addTime: Date,
+  precedent: Schema.Types.Mixed,
+  text: String,
 });
 
 export default models.Comment || model<Comment>("Comment", commentSchema);

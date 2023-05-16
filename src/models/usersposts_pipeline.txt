@@ -1,0 +1,76 @@
+// Requires official MongoShell 3.6+
+db = db.getSiblingDB("jbzd");
+db.getCollection("users").aggregate(
+    [
+        {
+            "$lookup" : {
+                "from" : "badges",
+                "localField" : "_id",
+                "foreignField" : "id",
+                "as" : "spears",
+                "pipeline" : [
+                    {
+                        "$match" : {
+                            "type" : "SPEAR",
+                            "where" : "PROFILE"
+                        }
+                    }
+                ]
+            }
+        }, 
+        {
+            "$set" : {
+                "spears" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$spears"
+                        },
+                        "then" : {
+                            "$size" : "$spears"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                }
+            }
+        }, 
+        {
+            "$sort" : {
+                "createDate" : NumberInt(-1)
+            }
+        }, 
+        {
+            "$setWindowFields" : {
+                "partitionBy" : "$state",
+                "sortBy" : {
+                    "spears" : NumberInt(-1)
+                },
+                "output" : {
+                    "rank" : {
+                        "$documentNumber" : {
+
+                        }
+                    }
+                }
+            }
+        }, 
+        {
+            "$unset" : [
+                "password",
+                "notify",
+                "name",
+                "birthday",
+                "createDate",
+                "city",
+                "country",
+                "gender",
+                "coins",
+                "token",
+                "confirmed",
+                "email"
+            ]
+        }
+    ], 
+    {
+        "allowDiskUse" : false
+    }
+);

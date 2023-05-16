@@ -21,8 +21,32 @@ interface BadgeInterface {
   [key: string]: number;
 }
 
-const Post = (props: any) => {
-  const { post, single } = props;
+interface PostProps {
+  post: {
+    _id: string;
+    title: string;
+    memContainers: {
+      data: string;
+      type: "image" | "text" | "youtube" | "video";
+    }[];
+    comments: number;
+    category: string;
+    addTime: string;
+    user: {
+      avatar: string;
+      username: string;
+      spears: number;
+      rank: number;
+    };
+    plus: number;
+    rock: number;
+    silver: number;
+    gold: number;
+  };
+  single: boolean;
+}
+
+const Post = ({ post, single }: PostProps) => {
   const [showButtons, setShowButtons] = useState(false);
   const {
     login: { logged, login },
@@ -32,6 +56,10 @@ const Post = (props: any) => {
     modifyPlusList,
     favourites,
     modifyFavouriteList,
+    blackList,
+    observedList,
+    modifyBlackList,
+    modifyObservedList,
   } = useContext(GlobalContext) as GlobalContextInterface;
   const [badges, setBadges] = useState<BadgeInterface>({
     plus: post.plus,
@@ -170,7 +198,7 @@ const Post = (props: any) => {
   return (
     <div className={style.post} key={post._id}>
       <div className={style.avatar}>
-        <Link href={`/uzytkownik/${post.author?.username}`}>
+        <Link href={`/uzytkownik/${post.user?.username}`}>
           <Image
             height={40}
             width={40}
@@ -230,8 +258,24 @@ const Post = (props: any) => {
                     </div>
                   </div>
                   <div className={style.userPostActions}>
-                    <button className={style.observed}>Obserwuj</button>
-                    <button className={style.blacklisted}>Czarna lista</button>
+                    <button
+                      className={
+                        blackList.includes(post.user?.username)
+                          ? style.observed
+                          : ""
+                      }
+                    >
+                      Obserwuj
+                    </button>
+                    <button
+                      className={
+                        observedList.includes(post.user?.username)
+                          ? style.blacklisted
+                          : ""
+                      }
+                    >
+                      Czarna lista
+                    </button>
                     <Link href={"/uzytkownik/" + post.user?.username}>
                       Profil
                     </Link>

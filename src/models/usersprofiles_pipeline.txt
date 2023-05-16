@@ -1,0 +1,178 @@
+// Requires official MongoShell 3.6+
+db = db.getSiblingDB("jbzd");
+db.getCollection("users").aggregate(
+    [
+        {
+            "$lookup" : {
+                "from" : "badges",
+                "localField" : "_id",
+                "foreignField" : "id",
+                "as" : "spears",
+                "pipeline" : [
+                    {
+                        "$match" : {
+                            "type" : "SPEAR",
+                            "where" : "PROFILE"
+                        }
+                    }
+                ]
+            }
+        }, 
+        {
+            "$lookup" : {
+                "from" : "commentsstats",
+                "localField" : "username",
+                "foreignField" : "author",
+                "as" : "comments"
+            }
+        }, 
+        {
+            "$set" : {
+                "spears" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$spears"
+                        },
+                        "then" : {
+                            "$size" : "$spears"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                },
+                "rock" : {
+                    "$sum" : "$comments.rock"
+                },
+                "silver" : {
+                    "$sum" : "$comments.silver"
+                },
+                "gold" : {
+                    "$sum" : "$comments.gold"
+                },
+                "comments" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$comments"
+                        },
+                        "then" : {
+                            "$size" : "$comments"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                }
+            }
+        }, 
+        {
+            "$sort" : {
+                "createDate" : NumberInt(-1)
+            }
+        }, 
+        {
+            "$setWindowFields" : {
+                "partitionBy" : "$state",
+                "sortBy" : {
+                    "spears" : NumberInt(-1)
+                },
+                "output" : {
+                    "rank" : {
+                        "$documentNumber" : {
+
+                        }
+                    }
+                }
+            }
+        }, 
+        {
+            "$lookup" : {
+                "from" : "postsstats",
+                "localField" : "username",
+                "foreignField" : "author",
+                "as" : "posts"
+            }
+        }, 
+        {
+            "$set" : {
+                "rock" : {
+                    "$add" : [
+                        {
+                            "$sum" : "$posts.rock"
+                        },
+                        "$rock"
+                    ]
+                },
+                "silver" : {
+                    "$add" : [
+                        {
+                            "$sum" : "$posts.silver"
+                        },
+                        "$silver"
+                    ]
+                },
+                "gold" : {
+                    "$add" : [
+                        {
+                            "$sum" : "$posts.gold"
+                        },
+                        "$gold"
+                    ]
+                },
+                "allPosts" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$posts"
+                        },
+                        "then" : {
+                            "$size" : "$posts"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                },
+                "acceptedPosts" : {
+                    "$filter" : {
+                        "input" : "$posts",
+                        "as" : "post",
+                        "cond" : {
+                            "$eq" : [
+                                "$$post.accepted",
+                                true
+                            ]
+                        }
+                    }
+                }
+            }
+        }, 
+        {
+            "$set" : {
+                "acceptedPosts" : {
+                    "$cond" : {
+                        "if" : {
+                            "$isArray" : "$acceptedPosts"
+                        },
+                        "then" : {
+                            "$size" : "$acceptedPosts"
+                        },
+                        "else" : NumberInt(0)
+                    }
+                }
+            }
+        }, 
+        {
+            "$unset" : [
+                "password",
+                "notify",
+                "name",
+                "birthday",
+                "city",
+                "country",
+                "gender",
+                "coins",
+                "token",
+                "confirmed",
+                "email",
+                "posts"
+            ]
+        }
+    ], 
+    {
+        "allowDiskUse" : false
+    }
+);

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState, createContext } from "react";
 import useSWR from "swr";
 
 export interface GlobalContextInterface {
@@ -27,11 +27,13 @@ export interface GlobalContextInterface {
   modifyPlusList: any;
   favourites: string[];
   modifyFavouriteList: any;
+  observedList: string[];
+  blackList: string[];
+  modifyBlackList: any;
+  modifyObservedList: any;
 }
 
-export const GlobalContext = React.createContext<GlobalContextInterface | null>(
-  null
-);
+export const GlobalContext = createContext<GlobalContextInterface | null>(null);
 
 export default function Context({ children }: any) {
   const { data: categories = [] } = useSWR("/api/categories", {
@@ -47,9 +49,34 @@ export default function Context({ children }: any) {
     data: profileData,
     error: profileDataError,
   } = useSWR(login?.logged ? "/api/profile" : null);
-  const [plused, setPlused] = React.useState<string[]>([]);
-  const [favourites, setFavourites] = React.useState<string[]>([]);
-  const [notifys, setNotifys] = React.useState<any[]>([]);
+  const [plused, setPlused] = useState<string[]>([]);
+  const [favourites, setFavourites] = useState<string[]>([]);
+  const [observedList, setObservedList] = useState<string[]>([]);
+  const [blackList, setBlackList] = useState<string[]>([]);
+  const [notifys, setNotifys] = useState<any[]>([]);
+
+  const modifyBlackList = (type: "ADD" | "ODD", username: string) => {
+    if (type === "ADD" && !blackList.find((item) => item === username)) {
+      setBlackList((prev) => [...prev, username]);
+      if (observedList.find((item) => item === username))
+        setObservedList((prev) => prev.filter((item) => item !== username));
+    } else if (type === "ODD" && blackList.find((item) => item === username)) {
+      setBlackList((prev) => prev.filter((item) => item !== username));
+    }
+  };
+
+  const modifyObservedList = (type: "ADD" | "ODD", username: string) => {
+    if (type === "ADD" && !observedList.find((item) => item === username)) {
+      setObservedList((prev) => [...prev, username]);
+      if (blackList.find((item) => item === username))
+        setBlackList((prev) => prev.filter((item) => item !== username));
+    } else if (
+      type === "ODD" &&
+      observedList.find((item) => item === username)
+    ) {
+      setObservedList((prev) => prev.filter((item) => item !== username));
+    }
+  };
 
   const modifyPlusList = (type: string, id: string) => {
     if (type === "PLUS") {
@@ -114,6 +141,10 @@ export default function Context({ children }: any) {
         modifyPlusList,
         favourites,
         modifyFavouriteList,
+        blackList,
+        observedList,
+        modifyBlackList,
+        modifyObservedList,
       }}
     >
       {children}
