@@ -43,7 +43,7 @@ interface PostProps {
     silver: number;
     gold: number;
   };
-  single: boolean;
+  single?: boolean;
 }
 
 const Post = ({ post, single }: PostProps) => {
@@ -192,6 +192,40 @@ const Post = ({ post, single }: PostProps) => {
     }
   };
 
+  const handleClickBlacklist = async (username: string) => {
+    const req = await fetch("/api/user/blacklist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
+    });
+    const res = await req.json();
+
+    if (req.status === 200) {
+      modifyBlackList(res.method, res.user);
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
+  const handleClickObservelist = async (username: string) => {
+    const req = await fetch("/api/user/observelist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
+    });
+    const res = await req.json();
+
+    if (req.status === 200) {
+      modifyObservedList(res.method, res.user);
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
   const userAvatar =
     post.user?.avatar === "" || !post.user?.avatar ? avatar : post.user?.avatar;
 
@@ -259,20 +293,26 @@ const Post = ({ post, single }: PostProps) => {
                   </div>
                   <div className={style.userPostActions}>
                     <button
+                      disabled={post.user?.username === login}
                       className={
-                        blackList.includes(post.user?.username)
+                        observedList.includes(post.user?.username)
                           ? style.observed
                           : ""
+                      }
+                      onClick={() =>
+                        handleClickObservelist(post.user?.username)
                       }
                     >
                       Obserwuj
                     </button>
                     <button
+                      disabled={post.user?.username === login}
                       className={
-                        observedList.includes(post.user?.username)
+                        blackList.includes(post.user?.username)
                           ? style.blacklisted
                           : ""
                       }
+                      onClick={() => handleClickBlacklist(post.user?.username)}
                     >
                       Czarna lista
                     </button>

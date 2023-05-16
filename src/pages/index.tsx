@@ -9,8 +9,9 @@ import PostFilter from "@/components/PostFilter";
 import createNotifycation from "@/utils/createNotifycation";
 import dbConnect from "@/lib/dbConnect";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
-import getPosts from "@/utils/getPosts";
 import { Postsstats } from "@/models/Post";
+import Blacklist from "@/models/Blacklist";
+import { withSessionSSR } from "@/lib/AuthSession/session";
 
 const Index = ({ posts }: any) => {
   const [currentOption, setCurrentOption] = useState<number>(0);
@@ -80,9 +81,23 @@ const Index = ({ posts }: any) => {
 
 export default Index;
 
-export async function getServerSideProps() {
-  await dbConnect();
-  const posts = await Postsstats.find({ accepted: true });
+export const getServerSideProps = withSessionSSR(
+  async function getServerSideProps({ req }: any) {
+    const session = req.session?.user;
+    await dbConnect();
+    if (session?.logged && session?.login) {
+      const blockList = (
+        await Blacklist.find({ username: session?.login })
+      ).map((item) => item.user);
 
-  return { props: { posts: JSON.parse(JSON.stringify(posts)) } };
-}
+      const posts = await Postsstats.find({
+        accepted: true,
+        author: { $nin: blockList },
+      });
+
+      return { props: { posts: JSON.parse(JSON.stringify(posts)) } };
+    }
+    const posts = await Postsstats.find({ accepted: true });
+    return { props: { posts: JSON.parse(JSON.stringify(posts)) } };
+  }
+);

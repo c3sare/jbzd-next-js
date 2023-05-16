@@ -116,6 +116,18 @@ export default function Context({ children }: any) {
           if (login.logged) setFavourites(data);
         })
         .catch((err) => console.error(err));
+      fetch("/api/user/blacklist")
+        .then((res) => res.json())
+        .then((data) => {
+          if (login.logged) setBlackList(data);
+        })
+        .catch((err) => console.error(err));
+      fetch("/api/user/observelist")
+        .then((res) => res.json())
+        .then((data) => {
+          if (login.logged) setObservedList(data);
+        })
+        .catch((err) => console.error(err));
     } else {
       if (plused.length !== 0) {
         setPlused([]);
