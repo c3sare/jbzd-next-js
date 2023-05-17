@@ -12,9 +12,8 @@ import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import { Postsstats } from "@/models/Post";
 import Blacklist from "@/models/Blacklist";
 import { withSessionSSR } from "@/lib/AuthSession/session";
-import PageSelect from "@/components/PageSelect";
 
-const Index = ({ posts, currentPage, allPages }: any) => {
+const Index = ({ posts }: any) => {
   const [currentOption, setCurrentOption] = useState<number>(0);
   const {
     login: { logged },
@@ -76,7 +75,6 @@ const Index = ({ posts, currentPage, allPages }: any) => {
           <Post key={i} post={postMain} />
         ))}
       </div>
-      <PageSelect currentPage={currentPage} allPages={allPages} />
     </>
   );
 };
@@ -84,7 +82,13 @@ const Index = ({ posts, currentPage, allPages }: any) => {
 export default Index;
 
 export const getServerSideProps = withSessionSSR(
-  async function getServerSideProps({ req }: any) {
+  async function getServerSideProps({ req, query }: any) {
+    const page = Number(query.page);
+    if (page < 1 || Number.isNaN(page))
+      return {
+        notFound: true,
+      };
+
     const session = req.session?.user;
     await dbConnect();
 
@@ -101,11 +105,19 @@ export const getServerSideProps = withSessionSSR(
 
     const allPages = Math.ceil(allPosts / 8);
 
-    const posts = await Postsstats.find(findOptions).limit(8);
+    const posts = await Postsstats.find(findOptions)
+      .skip((page - 1) * 8)
+      .limit(8);
+
+    if (posts.length === 0)
+      return {
+        notFound: true,
+      };
+
     return {
       props: {
         posts: JSON.parse(JSON.stringify(posts)),
-        currentPage: 1,
+        currentPage: page,
         allPages,
       },
     };

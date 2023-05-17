@@ -1,0 +1,50 @@
+.paginator {
+  font-size: 1em;
+  overflow: hidden;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.paginator table td {
+  padding: 0;
+  white-space: nowrap;
+}
+
+.paginationButton {
+  margin-left: 1px;
+  width: 65px;
+  height: 42px;
+  font: 700 14px/22px arial, tahoma, sans-serif;
+  box-sizing: border-box;
+  text-align: left;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.paginationButton span,
+.paginationButton a {
+  display: block;
+  color: #fff;
+  height: 42px;
+  line-height: 58px;
+  padding-left: 6px;
+}
+
+.paginationButton a {
+  text-decoration: none;
+  border-left: 2px solid hsla(0, 0%, 100%, 0);
+}
+
+.paginationButton a:hover {
+  color: #fff;
+  background: #c03e3e;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0, #c03e3e),
+    color-stop(50%, #b23333),
+    to(#ac2f2f)
+  );
+  background: linear-gradient(180deg, #c03e3e, #b23333 50%, #ac2f2f);
+}
