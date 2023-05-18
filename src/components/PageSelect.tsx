@@ -5,9 +5,11 @@ import { GiDiceSixFacesTwo } from "react-icons/gi";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 
 const PageSelect = ({
+  pageName = "str",
   currentPage,
   allPages,
 }: {
+  pageName?: string;
   currentPage: number;
   allPages: number;
 }) => {
@@ -78,7 +80,7 @@ const PageSelect = ({
     <>
       <div className={style.paginationModern}>
         <Link
-          href={`/str/${currentPage - 1}`}
+          href={`/${pageName}/${currentPage - 1}`}
           className={
             style.paginationModernPrev +
             (currentPage === 1 ? " " + style.disabled : "")
@@ -90,7 +92,7 @@ const PageSelect = ({
           <GiDiceSixFacesTwo />
         </Link>
         <Link
-          href={`/str/${currentPage + 1}`}
+          href={`/${pageName}/${currentPage + 1}`}
           className={
             style.paginationModernNext +
             (currentPage + 1 > allPages ? " " + style.disabled : "")
@@ -102,7 +104,7 @@ const PageSelect = ({
       {currentPage < allPages && (
         <div className={style.paginationButtons}>
           <Link
-            href={`/str/${currentPage + 1}`}
+            href={`/${pageName}/${currentPage + 1}`}
             className={style.paginationNext}
           >
             następna strona
@@ -135,7 +137,13 @@ const PageSelect = ({
                             <strong>{page}</strong>
                           </span>
                         ) : (
-                          <Link href={page === 0 ? "/" : `/str/${page}`}>
+                          <Link
+                            href={
+                              page === 0
+                                ? `/${pageName === "str" ? "" : pageName}`
+                                : `/${pageName}/${page}`
+                            }
+                          >
                             {page}
                           </Link>
                         )}

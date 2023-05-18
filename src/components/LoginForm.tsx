@@ -2,10 +2,12 @@ import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import style from "@/styles/Layout.module.css";
 import createNotifycation from "@/utils/createNotifycation";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 
 export default function LoginForm({ setCurrentForm, mutate }: any) {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -27,8 +29,8 @@ export default function LoginForm({ setCurrentForm, mutate }: any) {
     const res = await fetcher.json();
 
     if (fetcher.status === 200) {
-      mutate();
       createNotifycation(setNotifys, "info", "Pomyślnie zalogowano!");
+      router.reload();
     } else {
       if (fetcher.status === 403) {
         setError("login", {

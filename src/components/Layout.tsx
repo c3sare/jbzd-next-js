@@ -8,8 +8,10 @@ import RemindPasswordForm from "./RemindPasswordForm";
 import ProfileInfo from "./ProfileInfo";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export default function Layout({ children }: any) {
+  const router = useRouter();
   const {
     login: { login, logged },
     refreshLogin,
@@ -17,6 +19,12 @@ export default function Layout({ children }: any) {
   } = React.useContext(GlobalContext) as GlobalContextInterface;
 
   const [currentForm, setCurrentForm] = React.useState(0);
+
+  const hideSidebarList = [
+    "/logowanie",
+    "/uzytkownik/notyfikacje",
+    "/wiadomosci-prywatne",
+  ];
 
   const forms = [LoginForm, RegisterForm, RemindPasswordForm];
 
@@ -39,9 +47,11 @@ export default function Layout({ children }: any) {
       <Navigation loginPanel={loginPanel} />
       <div className={style.contentWrapper}>
         <main>{children}</main>
-        <aside className={style.sidebar}>
-          {logged ? <ProfileInfo login={login} /> : loginPanel}
-        </aside>
+        {!hideSidebarList.includes(router.asPath) && (
+          <aside className={style.sidebar}>
+            {logged ? <ProfileInfo login={login} /> : loginPanel}
+          </aside>
+        )}
       </div>
       <Footer />
       <div className={style.notifycations}>

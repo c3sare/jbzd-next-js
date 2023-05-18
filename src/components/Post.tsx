@@ -173,6 +173,12 @@ const Post = ({ post, single }: PostProps) => {
   );
 
   const handleGiveBadge = async (type: "ROCK" | "SILVER" | "GOLD") => {
+    if (!logged)
+      return createNotifycation(
+        setNotifys,
+        "info",
+        "Aby to zrobić musisz być zalogowany!"
+      );
     const req = await fetch("/api/post/" + post._id + "/badge", {
       method: "POST",
       headers: {
@@ -186,7 +192,8 @@ const Post = ({ post, single }: PostProps) => {
     const res = await req.json();
     if (req.status === 200) {
       createNotifycation(setNotifys, "info", res.message);
-      // mutate();
+      console.log(res);
+      setBadge(res.type, res.count);
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -232,7 +239,7 @@ const Post = ({ post, single }: PostProps) => {
   return (
     <div className={style.post} key={post._id}>
       <div className={style.avatar}>
-        <Link href={`/uzytkownik/${post.user?.username}`}>
+        <Link href={post.user ? `/uzytkownik/${post.user?.username}` : "/#"}>
           <Image
             height={40}
             width={40}
@@ -254,75 +261,79 @@ const Post = ({ post, single }: PostProps) => {
         </div>
         <div className={style.memDetails}>
           <div className={style.userAddTimeDetails}>
-            <span className={style.userName}>
-              <span className={style.author}>{post.user?.username}</span>
-              <div className={style.authorInfo}>
-                <div className={style.detailsAvatar}>
-                  <Image
-                    alt={post.user?.username + " avatar"}
-                    width={45}
-                    height={45}
-                    src={userAvatar}
-                  />
-                </div>
-                <div className={style.userPostContent}>
-                  <div className={style.userPostName}>
-                    {post.user?.username}
+            {post.user && (
+              <span className={style.userName}>
+                <span className={style.author}>{post.user?.username}</span>
+                <div className={style.authorInfo}>
+                  <div className={style.detailsAvatar}>
+                    <Image
+                      alt={post.user?.username + " avatar"}
+                      width={45}
+                      height={45}
+                      src={userAvatar}
+                    />
                   </div>
-                  <div className={style.userPostInfo}>
-                    <div>
-                      <span>
-                        <Image
-                          src="/images/spear.png"
-                          width={22}
-                          height={22}
-                          alt="Dzida"
-                        />
-                      </span>
-                      <span>{post.user?.spears}</span>
-                      {logged && login !== post.user?.username && (
-                        <button className={style.userVote}>+</button>
-                      )}
+                  <div className={style.userPostContent}>
+                    <div className={style.userPostName}>
+                      {post.user?.username}
                     </div>
-                    <div>
-                      <span>
-                        <TfiCup />
-                      </span>
-                      <span>{post.user?.rank}</span>
+                    <div className={style.userPostInfo}>
+                      <div>
+                        <span>
+                          <Image
+                            src="/images/spear.png"
+                            width={22}
+                            height={22}
+                            alt="Dzida"
+                          />
+                        </span>
+                        <span>{post.user?.spears}</span>
+                        {logged && login !== post.user?.username && (
+                          <button className={style.userVote}>+</button>
+                        )}
+                      </div>
+                      <div>
+                        <span>
+                          <TfiCup />
+                        </span>
+                        <span>{post.user?.rank}</span>
+                      </div>
+                    </div>
+                    <div className={style.userPostActions}>
+                      <button
+                        disabled={post.user?.username === login}
+                        className={
+                          observedList.includes(post.user?.username)
+                            ? style.observed
+                            : ""
+                        }
+                        onClick={() =>
+                          handleClickObservelist(post.user?.username)
+                        }
+                      >
+                        Obserwuj
+                      </button>
+                      <button
+                        disabled={post.user?.username === login}
+                        className={
+                          blackList.includes(post.user?.username)
+                            ? style.blacklisted
+                            : ""
+                        }
+                        onClick={() =>
+                          handleClickBlacklist(post.user?.username)
+                        }
+                      >
+                        Czarna lista
+                      </button>
+                      <Link href={"/uzytkownik/" + post.user?.username}>
+                        Profil
+                      </Link>
                     </div>
                   </div>
-                  <div className={style.userPostActions}>
-                    <button
-                      disabled={post.user?.username === login}
-                      className={
-                        observedList.includes(post.user?.username)
-                          ? style.observed
-                          : ""
-                      }
-                      onClick={() =>
-                        handleClickObservelist(post.user?.username)
-                      }
-                    >
-                      Obserwuj
-                    </button>
-                    <button
-                      disabled={post.user?.username === login}
-                      className={
-                        blackList.includes(post.user?.username)
-                          ? style.blacklisted
-                          : ""
-                      }
-                      onClick={() => handleClickBlacklist(post.user?.username)}
-                    >
-                      Czarna lista
-                    </button>
-                    <Link href={"/uzytkownik/" + post.user?.username}>
-                      Profil
-                    </Link>
-                  </div>
                 </div>
-              </div>
-            </span>
+              </span>
+            )}
             <span className={style.addTime}>{alongAgo(post.addTime)}</span>
             {post.category !== "" && (
               <Link
