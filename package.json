@@ -16,6 +16,7 @@
     "aws-sdk": "^2.1363.0",
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.36.4",
+    "cookies-next": "^2.1.1",
     "date-fns": "^2.30.0",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",

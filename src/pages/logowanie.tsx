@@ -1,10 +1,10 @@
-import LoginForm from "@/components/LoginForm";
+import LoginPanel from "@/components/LoginPanel";
 
 const Login = () => {
   return (
     <>
       <h1>Logowanie</h1>
-      <LoginForm />
+      <LoginPanel />
     </>
   );
 };

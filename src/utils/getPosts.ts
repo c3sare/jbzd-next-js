@@ -3,8 +3,7 @@ import dbConnect from "@/lib/dbConnect";
 import Blacklist from "@/models/Blacklist";
 import Category from "@/models/Category";
 import { Postsstats } from "@/models/Post";
-import User from "@/models/User";
-import { format } from "date-fns";
+import { hasCookie } from "cookies-next";
 
 interface Options {
   accepted?: boolean;
@@ -23,8 +22,6 @@ const getPosts = (options: Options, asPage: boolean = false) =>
     const category = query.category;
 
     if (Number.isNaN(page) || category !== undefined) {
-      console.log("isNan: " + Number.isNaN(page));
-      console.log("category: " + category);
       if (category?.length > 0) {
       } else
         return {
@@ -34,8 +31,10 @@ const getPosts = (options: Options, asPage: boolean = false) =>
 
     let findOptions: Options = options;
 
+    let checkCategory: any;
+
     if (category) {
-      const checkCategory = await Category.findOne({
+      checkCategory = await Category.findOne({
         slug: category,
         asPage,
       });
@@ -52,6 +51,13 @@ const getPosts = (options: Options, asPage: boolean = false) =>
           },
         };
       else {
+        if (!hasCookie("ofage", { req }) && checkCategory.nsfw)
+          return {
+            props: {
+              ofage: false,
+              nsfw: true,
+            },
+          };
         options.category = category;
       }
     }
@@ -85,6 +91,13 @@ const getPosts = (options: Options, asPage: boolean = false) =>
         posts: JSON.parse(JSON.stringify(posts)),
         currentPage: page,
         allPages,
+        ...(checkCategory
+          ? {
+              category: checkCategory.name,
+              nsfw: checkCategory.nsfw,
+              ofage: hasCookie("ofage", { req }),
+            }
+          : {}),
       },
     };
   });

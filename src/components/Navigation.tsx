@@ -22,8 +22,10 @@ import createNotifycation from "@/utils/createNotifycation";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import { useRouter } from "next/router";
 import Loading from "./Loading";
+import logout from "@/utils/logout";
+import LoginPanel from "./LoginPanel";
 
-const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
+const Navigation = () => {
   const router = useRouter();
   const [showSearch, setShowSearch] = useState<Boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<Boolean>(false);
@@ -37,6 +39,7 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
 
   useEffect(() => {
     if (showMobileMenu) setShowMobileMenu(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname]);
 
   const normalCategories =
@@ -236,13 +239,13 @@ const Navigation = ({ loginPanel }: { loginPanel: JSX.Element }) => {
                   />
                   <span>{login}</span>
                 </Link>
-                <Link href="/wyloguj">
+                <button onClick={logout}>
                   <AiOutlinePoweroff />
-                </Link>
+                </button>
               </div>
             )
           ) : (
-            loginPanel
+            <LoginPanel />
           )}
           <div className={style.mainMenuMobileContainer}>
             <Link href="/mikroblog">

@@ -1,9 +1,13 @@
 import PostsPage from "@/components/PostsPage";
+import Seo from "@/components/Seo";
 import getPosts from "@/utils/getPosts";
 
 const Index = ({ posts, currentPage, allPages }: any) => {
   return (
-    <PostsPage posts={posts} currentPage={currentPage} allPages={allPages} />
+    <>
+      <Seo />
+      <PostsPage posts={posts} currentPage={currentPage} allPages={allPages} />
+    </>
   );
 };
 

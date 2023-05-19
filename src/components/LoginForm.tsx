@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 
-export default function LoginForm({ setCurrentForm, mutate }: any) {
+export default function LoginForm({ setCurrentForm }: any) {
   const router = useRouter();
   const {
     register,
@@ -29,7 +29,6 @@ export default function LoginForm({ setCurrentForm, mutate }: any) {
     const res = await fetcher.json();
 
     if (fetcher.status === 200) {
-      createNotifycation(setNotifys, "info", "Pomyślnie zalogowano!");
       router.reload();
     } else {
       if (fetcher.status === 403) {

@@ -53,13 +53,13 @@ const Post = ({ post, single }: PostProps) => {
     categories,
     setNotifys,
     plused,
-    modifyPlusList,
+    refreshPlused,
     favourites,
-    modifyFavouriteList,
+    refreshFavourites,
     blackList,
     observedList,
-    modifyBlackList,
-    modifyObservedList,
+    refreshBlacklist,
+    refreshObservedlist,
   } = useContext(GlobalContext) as GlobalContextInterface;
   const [badges, setBadges] = useState<BadgeInterface>({
     plus: post.plus,
@@ -108,7 +108,7 @@ const Post = ({ post, single }: PostProps) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      modifyPlusList(res.method, id);
+      refreshPlused();
       setBadge(res.method, res.count);
     } else {
       createNotifycation(setNotifys, "info", res.message);
@@ -125,7 +125,7 @@ const Post = ({ post, single }: PostProps) => {
 
     fetch(`/api/post/${id}/favourite`, { method: "POST" })
       .then((res) => res.json())
-      .then((data) => modifyFavouriteList(data.method, id))
+      .then(() => refreshFavourites())
       .catch((err) => {
         console.error(err);
       });
@@ -210,7 +210,7 @@ const Post = ({ post, single }: PostProps) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      modifyBlackList(res.method, res.user);
+      refreshBlacklist();
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -227,7 +227,7 @@ const Post = ({ post, single }: PostProps) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      modifyObservedList(res.method, res.user);
+      refreshObservedlist();
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }

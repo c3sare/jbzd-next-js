@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import { format } from "date-fns";
 import Loading from "./Loading";
+import logout from "@/utils/logout";
 
 const ProfileInfo = ({ login }: { login: string }) => {
   const {
@@ -47,9 +48,9 @@ const ProfileInfo = ({ login }: { login: string }) => {
                 <div className={style.profileHeader}>
                   <span>
                     <Link href={"/uzytkownicy/" + login}>{login}</Link>
-                    <Link href="/wyloguj">
+                    <button onClick={logout}>
                       <AiOutlinePoweroff />
-                    </Link>
+                    </button>
                   </span>
                 </div>
                 <section className={style.profileDetails}>

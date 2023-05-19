@@ -1,14 +1,20 @@
 import PostsPage from "@/components/PostsPage";
+import Seo from "@/components/Seo";
 import getPosts from "@/utils/getPosts";
 
-const Category = ({ posts, currentPage, allPages }: any) => {
+const Category = ({ posts, currentPage, allPages, category }: any) => {
   return (
-    <PostsPage
-      pageName="oczekujace"
-      posts={posts}
-      currentPage={currentPage}
-      allPages={allPages}
-    />
+    <>
+      <Seo
+        subTitle={category + (currentPage > 1 ? `, strona ${currentPage}` : "")}
+      />
+      <PostsPage
+        pageName="oczekujace"
+        posts={posts}
+        currentPage={currentPage}
+        allPages={allPages}
+      />
+    </>
   );
 };
 

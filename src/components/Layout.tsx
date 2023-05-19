@@ -1,24 +1,21 @@
 import Navigation from "./Navigation";
 import Footer from "./Footer";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import style from "@/styles/Layout.module.css";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
-import RemindPasswordForm from "./RemindPasswordForm";
 import ProfileInfo from "./ProfileInfo";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
-import Head from "next/head";
 import { useRouter } from "next/router";
+import LoginPanel from "./LoginPanel";
+import CookiePolicy from "./CookiePolicy";
+import { hasCookie, setCookie } from "cookies-next";
 
 export default function Layout({ children }: any) {
+  const [policy, setPolicy] = useState(false);
   const router = useRouter();
   const {
     login: { login, logged },
-    refreshLogin,
     notifys,
   } = React.useContext(GlobalContext) as GlobalContextInterface;
-
-  const [currentForm, setCurrentForm] = React.useState(0);
 
   const hideSidebarList = [
     "/logowanie",
@@ -26,30 +23,20 @@ export default function Layout({ children }: any) {
     "/wiadomosci-prywatne",
   ];
 
-  const forms = [LoginForm, RegisterForm, RemindPasswordForm];
+  useEffect(() => {
+    if (!hasCookie("policy")) setPolicy(true);
+  }, []);
 
-  const loginPanel = (
-    <div className={style.login}>
-      <div className={style.desktop}>
-        {React.createElement(forms[currentForm], {
-          setCurrentForm,
-          mutate: refreshLogin,
-        })}
-      </div>
-    </div>
-  );
+  const showSidebar = !hideSidebarList.includes(router.asPath);
 
   return (
     <>
-      <Head>
-        <title>Jbzd Clone</title>
-      </Head>
-      <Navigation loginPanel={loginPanel} />
+      <Navigation />
       <div className={style.contentWrapper}>
-        <main>{children}</main>
-        {!hideSidebarList.includes(router.asPath) && (
+        <main style={showSidebar ? {} : { border: "none" }}>{children}</main>
+        {showSidebar && (
           <aside className={style.sidebar}>
-            {logged ? <ProfileInfo login={login} /> : loginPanel}
+            {logged ? <ProfileInfo login={login} /> : <LoginPanel />}
           </aside>
         )}
       </div>
@@ -69,6 +56,14 @@ export default function Layout({ children }: any) {
           ))}
         </span>
       </div>
+      {policy && (
+        <CookiePolicy
+          closePolicy={() => {
+            setCookie("policy", "on");
+            setPolicy(false);
+          }}
+        />
+      )}
     </>
   );
 }

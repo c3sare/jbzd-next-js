@@ -24,13 +24,13 @@ export interface GlobalContextInterface {
     };
   };
   plused: string[];
-  modifyPlusList: any;
+  refreshPlused: any;
   favourites: string[];
-  modifyFavouriteList: any;
+  refreshFavourites: any;
   observedList: string[];
+  refreshObservedlist: any;
   blackList: string[];
-  modifyBlackList: any;
-  modifyObservedList: any;
+  refreshBlacklist: any;
 }
 
 export const GlobalContext = createContext<GlobalContextInterface | null>(null);
@@ -41,102 +41,42 @@ export default function Context({ children }: any) {
   });
   const { data: login = { logged: false, login: "" }, mutate: refreshLogin } =
     useSWR("/api/checklogin");
-  const { data: coins = 0, mutate: refreshCoins } = useSWR("/api/coins", {
-    refreshInterval: 0,
-  });
+  const { data: coins = 0, mutate: refreshCoins } = useSWR(
+    login.logged ? "/api/coins" : null,
+    {
+      refreshInterval: 0,
+    }
+  );
+  const { data: plused = [], mutate: refreshPlused } = useSWR(
+    login.logged ? "/api/user/pluslist" : null,
+    {
+      refreshInterval: 0,
+    }
+  );
+  const { data: favourites = [], mutate: refreshFavourites } = useSWR(
+    login.logged ? "/api/user/favouritelist" : null,
+    {
+      refreshInterval: 0,
+    }
+  );
+  const { data: blackList = [], mutate: refreshBlacklist } = useSWR(
+    login.logged ? "/api/user/blacklist" : null,
+    {
+      refreshInterval: 0,
+    }
+  );
+  const { data: observedList = [], mutate: refreshObservedlist } = useSWR(
+    login.logged ? "/api/user/observelist" : null,
+    {
+      refreshInterval: 0,
+    }
+  );
   const {
     isLoading: isLoadingProfileData,
     data: profileData,
     error: profileDataError,
   } = useSWR(login?.logged ? "/api/profile" : null);
-  const [plused, setPlused] = useState<string[]>([]);
-  const [favourites, setFavourites] = useState<string[]>([]);
-  const [observedList, setObservedList] = useState<string[]>([]);
-  const [blackList, setBlackList] = useState<string[]>([]);
   const [notifys, setNotifys] = useState<any[]>([]);
-
-  const modifyBlackList = (type: "ADD" | "ODD", username: string) => {
-    if (type === "ADD" && !blackList.find((item) => item === username)) {
-      setBlackList((prev) => [...prev, username]);
-      if (observedList.find((item) => item === username))
-        setObservedList((prev) => prev.filter((item) => item !== username));
-    } else if (type === "ODD" && blackList.find((item) => item === username)) {
-      setBlackList((prev) => prev.filter((item) => item !== username));
-    }
-  };
-
-  const modifyObservedList = (type: "ADD" | "ODD", username: string) => {
-    if (type === "ADD" && !observedList.find((item) => item === username)) {
-      setObservedList((prev) => [...prev, username]);
-      if (blackList.find((item) => item === username))
-        setBlackList((prev) => prev.filter((item) => item !== username));
-    } else if (
-      type === "ODD" &&
-      observedList.find((item) => item === username)
-    ) {
-      setObservedList((prev) => prev.filter((item) => item !== username));
-    }
-  };
-
-  const modifyPlusList = (type: string, id: string) => {
-    if (type === "PLUS") {
-      setPlused((prevState) => {
-        const newState = [...prevState];
-        return [...newState, id];
-      });
-    } else if (type === "UNPLUS") {
-      setPlused((prevState) => prevState.filter((item: string) => item !== id));
-    }
-  };
-
-  const modifyFavouriteList = (type: string, id: string) => {
-    if (type === "LIKED") {
-      setFavourites((prevState) => {
-        const newState = [...prevState];
-        return [...newState, id];
-      });
-    } else if (type === "UNLIKED") {
-      setFavourites((prevState) =>
-        prevState.filter((item: string) => item !== id)
-      );
-    }
-  };
-
-  useEffect(() => {
-    if (login.logged) {
-      fetch("/api/user/pluslist")
-        .then((res) => res.json())
-        .then((data) => {
-          if (login.logged) setPlused(data);
-        })
-        .catch((err) => console.error(err));
-      fetch("/api/user/favouritelist")
-        .then((res) => res.json())
-        .then((data) => {
-          if (login.logged) setFavourites(data);
-        })
-        .catch((err) => console.error(err));
-      fetch("/api/user/blacklist")
-        .then((res) => res.json())
-        .then((data) => {
-          if (login.logged) setBlackList(data);
-        })
-        .catch((err) => console.error(err));
-      fetch("/api/user/observelist")
-        .then((res) => res.json())
-        .then((data) => {
-          if (login.logged) setObservedList(data);
-        })
-        .catch((err) => console.error(err));
-    } else {
-      if (plused.length !== 0) {
-        setPlused([]);
-      }
-      if (favourites.length !== 0) {
-        setFavourites([]);
-      }
-    }
-  }, [login]);
 
   return (
     <GlobalContext.Provider
@@ -150,13 +90,13 @@ export default function Context({ children }: any) {
         refreshCoins,
         profileData: { isLoadingProfileData, profileData, profileDataError },
         plused,
-        modifyPlusList,
+        refreshPlused,
         favourites,
-        modifyFavouriteList,
+        refreshFavourites,
         blackList,
+        refreshBlacklist,
         observedList,
-        modifyBlackList,
-        modifyObservedList,
+        refreshObservedlist,
       }}
     >
       {children}

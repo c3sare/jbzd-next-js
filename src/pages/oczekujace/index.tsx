@@ -1,14 +1,18 @@
 import PostsPage from "@/components/PostsPage";
+import Seo from "@/components/Seo";
 import getPosts from "@/utils/getPosts";
 
 const Waitings = ({ posts, currentPage, allPages }: any) => {
   return (
-    <PostsPage
-      pageName="oczekujace"
-      posts={posts}
-      currentPage={currentPage}
-      allPages={allPages}
-    />
+    <>
+      <Seo subTitle="Oczekujące" />
+      <PostsPage
+        pageName="oczekujace"
+        posts={posts}
+        currentPage={currentPage}
+        allPages={allPages}
+      />
+    </>
   );
 };
 
