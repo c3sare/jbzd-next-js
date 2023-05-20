@@ -5,9 +5,9 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import Loading from "../Loading";
 import React from "react";
-import Link from "next/link";
 import NoSsrWrapper from "../no-ssr-wrapper";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 const Konva = dynamic(import("../Konva"), { ssr: false });
 
 const isSSR = () => typeof window === "undefined";
@@ -363,11 +363,29 @@ const ChangePassword = ({
 };
 
 const UserData = () => {
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>();
-  const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
+  const { setNotifys, createMonit, refreshLogin } = useContext(
+    GlobalContext
+  ) as GlobalContextInterface;
 
   const addNotify = (msg: string) => {
     createNotifycation(setNotifys, "info", msg);
+  };
+
+  const handleDeleteAccount = async () => {
+    const req = await fetch("/api/user/deleteacc", {
+      method: "POST",
+    });
+    const res = await req.json();
+
+    if (req.status === 200) {
+      addNotify("Twoje konto zostało pomyślnie usunięte!");
+      router.push("/");
+      refreshLogin();
+    } else {
+      addNotify(res.message);
+    }
   };
 
   return (
@@ -399,7 +417,17 @@ const UserData = () => {
       <div className={style.formDeleteAccount}>
         <p>
           Jeżeli chcesz usunąć swoje konto kliknij{" "}
-          <Link href="/uzytkownik/usuwanie">tutaj</Link>
+          <button
+            onClick={() =>
+              createMonit(
+                "Potwierdzenie",
+                "Czy jesteś pewien że chcesz usunąć konto?",
+                handleDeleteAccount
+              )
+            }
+          >
+            tutaj
+          </button>
         </p>
       </div>
     </section>

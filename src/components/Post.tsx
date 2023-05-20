@@ -239,16 +239,19 @@ const Post = ({ post, single = false }: PostProps) => {
   };
 
   const handleDeleteMem = async (id: string) => {
-    const req = await fetch("/api/post/" + id, {
+    const req = await fetch("/api/posts", {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
     });
     const res = await req.json();
 
     if (req.status === 200) {
       router.push("/");
-    } else {
-      createNotifycation(setNotifys, "info", res.message);
     }
+    createNotifycation(setNotifys, "info", res.message);
   };
 
   const userAvatar =

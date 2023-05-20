@@ -4,6 +4,7 @@ import { withIronSessionApiRoute } from "iron-session/next";
 import formidable from "formidable";
 import { v2 as cloudinary } from "cloudinary";
 import Post from "@/models/Post";
+import { Types } from "mongoose";
 
 export const config = {
   api: {
@@ -12,8 +13,8 @@ export const config = {
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const session = req.session.user;
   if (req.method === "POST") {
-    const session = req.session.user;
     if (!session?.logged)
       return res.status(400).json({ message: "Nie jesteś zalogowany!" });
 
@@ -97,6 +98,30 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         .json({ message: "Nie udało się wykonać zapytania!" });
 
     return res.status(200).json({ message: "Prawidłowo dodano dzidę!" });
+  } else if (req.method === "DELETE") {
+    if (!session?.logged || !session?.login)
+      return res.status(403).json({ message: "Nie jesteś zalogowany!" });
+
+    const { id } = req.body;
+
+    if (!id || Types.ObjectId.isValid(id))
+      return res
+        .status(400)
+        .json({ message: "Nieprawidłowe parametry zapytania!" });
+
+    const _id = new Types.ObjectId(id);
+
+    const post = await Post.exists({ _id, author: session.login });
+
+    if (!post)
+      return res.status(404).json({ message: "Taki post nie istnieje!" });
+
+    const deletePost = await Post.deleteOne({ _id });
+
+    if (deletePost.deletedCount !== 1)
+      return res.status(500).json({ message: "Nie można usunąć tego posta!" });
+
+    return res.status(200).json({ message: "Pomyślnie usunięto post!" });
   } else {
     res.status(404).json({ message: "Page not found" });
   }

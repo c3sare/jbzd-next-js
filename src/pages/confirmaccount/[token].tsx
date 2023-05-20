@@ -1,9 +1,23 @@
+import Seo from "@/components/Seo";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const ConfirmAccount = ({ confirmed }: { confirmed: boolean }) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    let timeout = setTimeout(() => {
+      router.push("/logowanie");
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <>
+      <Seo subTitle=", potwierdzenie konta" />
       <h1>Potwierdzenie konta</h1>
       <p>
         {confirmed

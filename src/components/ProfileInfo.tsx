@@ -47,7 +47,7 @@ const ProfileInfo = ({ login }: { login: string }) => {
               <section className={style.profileInformations}>
                 <div className={style.profileHeader}>
                   <span>
-                    <Link href={"/uzytkownicy/" + login}>{login}</Link>
+                    <Link href={"/uzytkownik/" + login}>{login}</Link>
                     <button onClick={logout}>
                       <AiOutlinePoweroff />
                     </button>

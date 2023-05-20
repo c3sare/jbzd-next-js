@@ -9,6 +9,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
+    const session = req.session?.user;
     const { username, category } = req.query;
 
     await dbConnect();
@@ -33,10 +34,18 @@ export default async function handler(
           .status(404)
           .json({ message: "Podana kategoria nie istnieje!" });
 
-      const posts = await Postsstats.find({
+      let posts = await Postsstats.find({
         author: username as string,
         category: category as string,
       });
+
+      if (!session?.logged || !session?.login) {
+        posts = posts.map((item) => {
+          const newObject = { ...item._doc };
+          delete newObject.user;
+          return newObject;
+        });
+      }
 
       res.status(200).json(posts);
     }
