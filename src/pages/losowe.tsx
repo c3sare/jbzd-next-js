@@ -1,17 +1,21 @@
-import Post from "@/components/Post";
 import { Postsstats } from "@/models/Post";
+import createSlug from "@/utils/createSlug";
 
-const RandomMem = ({ post }: any) => {
-  return <Post post={post} single />;
-};
-
-export default RandomMem;
+export default function () {
+  return;
+}
 
 export async function getServerSideProps() {
-  const post = await Postsstats.aggregate([{ $sample: { size: 1 } }]);
+  const post = JSON.parse(
+    JSON.stringify((await Postsstats.aggregate([{ $sample: { size: 1 } }]))[0])
+  );
+
+  const slug = createSlug(post.title);
+
   return {
-    props: {
-      post: JSON.parse(JSON.stringify(post[0])),
+    redirect: {
+      destination: `/obr/${post._id}/${slug}`,
+      permament: false,
     },
   };
 }

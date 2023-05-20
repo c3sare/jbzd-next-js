@@ -1,6 +1,7 @@
 import style from "@/styles/posts.module.css";
 import alongAgo from "@/utils/alongAgoFunction";
 import { FaComment, FaStar, FaCaretUp } from "react-icons/fa";
+import { RiDeleteBin7Fill } from "react-icons/ri";
 import rockLike from "@/images/likes/like_rock.png";
 import silverLike from "@/images/likes/like_silver.png";
 import goldLike from "@/images/likes/like_gold.png";
@@ -16,6 +17,7 @@ import VideoPlayer from "./VideoPlayer";
 import { TfiCup } from "react-icons/tfi";
 import createSlug from "@/utils/createSlug";
 import YouTube from "react-youtube";
+import { useRouter } from "next/router";
 
 interface BadgeInterface {
   [key: string]: number;
@@ -32,6 +34,7 @@ interface PostProps {
     comments: number;
     category: string;
     addTime: string;
+    author: string;
     user: {
       avatar: string;
       username: string;
@@ -46,7 +49,8 @@ interface PostProps {
   single?: boolean;
 }
 
-const Post = ({ post, single }: PostProps) => {
+const Post = ({ post, single = false }: PostProps) => {
+  const router = useRouter();
   const [showButtons, setShowButtons] = useState(false);
   const {
     login: { logged, login },
@@ -60,6 +64,7 @@ const Post = ({ post, single }: PostProps) => {
     observedList,
     refreshBlacklist,
     refreshObservedlist,
+    createMonit,
   } = useContext(GlobalContext) as GlobalContextInterface;
   const [badges, setBadges] = useState<BadgeInterface>({
     plus: post.plus,
@@ -233,6 +238,19 @@ const Post = ({ post, single }: PostProps) => {
     }
   };
 
+  const handleDeleteMem = async (id: string) => {
+    const req = await fetch("/api/post/" + id, {
+      method: "DELETE",
+    });
+    const res = await req.json();
+
+    if (req.status === 200) {
+      router.push("/");
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
   const userAvatar =
     post.user?.avatar === "" || !post.user?.avatar ? avatar : post.user?.avatar;
 
@@ -377,7 +395,7 @@ const Post = ({ post, single }: PostProps) => {
           </div>
         </div>
         {allPostElements}
-        {/* <div className={style.comments">
+        {/* <div className={style.comments"}>
               {post.comments.map((comment) => (
                 <div className={style.comment" key={comment.id}>
                   <span>
@@ -410,17 +428,33 @@ const Post = ({ post, single }: PostProps) => {
         <div></div>
       </div>
       <div className={style.buttonsPost}>
-        <button
-          className={style.coins}
-          aria-label="Nagradzanie"
-          onClick={() => setShowButtons(!showButtons)}
-        >
-          <span>
-            <FaCaretUp
-              style={showButtons ? { transform: "rotate(180deg)" } : {}}
-            />
-            <Image width={25} src={coins} alt="Monety" />
-          </span>
+        {logged && post.author === login && (
+          <button
+            aria-label="Usuń dzidę"
+            onClick={() =>
+              createMonit(
+                "Potwierdzenie",
+                "Czy chcesz usunąć wybraną dzidę?",
+                () => handleDeleteMem(post._id)
+              )
+            }
+          >
+            <RiDeleteBin7Fill />
+          </button>
+        )}
+        <div style={{ position: "relative" }}>
+          <button
+            className={style.coins}
+            aria-label="Nagradzanie"
+            onClick={() => setShowButtons(!showButtons)}
+          >
+            <span>
+              <FaCaretUp
+                style={showButtons ? { transform: "rotate(180deg)" } : {}}
+              />
+              <Image width={25} src={coins} alt="Monety" />
+            </span>
+          </button>
           {showButtons && (
             <div className={style.buttonsCoins}>
               <button
@@ -455,8 +489,8 @@ const Post = ({ post, single }: PostProps) => {
               </button>
             </div>
           )}
-        </button>
-        <Link href={postUrl + "#komentarze"}>
+        </div>
+        <Link href={single ? "#komentarze" : postUrl + "#komentarze"}>
           <button aria-label="Przejdź do komentarzy">
             <FaComment />
           </button>

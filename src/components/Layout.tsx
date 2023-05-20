@@ -15,6 +15,9 @@ export default function Layout({ children }: any) {
   const {
     login: { login, logged },
     notifys,
+    monit,
+    createMonit,
+    closeMonit,
   } = React.useContext(GlobalContext) as GlobalContextInterface;
 
   const hideSidebarList = [
@@ -63,6 +66,27 @@ export default function Layout({ children }: any) {
             setPolicy(false);
           }}
         />
+      )}
+      {monit.open && (
+        <div
+          className={
+            style.monit + (monit.fadeout ? " " + style.reverseMonit : "")
+          }
+        >
+          <div
+            className={
+              style.monitContent +
+              (monit.fadeout ? " " + style.monitContentReverse : "")
+            }
+          >
+            <h5>{monit.title}</h5>
+            <p>{monit.text}</p>
+            <div className={style.monitButtons}>
+              <button onClick={monit.func}>Tak</button>
+              <button onClick={closeMonit}>Nie</button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

@@ -1,5 +1,13 @@
-import { useEffect, useState, createContext } from "react";
+import { useState, createContext } from "react";
 import useSWR from "swr";
+
+interface MonitInterface {
+  fadeout: boolean;
+  open: boolean;
+  title: string;
+  text: string;
+  func: any;
+}
 
 export interface GlobalContextInterface {
   categories: any[];
@@ -31,6 +39,9 @@ export interface GlobalContextInterface {
   refreshObservedlist: any;
   blackList: string[];
   refreshBlacklist: any;
+  monit: MonitInterface;
+  createMonit: (title: string, text: string, func: any) => void;
+  closeMonit: () => void;
 }
 
 export const GlobalContext = createContext<GlobalContextInterface | null>(null);
@@ -77,6 +88,42 @@ export default function Context({ children }: any) {
     error: profileDataError,
   } = useSWR(login?.logged ? "/api/profile" : null);
   const [notifys, setNotifys] = useState<any[]>([]);
+  const [monit, setMonit] = useState<MonitInterface>({
+    fadeout: false,
+    open: false,
+    title: "",
+    text: "",
+    func: null,
+  });
+
+  const createMonit = (title: string, text: string, func: any) => {
+    setMonit({
+      fadeout: false,
+      open: true,
+      title,
+      text,
+      func,
+    });
+  };
+
+  const closeMonit = () => {
+    setMonit((prev) => ({
+      fadeout: true,
+      open: true,
+      title: prev.title,
+      text: prev.text,
+      func: null,
+    }));
+    setTimeout(() => {
+      setMonit((prev) => ({
+        fadeout: false,
+        open: false,
+        title: "",
+        text: "",
+        func: null,
+      }));
+    }, 500);
+  };
 
   return (
     <GlobalContext.Provider
@@ -97,6 +144,9 @@ export default function Context({ children }: any) {
         refreshBlacklist,
         observedList,
         refreshObservedlist,
+        monit,
+        createMonit,
+        closeMonit,
       }}
     >
       {children}

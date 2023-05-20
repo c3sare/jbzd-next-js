@@ -11,6 +11,9 @@ import { useForm, useFieldArray } from "react-hook-form";
 import CheckUrl from "./AddPostComponents/CheckUrl";
 import MemContainersSortable from "./MemContainersSortable";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
+import createNotifycation from "@/utils/createNotifycation";
+import { useRouter } from "next/router";
+import Loading from "./Loading";
 
 function isValidHttpUrl(link: string) {
   let url;
@@ -37,7 +40,9 @@ interface AddPostInterface {
 }
 
 const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
-  const { categories: data } = React.useContext(
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { categories: data, setNotifys } = React.useContext(
     GlobalContext
   ) as GlobalContextInterface;
 
@@ -122,7 +127,8 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
     setValue("linkingUrl", url);
   };
 
-  const onSubmit = (data: AddPostInterface) => {
+  const onSubmit = async (data: AddPostInterface) => {
+    setLoading(true);
     const fd = new FormData();
     fd.append("title", data.title);
     fd.append("category", data.category || "");
@@ -140,12 +146,19 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
       fd.append(`file_${i}`, item.data as Blob);
     });
 
-    fetch("/api/posts", {
+    const req = await fetch("/api/posts", {
       method: "POST",
       body: fd,
-    })
-      .then((res) => res.json())
-      .then((res) => console.log(res));
+    });
+    const res = await req.json();
+
+    if (req.status === 200) {
+      setOption(0);
+      router.push("/oczekujace");
+    } else {
+      setLoading(false);
+    }
+    createNotifycation(setNotifys, "info", res.message);
   };
 
   const [currentTag, setCurrentTag] = useState<string>("");
@@ -404,6 +417,23 @@ const AddPost = ({ setOption }: { setOption: (option: number) => void }) => {
             </button>
           </div>
         </form>
+      )}
+      {loading && (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "absolute",
+            top: "0",
+            left: "0",
+          }}
+        >
+          <Loading />
+        </div>
       )}
     </div>
   );
