@@ -52,6 +52,7 @@ export default function LoginForm({ setCurrentForm }: any) {
         <input
           className={errors.login ? style.errorInput : ""}
           type="text"
+          autoComplete="username"
           placeholder="Podaj nick lub email"
           {...register("login", {
             required: "Podaj login lub email!",
@@ -70,6 +71,7 @@ export default function LoginForm({ setCurrentForm }: any) {
         <input
           className={errors.password ? style.errorInput : ""}
           type="password"
+          autoComplete="current-password"
           placeholder="Hasło"
           {...register("password", {
             required: "Wprowadź hasło!",

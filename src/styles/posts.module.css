@@ -95,12 +95,17 @@
 }
 
 .buttonsCoins > button {
-  opacity: 0.6;
   padding: 3px;
   display: block;
 }
 
-.buttonsCoins > button:hover {
+.buttonsCoins > button img,
+.buttonsCoins > button span {
+  opacity: 0.6;
+}
+
+.buttonsCoins > button:hover img,
+.buttonsCoins > button:hover span {
   opacity: 1;
 }
 

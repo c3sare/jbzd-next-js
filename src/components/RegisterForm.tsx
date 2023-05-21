@@ -101,6 +101,7 @@ export default function RegisterForm({ setCurrentForm }: any) {
       <div className={style.formGroup}>
         <input
           type="password"
+          autoComplete="new-password"
           placeholder="Hasło"
           disabled={loading}
           {...register("password", {
@@ -127,6 +128,7 @@ export default function RegisterForm({ setCurrentForm }: any) {
       <div className={style.formGroup}>
         <input
           type="password"
+          autoComplete="new-password"
           placeholder="Powtórz hasło"
           disabled={loading}
           {...register("repassword", {
