@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { GiDiceSixFacesTwo } from "react-icons/gi";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 const PageSelect = ({
   pageName = "str",
@@ -13,6 +14,7 @@ const PageSelect = ({
   currentPage: number;
   allPages: number;
 }) => {
+  const router = useRouter();
   const [drag, setDrag] = useState<boolean>(false);
   const startClientX = useRef<number>(0);
   const scrollThumb = useRef<HTMLDivElement>(null);
@@ -104,7 +106,19 @@ const PageSelect = ({
       {currentPage < allPages && (
         <div className={style.paginationButtons}>
           <Link
-            href={`/${pageName}/${currentPage + 1}`}
+            href={{
+              pathname: `/${pageName}/${currentPage + 1}`,
+              query: router.query?.["date-preset"]
+                ? {
+                    "date-preset": router.query["date-preset"],
+                  }
+                : router.query?.["from"] && router.query?.["to"]
+                ? {
+                    from: router.query?.from,
+                    to: router.query?.to,
+                  }
+                : {},
+            }}
             className={style.paginationNext}
           >
             następna strona
@@ -138,11 +152,22 @@ const PageSelect = ({
                           </span>
                         ) : (
                           <Link
-                            href={
-                              page === 0
-                                ? `/${pageName === "str" ? "" : pageName}`
-                                : `/${pageName}/${page}`
-                            }
+                            href={{
+                              pathname:
+                                page === 0
+                                  ? `/${pageName === "str" ? "" : pageName}`
+                                  : `/${pageName}/${page}`,
+                              query: router.query?.["date-preset"]
+                                ? {
+                                    "date-preset": router.query["date-preset"],
+                                  }
+                                : router.query?.["from"] && router.query?.["to"]
+                                ? {
+                                    from: router.query?.from,
+                                    to: router.query?.to,
+                                  }
+                                : {},
+                            }}
                           >
                             {page}
                           </Link>

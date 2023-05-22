@@ -1,5 +1,6 @@
 import { withIronSessionApiRoute, withIronSessionSsr } from "iron-session/next";
 import { sessionOptions } from "./config";
+import type { GetServerSideProps, NextApiHandler } from "next/types";
 
 declare module "iron-session" {
   interface IronSessionData {
@@ -12,10 +13,10 @@ export type User = {
   login: string;
 };
 
-export function withSessionSSR(handler: any) {
+export function withSessionSSR(handler: GetServerSideProps<any>) {
   return withIronSessionSsr(handler, sessionOptions);
 }
 
-export function withSessionAPI(handler: any) {
+export function withSessionAPI(handler: NextApiHandler<any>) {
   return withIronSessionApiRoute(handler, sessionOptions);
 }

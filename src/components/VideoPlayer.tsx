@@ -1,7 +1,7 @@
 import Plyr from "plyr-react";
 import { useEffect, useMemo, useRef } from "react";
 
-const VideoPlayer = ({ url }: { url: string }) => {
+const VideoPlayer = ({ url, gif = false }: { url: string; gif?: boolean }) => {
   const ref = useRef<HTMLDivElement>(null);
   const plyr = useMemo(
     () => (
@@ -16,21 +16,28 @@ const VideoPlayer = ({ url }: { url: string }) => {
           ],
         }}
         options={{
-          controls: [
-            "play-large",
-            "play",
-            "progress",
-            "current-time",
-            "mute",
-            "volume",
-            "settings",
-            "pip",
-            "fullscreen",
-          ],
+          controls: gif
+            ? []
+            : [
+                "play-large",
+                "play",
+                "progress",
+                "current-time",
+                "mute",
+                "volume",
+                "settings",
+                "pip",
+                "fullscreen",
+              ],
+          autoplay: gif,
+          loop: { active: gif },
         }}
+        playsInline={false}
+        loop={gif}
+        autoPlay={gif}
       />
     ),
-    []
+    [url, gif]
   );
 
   useEffect(() => {
@@ -41,7 +48,7 @@ const VideoPlayer = ({ url }: { url: string }) => {
       ref.current.querySelector(".plyr__controls")!.innerHTML =
         plyrControls + a;
     }
-  }, []);
+  }, [url]);
 
   return (
     <div ref={ref} style={{ maxWidth: "100%", width: "600px" }}>

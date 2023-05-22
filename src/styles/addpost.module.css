@@ -210,7 +210,7 @@
 }
 
 .imageContainer > img {
-  max-width: 100%;
+  width: 100%;
 }
 
 .imageContainer > span:first-child {

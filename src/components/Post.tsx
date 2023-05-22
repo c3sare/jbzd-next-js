@@ -170,6 +170,8 @@ const Post = ({ post, single = false }: PostProps) => {
               ></div>
             </LinkToPost>
           );
+        } else if (item.type === "gif") {
+          return <VideoPlayer key={i} url={item.data} gif />;
         } else {
           return <Fragment key={i}></Fragment>;
         }

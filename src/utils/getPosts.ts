@@ -4,32 +4,101 @@ import Blacklist from "@/models/Blacklist";
 import Category from "@/models/Category";
 import { Postsstats } from "@/models/Post";
 import { hasCookie } from "cookies-next";
+import { formatISO } from "date-fns";
 
 interface Options {
   accepted?: boolean;
   author?: {
     $nin?: string[];
   };
+  addTime?: {
+    $gt: string;
+    $lt?: string;
+  };
   category?: string;
 }
 
 const getPosts = (options: Options, asPage: boolean = false) =>
-  withSessionSSR(async function getServerSideProps({ req, query }: any) {
+  withSessionSSR(async function getServerSideProps({
+    req,
+    query,
+  }): Promise<any> {
     const session = req.session?.user;
     await dbConnect();
 
     const page = Number(query.page || 1);
-    const category = query.category;
+    const category = query?.category;
 
     if (Number.isNaN(page) || category !== undefined) {
-      if (category?.length > 0) {
+      if ((category as string)?.length > 0) {
       } else
         return {
           notFound: true,
         };
     }
 
+    const datePreset = query?.["date-preset"];
+    const from = query?.from;
+    const to = query?.to;
+
+    if (
+      datePreset &&
+      ["6h", "12h", "24h", "48h", "7d"].includes(datePreset as string)
+    ) {
+      const preset: {
+        [key: string]: Date;
+      } = {
+        "6h": (() => {
+          const date = new Date();
+          date.setHours(date.getHours() - 6);
+          return date;
+        })(),
+        "12h": (() => {
+          const date = new Date();
+          date.setHours(date.getHours() - 12);
+          return date;
+        })(),
+        "24h": (() => {
+          const date = new Date();
+          date.setDate(date.getDate() - 1);
+          return date;
+        })(),
+        "48h": (() => {
+          const date = new Date();
+          date.setDate(date.getDate() - 2);
+          return date;
+        })(),
+        "7d": (() => {
+          const date = new Date();
+          date.setDate(date.getDate() - 7);
+          return date;
+        })(),
+      };
+      options = {
+        ...options,
+        addTime: {
+          $gt: formatISO(preset[datePreset as string]),
+        },
+      };
+    } else if (from && to) {
+      const dateRegex = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
+      if (dateRegex.test(from as string) && dateRegex.test(to as string)) {
+        options = {
+          ...options,
+          addTime: {
+            $gt: formatISO(new Date(from as string)),
+            $lt: formatISO(new Date(to as string)),
+          },
+        };
+      }
+    }
+
+    if (!datePreset && !to && !from) {
+      delete options.addTime;
+    }
+
     let findOptions: Options = options;
+    console.log(findOptions);
 
     let checkCategory: any;
 
@@ -58,7 +127,7 @@ const getPosts = (options: Options, asPage: boolean = false) =>
               nsfw: true,
             },
           };
-        options.category = category;
+        options.category = category as string;
       }
     }
 

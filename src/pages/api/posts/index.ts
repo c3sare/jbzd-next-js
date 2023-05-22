@@ -66,6 +66,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         use_filename: true,
         unique_filename: false,
         overwrite: true,
+        ...(fileDataType === "image/gif" ? { format: "mp4" } : {}),
         folder: "upload/" + dataTypes[shortType],
       };
 
@@ -77,6 +78,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       }
 
       const index = fileNames[i].slice(fileNames[i].indexOf("_") + 1);
+      if (fileDataType === "image/gif") {
+        dataToInsert.memContainers[index].type = "gif";
+      }
       dataToInsert.memContainers[index].data = result.secure_url;
     }
 

@@ -1,7 +1,7 @@
 import { Postsstats } from "@/models/Post";
 import createSlug from "@/utils/createSlug";
 
-export default function () {
+export default function RandomPage() {
   return;
 }
 

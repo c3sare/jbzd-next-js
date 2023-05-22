@@ -7,8 +7,12 @@ import { useState } from "react";
 
 const TopFilter = () => {
   const router = useRouter();
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
+  const [startDate, setStartDate] = useState<Date | null>(
+    router.query?.from ? new Date(router.query.from as string) : null
+  );
+  const [endDate, setEndDate] = useState<Date | null>(
+    router.query?.to ? new Date(router.query?.to as string) : null
+  );
 
   const presets = ["Nowe", "6h", "12h", "24h", "48h", "7d"];
 
@@ -21,22 +25,29 @@ const TopFilter = () => {
     preset: string
   ) => {
     e.preventDefault();
-    if (preset === "") return router.push("");
-    router.push(`/?date-preset=${preset}`);
+    setStartDate(null);
+    setEndDate(null);
+    if (preset === "")
+      return router.push(
+        router.pathname.replace("/str/[page]", "").replace("/[page]", "")
+      );
+    router.push(
+      router.pathname.replace("/str/[page]", "").replace("/[page]", "") +
+        `?date-preset=${preset}`
+    );
   };
 
   const setCustomDates = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (startDate && endDate)
       router.push(
-        `?from=${format(startDate, "yyyy-MM-dd")}&to=${format(
-          endDate,
-          "yyyy-MM-dd"
-        )}`
+        router.pathname.replace("/str/[page]", "").replace("/[page]", "") +
+          `?from=${format(startDate, "yyyy-MM-dd")}&to=${format(
+            endDate,
+            "yyyy-MM-dd"
+          )}`
       );
   };
-
-  console.log(currentSet);
 
   return (
     <form className={style.topFilter}>
@@ -46,7 +57,9 @@ const TopFilter = () => {
             key={i}
             className={
               currentSet === (preset !== "Nowe" ? preset : "")
-                ? style.active
+                ? router.query?.to && router.query?.from
+                  ? ""
+                  : style.active
                 : ""
             }
             onClick={(e) => setDatePreset(e, preset !== "Nowe" ? preset : "")}
@@ -61,12 +74,12 @@ const TopFilter = () => {
           <span>Od:</span>
           <DayPicker
             onSelect={(val) => {
-              if (!endDate) return setStartDate(val);
+              if (!endDate) return setStartDate(val as Date);
               if (val && endDate)
                 if ([0, 1].includes(compareAsc(endDate, val)))
                   setStartDate(val);
             }}
-            selected={startDate}
+            selected={startDate as Date}
             locale={pl}
             mode="single"
             toDate={endDate || new Date()}
@@ -77,10 +90,10 @@ const TopFilter = () => {
           <DayPicker
             locale={pl}
             mode="single"
-            selected={endDate}
-            onSelect={setEndDate}
+            selected={endDate as Date}
+            onSelect={setEndDate as any}
             toDate={new Date()}
-            fromDate={startDate}
+            fromDate={startDate as Date}
           />
         </div>
       </div>
