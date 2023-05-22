@@ -17,8 +17,8 @@ const PostsOptions = () => {
   const options = [
     null,
     <AddPost setOption={setCurrentOption} key={1} />,
-    <TopFilter key={2} />,
-    <PostFilter key={3} />,
+    <TopFilter setOption={setCurrentOption} key={2} />,
+    <PostFilter setOption={setCurrentOption} key={3} />,
   ];
 
   const setOption = (num: number) => {

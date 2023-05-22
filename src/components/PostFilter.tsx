@@ -1,4 +1,5 @@
 import style from "@/styles/addpost.module.css";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { TbCheckbox } from "react-icons/tb";
@@ -6,33 +7,55 @@ import { TbCheckbox } from "react-icons/tb";
 interface SearchInterface {
   pharse: string;
   video: boolean;
-  gifs: boolean;
-  pictures: boolean;
-  texts: boolean;
+  gif: boolean;
+  image: boolean;
+  text: boolean;
 }
 
-const PostFilter = () => {
+const PostFilter = ({ setOption }: any) => {
+  const router = useRouter();
   const { register, handleSubmit, watch } = useForm<SearchInterface>({
     defaultValues: {
-      pharse: "",
-      video: false,
-      gifs: false,
-      pictures: false,
-      texts: false,
+      pharse: (router.query?.pharse as string) || "",
+      video: Boolean(router.query?.video),
+      gif: Boolean(router.query?.gif),
+      image: Boolean(router.query?.image),
+      text: Boolean(router.query?.text),
     },
   });
 
   const [video, gifs, pictures, texts] = [
     watch("video"),
-    watch("gifs"),
-    watch("pictures"),
-    watch("texts"),
+    watch("gif"),
+    watch("image"),
+    watch("text"),
   ];
 
+  const handleFilterPosts = (data: SearchInterface) => {
+    const { pharse, video, gif, image, text } = data;
+
+    const tab = [
+      pharse.length > 0 ? "pharse=" + encodeURIComponent(pharse) : null,
+      video ? "video=" + (video ? 1 : 0) : null,
+      gif ? "gif=" + (gif ? 1 : 0) : null,
+      image ? "image=" + (image ? 1 : 0) : null,
+      text ? "text=" + (image ? 1 : 0) : null,
+    ].filter((item) => item !== null);
+    setOption(0);
+    router.push(`${tab.length > 0 ? "?" : ""}${tab.join("&")}`);
+  };
+
   return (
-    <form className={style.postFilter} onSubmit={handleSubmit(console.log)}>
+    <form
+      className={style.postFilter}
+      onSubmit={handleSubmit(handleFilterPosts)}
+    >
       <div className={style.contentFiltersFilter}>
-        <input type="text" disabled placeholder="Opcja dostępna dla Premium" />
+        <input
+          type="text"
+          placeholder="Szukana fraza..."
+          {...register("pharse")}
+        />
       </div>
       <div className={style.filterCheckboxes}>
         <label>
@@ -50,7 +73,7 @@ const PostFilter = () => {
           <input
             type="checkbox"
             style={{ display: "none" }}
-            {...register("gifs")}
+            {...register("gif")}
           />
         </label>
         <label>
@@ -59,7 +82,7 @@ const PostFilter = () => {
           <input
             type="checkbox"
             style={{ display: "none" }}
-            {...register("pictures")}
+            {...register("image")}
           />
         </label>
         <label>
@@ -68,7 +91,7 @@ const PostFilter = () => {
           <input
             type="checkbox"
             style={{ display: "none" }}
-            {...register("texts")}
+            {...register("text")}
           />
         </label>
       </div>

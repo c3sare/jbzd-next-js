@@ -16,6 +16,8 @@ interface Options {
     $lt?: string;
   };
   category?: string;
+  title?: any;
+  memContainers?: any;
 }
 
 const getPosts = (options: Options, asPage: boolean = false) =>
@@ -93,6 +95,41 @@ const getPosts = (options: Options, asPage: boolean = false) =>
       }
     }
 
+    const pharse = query?.pharse as string;
+    const video = Boolean(query?.video);
+    const image = Boolean(query?.image);
+    const gif = Boolean(query?.gif);
+    const text = Boolean(query?.text);
+
+    if (pharse) {
+      options = {
+        ...options,
+        title: { $regex: pharse, $options: "i" },
+      };
+    } else {
+      delete options.title;
+    }
+
+    if (video || image || gif || text) {
+      const toSearch = [
+        video ? { type: "video" } : null,
+        image ? { type: "image" } : null,
+        gif ? { type: "gif" } : null,
+        text ? { type: "text" } : null,
+      ].filter((item) => item !== null);
+
+      options = {
+        ...options,
+        memContainers: {
+          $elemMatch: {
+            $or: toSearch,
+          },
+        },
+      };
+    } else {
+      delete options.memContainers;
+    }
+
     if (!datePreset && !to && !from) {
       delete options.addTime;
     }
@@ -139,6 +176,7 @@ const getPosts = (options: Options, asPage: boolean = false) =>
       };
     }
     const allPosts = await Postsstats.count(findOptions);
+    Postsstats.find({ $text: { $search: pharse } });
 
     const allPages = Math.ceil(allPosts / 8);
 

@@ -5,7 +5,7 @@ import { compareAsc, format } from "date-fns";
 import pl from "date-fns/locale/pl";
 import { useState } from "react";
 
-const TopFilter = () => {
+const TopFilter = ({ setOption }: any) => {
   const router = useRouter();
   const [startDate, setStartDate] = useState<Date | null>(
     router.query?.from ? new Date(router.query.from as string) : null
@@ -27,6 +27,7 @@ const TopFilter = () => {
     e.preventDefault();
     setStartDate(null);
     setEndDate(null);
+    setOption(0);
     if (preset === "")
       return router.push(
         router.pathname.replace("/str/[page]", "").replace("/[page]", "")
@@ -39,7 +40,8 @@ const TopFilter = () => {
 
   const setCustomDates = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (startDate && endDate)
+    if (startDate && endDate) {
+      setOption(0);
       router.push(
         router.pathname.replace("/str/[page]", "").replace("/[page]", "") +
           `?from=${format(startDate, "yyyy-MM-dd")}&to=${format(
@@ -47,6 +49,7 @@ const TopFilter = () => {
             "yyyy-MM-dd"
           )}`
       );
+    }
   };
 
   return (
