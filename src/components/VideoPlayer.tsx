@@ -31,6 +31,8 @@ const VideoPlayer = ({ url, gif = false }: { url: string; gif?: boolean }) => {
               ],
           autoplay: gif,
           loop: { active: gif },
+          hideControls: !gif,
+          disableContextMenu: false,
         }}
         playsInline={false}
         loop={gif}

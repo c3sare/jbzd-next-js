@@ -74,6 +74,30 @@ const PageSelect = ({
     setScrollBarProgress(scrollTo / sbWidth);
   };
 
+  const getQueryString = () => {
+    const datePreset = router.query?.["date-preset"];
+    const from = router.query?.["from"];
+    const to = router.query?.["to"];
+    const pharse = router.query?.["pharse"];
+    const video = router.query?.["video"];
+    const gif = router.query?.["gif"];
+    const image = router.query?.["image"];
+    const text = router.query?.["text"];
+
+    return {
+      ...(datePreset ? { "date-preset": datePreset } : {}),
+      ...(from ? { from } : {}),
+      ...(to ? { to } : {}),
+      ...(pharse ? { pharse } : {}),
+      ...(video ? { video } : {}),
+      ...(gif ? { gif } : {}),
+      ...(image ? { image } : {}),
+      ...(text ? { text } : {}),
+    };
+  };
+
+  const query = getQueryString();
+
   useEffect(() => {
     setScrollBarPage(currentPage);
   }, []);
@@ -82,7 +106,10 @@ const PageSelect = ({
     <>
       <div className={style.paginationModern}>
         <Link
-          href={`/${pageName}/${currentPage - 1}`}
+          href={{
+            pathname: `/${pageName}/${currentPage - 1}`,
+            query,
+          }}
           className={
             style.paginationModernPrev +
             (currentPage === 1 ? " " + style.disabled : "")
@@ -94,7 +121,7 @@ const PageSelect = ({
           <GiDiceSixFacesTwo />
         </Link>
         <Link
-          href={`/${pageName}/${currentPage + 1}`}
+          href={{ pathname: `/${pageName}/${currentPage + 1}`, query }}
           className={
             style.paginationModernNext +
             (currentPage + 1 > allPages ? " " + style.disabled : "")
@@ -108,16 +135,7 @@ const PageSelect = ({
           <Link
             href={{
               pathname: `/${pageName}/${currentPage + 1}`,
-              query: router.query?.["date-preset"]
-                ? {
-                    "date-preset": router.query["date-preset"],
-                  }
-                : router.query?.["from"] && router.query?.["to"]
-                ? {
-                    from: router.query?.from,
-                    to: router.query?.to,
-                  }
-                : {},
+              query,
             }}
             className={style.paginationNext}
           >
@@ -157,16 +175,7 @@ const PageSelect = ({
                                 page === 0
                                   ? `/${pageName === "str" ? "" : pageName}`
                                   : `/${pageName}/${page}`,
-                              query: router.query?.["date-preset"]
-                                ? {
-                                    "date-preset": router.query["date-preset"],
-                                  }
-                                : router.query?.["from"] && router.query?.["to"]
-                                ? {
-                                    from: router.query?.from,
-                                    to: router.query?.to,
-                                  }
-                                : {},
+                              query,
                             }}
                           >
                             {page}

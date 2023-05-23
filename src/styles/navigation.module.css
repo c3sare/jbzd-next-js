@@ -90,32 +90,71 @@
   justify-content: center;
 }
 
+.searchContent > form > .searchIn > div,
 .searchContent > form > .searchIn {
-  color: white;
-  font-size: 16px;
-  padding: 15px 0;
+  display: flex;
+  flex-direction: row;
 }
 
-.searchContent > form > .searchIn > label {
-  margin: 0 10px;
+.searchContent > form > .searchIn {
+  color: #a4a7aa;
+  user-select: none;
+  grid-column-start: 2;
+  grid-row-start: 2;
+  margin-top: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.searchContent > form > .searchIn > div {
+  margin: 10px;
+}
+
+.searchContent > form > .searchIn label {
+  color: #a4a7aa;
+  cursor: pointer;
+  padding-left: 5px;
+}
+
+.searchContent > form > .searchIn input {
+  width: 15px;
+  height: 15px;
+  background-color: transparent;
+  cursor: pointer;
+  appearance: none;
+  margin: 0;
+  border: 1px solid #a4a7aa;
+  border-radius: 50%;
+}
+
+.searchContent > form > .searchIn input:checked + label {
+  color: #fff;
+}
+
+.searchContent > form > .searchIn input:checked {
+  background-color: #a4a7aa;
+  box-shadow: inset 0 0 0 3px #080808;
 }
 
 .searchContent > form > .inputs > input {
   width: 100%;
   max-width: 500px;
-  margin: 0 auto;
   height: 25px;
   border-radius: 5px;
   padding: 5px 10px;
-  margin: 0;
+  border: none;
+  height: 38px;
+  margin-right: 4px;
 }
 
 .searchContent > form > .inputs > button {
-  font-size: 30px;
+  font-size: 35px;
   height: 40px;
   background-color: #c03e3e;
   border-radius: 5px;
   color: white;
+  border: none;
+  width: 50px;
 }
 
 .mobileMenu {

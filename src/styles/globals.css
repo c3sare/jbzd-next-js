@@ -171,3 +171,7 @@ textarea {
   background-color: transparent !important;
   border-color: transparent !important;
 }
+
+.plyr--video .plyr__controls {
+  background: none !important;
+}

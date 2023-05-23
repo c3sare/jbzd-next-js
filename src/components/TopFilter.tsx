@@ -59,7 +59,12 @@ const TopFilter = ({ setOption }: any) => {
           <button
             key={i}
             className={
-              currentSet === (preset !== "Nowe" ? preset : "")
+              currentSet ===
+              (preset !== "Nowe"
+                ? preset
+                : Object.keys(router.query).length > 0
+                ? style.active
+                : "")
                 ? router.query?.to && router.query?.from
                   ? ""
                   : style.active

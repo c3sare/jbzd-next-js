@@ -24,6 +24,7 @@ import { useRouter } from "next/router";
 import Loading from "./Loading";
 import logout from "@/utils/logout";
 import LoginPanel from "./LoginPanel";
+import Search from "./Search";
 
 const Navigation = () => {
   const router = useRouter();
@@ -191,34 +192,7 @@ const Navigation = () => {
           </span>
         </div>
       </div>
-      {showSearch && (
-        <div className={style.search}>
-          <div className={style.searchContent}>
-            <form>
-              <div className={style.inputs}>
-                <input placeholder="Wpisz szukaną wartość..." />
-                <button>
-                  <MdSearch />
-                </button>
-              </div>
-              <div className={style.searchIn}>
-                <label>
-                  <input type="radio" name="search" /> Wszystkie
-                </label>
-                <label>
-                  <input type="radio" name="search" /> Obrazki
-                </label>
-                <label>
-                  <input type="radio" name="search" /> Tagi
-                </label>
-                <label>
-                  <input type="radio" name="search" /> Użytkownicy
-                </label>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {showSearch && <Search setShowSearch={setShowSearch} />}
       {showMobileMenu && (
         <div className={style.mobileMenuContainer}>
           {logged ? (
