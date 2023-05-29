@@ -78,6 +78,15 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
+.buttonsCoins > button:nth-child(2),
+.buttonsCoins > button:last-child {
+  border-radius: 0;
+}
+
+.buttonsCoins > button:first-child {
+  border-radius: 3px 3px 0 0;
+}
+
 @media screen and (max-width: 768px) {
   .buttonsPost {
     max-width: 600px;

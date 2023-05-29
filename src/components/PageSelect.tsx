@@ -21,22 +21,25 @@ const PageSelect = ({
   const scrollBar = useRef<HTMLDivElement>(null);
   const [scrollBarProgress, setScrollBarProgress] = useState<number>(0);
 
+  function setScrollBar(e: any) {
+    const scrollBarWidth = scrollBar.current!.offsetWidth;
+    const thumbWidth =
+      allPages > 7 ? (scrollBarWidth / allPages) * 7 : scrollBarWidth;
+    const scrollBarLeft = scrollBar.current!.offsetLeft;
+
+    const max = scrollBarWidth - thumbWidth;
+    const result = e.clientX - scrollBarLeft - thumbWidth / 2;
+
+    const current = result > max ? max : result < 0 ? 0 : result;
+    const percent = current / (max + thumbWidth);
+    setScrollBarProgress(percent);
+
+    scrollThumb.current!.style.left = current + "px";
+  }
+
   useEffect(() => {
     function scrollBarSet(e: any) {
-      if (drag) {
-        const scrollBarWidth = scrollBar.current!.offsetWidth;
-        const scrollBarHalfWidth = scrollBar.current!.offsetWidth / 2;
-        const scrollBarLeft = scrollBar.current!.offsetLeft;
-
-        const max = scrollBarWidth - scrollBarHalfWidth;
-        const result = e.clientX - scrollBarLeft - scrollBarHalfWidth / 2;
-
-        const current = result > max ? max : result < 0 ? 0 : result;
-        const percent = current / max;
-        setScrollBarProgress(percent);
-
-        scrollThumb.current!.style.left = current + "px";
-      }
+      if (drag) setScrollBar(e);
     }
 
     window.addEventListener("mousemove", scrollBarSet, true);
@@ -58,28 +61,16 @@ const PageSelect = ({
     return () => window.removeEventListener("mouseup", disableDrag, true);
   }, [drag]);
 
-  const handleClickScrollBar = (e: React.MouseEvent<HTMLDivElement>) => {
-    const cursorPosX = e.clientX;
-    const thumWidth = scrollThumb.current!.offsetWidth;
-    const scrollBarWidth = e.currentTarget.offsetWidth;
-    const scrollBarHalfWidth = scrollBarWidth / 2;
-    const scrollBarLeft = e.currentTarget.offsetLeft;
-    const pos = cursorPosX - scrollBarLeft - scrollBarHalfWidth / 2;
-    const max = scrollBarWidth - thumWidth;
-    const current = pos < 0 ? 0 : pos > max ? max : pos;
-
-    const percent = current / max;
-    setScrollBarProgress(percent);
-
-    scrollThumb.current!.style.left = current + "px";
-  };
-
   const setScrollBarPage = (page: number) => {
     page -= 1;
-    const sbWidth = scrollBar.current!.clientWidth;
-    const scrollTo = (page / allPages) * sbWidth;
-    scrollThumb.current!.style.left = scrollTo + "px";
-    setScrollBarProgress(scrollTo / sbWidth);
+    const scrollBarWidth = scrollBar.current!.offsetWidth;
+    const thumbWidth =
+      allPages > 7 ? (scrollBarWidth / allPages) * 7 : scrollBarWidth;
+    const allProgress = scrollBarWidth - thumbWidth;
+    const currentProgress = (page / allPages) * allProgress;
+    scrollThumb.current!.style.width = `${thumbWidth}px`;
+    scrollThumb.current!.style.left = currentProgress + "px";
+    setScrollBarProgress(allProgress / currentProgress);
   };
 
   const getQueryString = () => {
@@ -108,9 +99,6 @@ const PageSelect = ({
 
   useEffect(() => {
     setScrollBarPage(currentPage);
-    scrollThumb.current!.style.width = `${
-      scrollBar.current!.offsetWidth / allPages
-    }px`;
   }, []);
 
   return (
@@ -202,7 +190,7 @@ const PageSelect = ({
                   <div
                     className={style.scrollBar}
                     ref={scrollBar}
-                    onClick={handleClickScrollBar}
+                    onClick={setScrollBar}
                   >
                     <div className={style.scrollTrough} />
                     <div
