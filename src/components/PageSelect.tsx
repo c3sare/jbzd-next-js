@@ -24,9 +24,12 @@ const PageSelect = ({
   useEffect(() => {
     function scrollBarSet(e: any) {
       if (drag) {
-        const max = scrollBar.current!.offsetWidth - 6;
+        const scrollBarWidth = scrollBar.current!.offsetWidth;
+        const scrollBarHalfWidth = scrollBar.current!.offsetWidth / 2;
         const scrollBarLeft = scrollBar.current!.offsetLeft;
-        const result = e.clientX - scrollBarLeft;
+
+        const max = scrollBarWidth - scrollBarHalfWidth;
+        const result = e.clientX - scrollBarLeft - scrollBarHalfWidth / 2;
 
         const current = result > max ? max : result < 0 ? 0 : result;
         const percent = current / max;
@@ -56,8 +59,13 @@ const PageSelect = ({
   }, [drag]);
 
   const handleClickScrollBar = (e: React.MouseEvent<HTMLDivElement>) => {
-    const pos = e.clientX - e.currentTarget.offsetLeft - 3;
-    const max = e.currentTarget.offsetWidth - 6;
+    const cursorPosX = e.clientX;
+    const thumWidth = scrollThumb.current!.offsetWidth;
+    const scrollBarWidth = e.currentTarget.offsetWidth;
+    const scrollBarHalfWidth = scrollBarWidth / 2;
+    const scrollBarLeft = e.currentTarget.offsetLeft;
+    const pos = cursorPosX - scrollBarLeft - scrollBarHalfWidth / 2;
+    const max = scrollBarWidth - thumWidth;
     const current = pos < 0 ? 0 : pos > max ? max : pos;
 
     const percent = current / max;
@@ -100,6 +108,9 @@ const PageSelect = ({
 
   useEffect(() => {
     setScrollBarPage(currentPage);
+    scrollThumb.current!.style.width = `${
+      scrollBar.current!.offsetWidth / allPages
+    }px`;
   }, []);
 
   return (
