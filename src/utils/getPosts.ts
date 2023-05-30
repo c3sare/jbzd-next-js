@@ -1,7 +1,7 @@
 import { withSessionSSR } from "@/lib/AuthSession/session";
 import dbConnect from "@/lib/dbConnect";
-import Blacklist from "@/models/Blacklist";
 import Category from "@/models/Category";
+import ObservedBlockList from "@/models/ObservedBlockList";
 import { Postsstats } from "@/models/Post";
 import { hasCookie } from "cookies-next";
 import { formatISO } from "date-fns";
@@ -170,9 +170,13 @@ const getPosts = (options: Options, asPage: boolean = false) =>
 
     if (session?.logged && session?.login) {
       findOptions.author = {
-        $nin: (await Blacklist.find({ username: session?.login })).map(
-          (item) => item.user
-        ),
+        $nin: (
+          await ObservedBlockList.find({
+            username: session?.login,
+            type: "USER",
+            method: "BLOCK",
+          })
+        ).map((item) => item.user),
       };
     }
     const allPosts = await Postsstats.count(findOptions);

@@ -1,7 +1,6 @@
 import { sessionOptions } from "@/lib/AuthSession/config";
 import dbConnect from "@/lib/dbConnect";
-import Blacklist from "@/models/Blacklist";
-import Observelist from "@/models/Observelist";
+import ObservedBlockList from "@/models/ObservedBlockList";
 import User from "@/models/User";
 import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -20,11 +19,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!user)
       return res.status(404).json({ message: "Nie znaleziono użytkownika!" });
 
-    const blacklist = await Blacklist.find({
+    const blacklist = await ObservedBlockList.find({
       username: session.login,
+      method: "BLOCK",
+      type: "USER",
     });
 
-    res.status(200).json(blacklist.map((item) => item.user.toString()));
+    res.status(200).json(blacklist.map((item) => item.name.toString()));
   } else if (req.method === "POST") {
     if (!session?.logged || !session?.login)
       return res.status(400).json({ message: "Nie jesteś zalogowany!" });
@@ -55,15 +56,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         .status(400)
         .json({ message: "Nie możesz zablokować samego siebie!" });
 
-    const blacklist = await Blacklist.exists({
+    const blacklist = await ObservedBlockList.exists({
       username: session.login,
-      user: username,
+      name: username,
+      type: "USER",
+      method: "BLOCK",
     });
 
     if (!blacklist) {
-      const insert = await Blacklist.collection.insertOne({
+      const insert = await ObservedBlockList.collection.insertOne({
         username: session.login,
-        user: username,
+        name: username,
+        type: "USER",
+        method: "BLOCK",
         addTime: new Date(),
       });
 
@@ -72,16 +77,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           .status(500)
           .json({ message: "Wystąpił błąd przy wykonywaniu zapytania!" });
 
-      Observelist.collection.deleteMany({
+      await ObservedBlockList.collection.deleteMany({
         username: session.login,
-        user: username,
+        name: username,
+        type: "USER",
+        method: "FOLLOW",
       });
 
       return res.status(200).json({ method: "ADD", user: username });
     } else {
-      const deleteList = await Blacklist.collection.deleteOne({
+      const deleteList = await ObservedBlockList.collection.deleteOne({
         username: session.login,
-        user: username,
+        name: username,
+        type: "USER",
+        method: "BLOCK",
       });
 
       if (!deleteList.acknowledged)

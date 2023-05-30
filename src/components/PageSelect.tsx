@@ -1,41 +1,38 @@
 import style from "@/styles/paginator.module.css";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { GiDiceSixFacesTwo } from "react-icons/gi";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import { useRouter } from "next/router";
 
-const PageSelect = ({
-  pageName = "str",
-  currentPage,
+const ScrollBarSlider = ({
   allPages,
-}: {
-  pageName?: string;
-  currentPage: number;
-  allPages: number;
-}) => {
-  const router = useRouter();
+  setScrollBarProgress,
+  currentPage,
+}: any) => {
   const [drag, setDrag] = useState<boolean>(false);
   const startClientX = useRef<number>(0);
   const scrollThumb = useRef<HTMLDivElement>(null);
   const scrollBar = useRef<HTMLDivElement>(null);
-  const [scrollBarProgress, setScrollBarProgress] = useState<number>(0);
 
-  function setScrollBar(e: any) {
-    const scrollBarWidth = scrollBar.current!.offsetWidth;
-    const thumbWidth =
-      allPages > 7 ? (scrollBarWidth / allPages) * 7 : scrollBarWidth;
-    const scrollBarLeft = scrollBar.current!.offsetLeft;
+  const setScrollBar = useCallback(
+    (e: any) => {
+      const scrollBarWidth = scrollBar.current!.offsetWidth;
+      const thumbWidth =
+        allPages > 7 ? (scrollBarWidth / allPages) * 7 : scrollBarWidth;
+      const scrollBarLeft = scrollBar.current!.offsetLeft;
 
-    const max = scrollBarWidth - thumbWidth;
-    const result = e.clientX - scrollBarLeft - thumbWidth / 2;
+      const max = scrollBarWidth - thumbWidth;
+      const result = e.clientX - scrollBarLeft - thumbWidth / 2;
 
-    const current = result > max ? max : result < 0 ? 0 : result;
-    const percent = current / (max + thumbWidth);
-    setScrollBarProgress(percent);
+      const current = result > max ? max : result < 0 ? 0 : result;
+      const percent = current / (max + thumbWidth);
+      setScrollBarProgress(percent);
 
-    scrollThumb.current!.style.left = current + "px";
-  }
+      scrollThumb.current!.style.left = current + "px";
+    },
+    [allPages, setScrollBarProgress]
+  );
 
   useEffect(() => {
     function scrollBarSet(e: any) {
@@ -45,7 +42,7 @@ const PageSelect = ({
     window.addEventListener("mousemove", scrollBarSet, true);
 
     return () => window.removeEventListener("mousemove", scrollBarSet, true);
-  }, [drag]);
+  }, [drag, setScrollBar]);
 
   useEffect(() => {
     function disableDrag() {
@@ -61,17 +58,62 @@ const PageSelect = ({
     return () => window.removeEventListener("mouseup", disableDrag, true);
   }, [drag]);
 
-  const setScrollBarPage = (page: number) => {
-    page -= 1;
-    const scrollBarWidth = scrollBar.current!.offsetWidth;
-    const thumbWidth =
-      allPages > 7 ? (scrollBarWidth / allPages) * 7 : scrollBarWidth;
-    const allProgress = scrollBarWidth - thumbWidth;
-    const currentProgress = (page / allPages) * allProgress;
-    scrollThumb.current!.style.width = `${thumbWidth}px`;
-    scrollThumb.current!.style.left = currentProgress + "px";
-    setScrollBarProgress(allProgress / currentProgress);
-  };
+  const setScrollBarPage = useCallback(
+    (page: number, allPages: number) => {
+      const scrollBarWidth = scrollBar.current!.offsetWidth;
+      const thumbWidth =
+        allPages > 7 ? (scrollBarWidth / allPages) * 7 : scrollBarWidth;
+      scrollThumb.current!.style.width = `${thumbWidth}px`;
+      if (allPages < 7 || page < 5) {
+        scrollThumb.current!.style.left = "0px";
+        setScrollBarProgress(0);
+      } else {
+        const percentProgress =
+          page + 4 >= allPages ? 1 : (page - 4) / allPages;
+        const maxProgress = scrollBarWidth - thumbWidth;
+        const progress = maxProgress * percentProgress;
+        scrollThumb.current!.style.left = (progress >= 0 ? progress : 0) + "px";
+
+        setScrollBarProgress(percentProgress);
+      }
+    },
+    [setScrollBarProgress]
+  );
+
+  useEffect(() => {
+    setScrollBarPage(currentPage, allPages);
+  }, [setScrollBarPage, currentPage, allPages]);
+
+  return (
+    <div className={style.scrollBar} ref={scrollBar} onClick={setScrollBar}>
+      <div className={style.scrollTrough} />
+      <div
+        className={style.scrollThumb}
+        style={{ left: "0px" }}
+        ref={scrollThumb}
+        onMouseDown={(e) => {
+          startClientX.current = e.clientX;
+          setDrag(true);
+        }}
+      >
+        <div className={style.scrollKnob} />
+      </div>
+      <div className={style.currentPageMark} />
+    </div>
+  );
+};
+
+const PageSelect = ({
+  pageName = "str",
+  currentPage,
+  allPages,
+}: {
+  pageName?: string;
+  currentPage: number;
+  allPages: number;
+}) => {
+  const router = useRouter();
+  const [scrollBarProgress, setScrollBarProgress] = useState<number>(0);
 
   const getQueryString = () => {
     const datePreset = router.query?.["date-preset"];
@@ -96,10 +138,6 @@ const PageSelect = ({
   };
 
   const query = getQueryString();
-
-  useEffect(() => {
-    setScrollBarPage(currentPage);
-  }, []);
 
   return (
     <>
@@ -185,29 +223,15 @@ const PageSelect = ({
                   }
                 )}
               </tr>
-              <tr>
-                <td colSpan={7}>
-                  <div
-                    className={style.scrollBar}
-                    ref={scrollBar}
-                    onClick={setScrollBar}
-                  >
-                    <div className={style.scrollTrough} />
-                    <div
-                      className={style.scrollThumb}
-                      style={{ left: "0px" }}
-                      ref={scrollThumb}
-                      onMouseDown={(e) => {
-                        startClientX.current = e.clientX;
-                        setDrag(true);
-                      }}
-                    >
-                      <div className={style.scrollKnob} />
-                    </div>
-                    <div className={style.currentPageMark} />
-                  </div>
-                </td>
-              </tr>
+              {allPages > 7 && (
+                <tr>
+                  <td colSpan={7}>
+                    <ScrollBarSlider
+                      {...{ allPages, setScrollBarProgress, currentPage }}
+                    />
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -72,6 +72,7 @@ const Post = ({ post, single = false }: PostProps) => {
     silver: post.silver,
     gold: post.gold,
   });
+  const [spears, setSpears] = useState<number>(post.user?.spears || 0);
 
   const setBadge = (type: string, count: number) => {
     setBadges((prevState) => {
@@ -218,6 +219,7 @@ const Post = ({ post, single = false }: PostProps) => {
 
     if (req.status === 200) {
       refreshBlacklist();
+      refreshObservedlist();
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -235,6 +237,7 @@ const Post = ({ post, single = false }: PostProps) => {
 
     if (req.status === 200) {
       refreshObservedlist();
+      refreshBlacklist();
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -254,6 +257,19 @@ const Post = ({ post, single = false }: PostProps) => {
       router.push("/");
     }
     createNotifycation(setNotifys, "info", res.message);
+  };
+
+  const handleAddSpear = async (username: string) => {
+    const req = await fetch(`/api/user/${username}/spear`, {
+      method: "POST",
+    });
+
+    const res = await req.json();
+    if (req.status === 200) {
+      setSpears(res.counter);
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
   };
 
   const userAvatar =
@@ -310,9 +326,14 @@ const Post = ({ post, single = false }: PostProps) => {
                             alt="Dzida"
                           />
                         </span>
-                        <span>{post.user?.spears}</span>
+                        <span>{spears}</span>
                         {logged && login !== post.user?.username && (
-                          <button className={style.userVote}>+</button>
+                          <button
+                            className={style.userVote}
+                            onClick={() => handleAddSpear(post.user?.username)}
+                          >
+                            +
+                          </button>
                         )}
                       </div>
                       <div>

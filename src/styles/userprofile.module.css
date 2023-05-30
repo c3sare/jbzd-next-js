@@ -212,6 +212,7 @@
   justify-content: center;
   margin-left: 8px;
   border: none;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {

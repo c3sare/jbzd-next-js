@@ -1,6 +1,4 @@
-import Comment from "@/models/Comment";
-import Post from "@/models/Post";
-import User, { Usersprofiles } from "@/models/User";
+import { Usersprofiles } from "@/models/User";
 import Image from "next/image";
 import Link from "next/link";
 import style from "@/styles/userprofile.module.css";
@@ -14,6 +12,7 @@ import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import Head from "next/head";
 import { format } from "date-fns";
 import dbConnect from "@/lib/dbConnect";
+import createNotifycation from "@/utils/createNotifycation";
 
 interface ProfileData {
   profile: {
@@ -34,12 +33,27 @@ interface ProfileData {
 
 const UserProfile = ({ profile }: ProfileData) => {
   const router = useRouter();
+  const [spears, setSpears] = useState<number>(profile?.spears || 0);
   const [tab, setTab] = useState<number>(
     [0, 1].includes(Number(router.query?.tab)) ? Number(router.query?.tab) : 0
   );
   const {
     login: { logged, login },
+    setNotifys,
   } = useContext(GlobalContext) as GlobalContextInterface;
+
+  const handleAddSpear = async (username: string) => {
+    const req = await fetch(`/api/user/${username}/spear`, {
+      method: "POST",
+    });
+
+    const res = await req.json();
+    if (req.status === 200) {
+      setSpears(res.counter);
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
 
   return (
     <>
@@ -127,9 +141,14 @@ const UserProfile = ({ profile }: ProfileData) => {
                 alt="Dzida"
               />
             </span>
-            <span>{profile.spears}</span>
+            <span>{spears}</span>
             {login !== profile?.username && logged && (
-              <button className={style.userVote}>+</button>
+              <button
+                className={style.userVote}
+                onClick={() => handleAddSpear(profile.username)}
+              >
+                +
+              </button>
             )}
           </div>
           <Link href="/ranking" className={style.rank}>
