@@ -13,7 +13,7 @@ const Index = ({ post }: any) => {
       <Head>
         <title>{post.title}</title>
       </Head>
-      <Post post={post} single />
+      <Post post={post} single showTags />
       <div className={style.pagination}>
         <div className={style.paginationButtons}>
           <Link href="/" className={style.paginationNext}>

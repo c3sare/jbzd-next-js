@@ -32,6 +32,7 @@ interface PostProps {
       type: "image" | "text" | "youtube" | "video";
     }[];
     comments: number;
+    tags: string[];
     category: string;
     addTime: string;
     author: string;
@@ -47,9 +48,10 @@ interface PostProps {
     gold: number;
   };
   single?: boolean;
+  showTags?: boolean;
 }
 
-const Post = ({ post, single = false }: PostProps) => {
+const Post = ({ post, single = false, showTags = false }: PostProps) => {
   const router = useRouter();
   const [showButtons, setShowButtons] = useState(false);
   const {
@@ -60,10 +62,8 @@ const Post = ({ post, single = false }: PostProps) => {
     refreshPlused,
     favourites,
     refreshFavourites,
-    blackList,
-    observedList,
-    refreshBlacklist,
-    refreshObservedlist,
+    lists,
+    refreshLists,
     createMonit,
   } = useContext(GlobalContext) as GlobalContextInterface;
   const [badges, setBadges] = useState<BadgeInterface>({
@@ -208,36 +208,34 @@ const Post = ({ post, single = false }: PostProps) => {
   };
 
   const handleClickBlacklist = async (username: string) => {
-    const req = await fetch("/api/user/blacklist", {
+    const req = await fetch("/api/user/lists/user/block", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({ name: username }),
     });
     const res = await req.json();
 
     if (req.status === 200) {
-      refreshBlacklist();
-      refreshObservedlist();
+      refreshLists();
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
   };
 
   const handleClickObservelist = async (username: string) => {
-    const req = await fetch("/api/user/observelist", {
+    const req = await fetch("/api/user/lists/user/follow", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({ name: username }),
     });
     const res = await req.json();
 
     if (req.status === 200) {
-      refreshObservedlist();
-      refreshBlacklist();
+      refreshLists();
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -267,6 +265,40 @@ const Post = ({ post, single = false }: PostProps) => {
     const res = await req.json();
     if (req.status === 200) {
       setSpears(res.counter);
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
+  const handleAddTagToFollowed = async (tag: string) => {
+    const req = await fetch("/api/user/lists/tag/follow", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ name: tag }),
+    });
+    const res = await req.json();
+
+    if (req.status === 200) {
+      refreshLists();
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
+  const handleAddTagToBlackList = async (tag: string) => {
+    const req = await fetch("/api/user/lists/tag/block", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ name: tag }),
+    });
+    const res = await req.json();
+
+    if (req.status === 200) {
+      refreshLists();
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -347,7 +379,7 @@ const Post = ({ post, single = false }: PostProps) => {
                       <button
                         disabled={post.user?.username === login}
                         className={
-                          observedList.includes(post.user?.username)
+                          lists.user.follow.includes(post.user?.username)
                             ? style.observed
                             : ""
                         }
@@ -360,7 +392,7 @@ const Post = ({ post, single = false }: PostProps) => {
                       <button
                         disabled={post.user?.username === login}
                         className={
-                          blackList.includes(post.user?.username)
+                          lists.user.block.includes(post.user?.username)
                             ? style.blacklisted
                             : ""
                         }
@@ -420,6 +452,39 @@ const Post = ({ post, single = false }: PostProps) => {
             )}
           </div>
         </div>
+        {showTags && (
+          <div className={style.articleTags}>
+            <div className={style.articleTagsContent}>
+              <div>
+                {post.tags.map((tag) => (
+                  <span key={tag} className={style.articleTag}>
+                    <Link href={`/tag/${tag}`}>#{tag}</Link>
+                    {logged && (
+                      <div className={style.observeContainer}>
+                        <button
+                          onClick={() => handleAddTagToFollowed(tag)}
+                          {...(lists.tag.follow.includes(tag)
+                            ? { className: style.active }
+                            : {})}
+                        >
+                          Obserwuj
+                        </button>
+                        <button
+                          onClick={() => handleAddTagToBlackList(tag)}
+                          {...(lists.tag.block.includes(tag)
+                            ? { className: style.active }
+                            : {})}
+                        >
+                          Czarna lista
+                        </button>
+                      </div>
+                    )}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
         {allPostElements}
         {/* <div className={style.comments"}>
               {post.comments.map((comment) => (

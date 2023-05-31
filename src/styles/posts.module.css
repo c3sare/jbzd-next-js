@@ -582,3 +582,87 @@
   color: white;
   font-size: 32px;
 }
+
+.articleTags {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px 0;
+  position: relative;
+  padding-right: 25px;
+}
+
+.articleTagsContent {
+  position: relative;
+  height: 25px;
+}
+
+.article-tags-content > div {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.articleTag {
+  color: #fff;
+  font-size: 11px;
+  padding: 4px;
+  margin-left: 2px;
+  position: relative;
+  margin-bottom: 3px;
+  background: #4f4f4f;
+  border-radius: 2px;
+  position: relative;
+}
+
+.articleTag:hover .observeContainer {
+  display: flex;
+}
+
+.articleTag a:hover {
+  color: #8dac20;
+}
+
+.observeContainer {
+  margin-top: 4px;
+  position: absolute;
+  top: 100%;
+  left: 25%;
+  background-color: #313131;
+  width: 240px;
+  border-radius: 3px;
+  padding: 15px;
+  display: none;
+  z-index: 10;
+}
+
+.observeContainer:before {
+  width: 0;
+  height: 0;
+  content: "";
+  display: block;
+  border-style: solid;
+  border-width: 0 5px 5px;
+  border-color: transparent transparent #313131;
+  position: absolute;
+  left: 10px;
+  top: -5px;
+}
+
+.observeContainer button {
+  width: 50%;
+  margin: 0 3px;
+  font-size: 14px;
+  padding: 10px;
+  border: none;
+  background-color: #ac2f2f;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.observeContainer button.active {
+  opacity: 0.5;
+}
+
+.observeContainer button:last-child {
+  background-color: black;
+}

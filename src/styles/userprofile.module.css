@@ -75,6 +75,22 @@
   margin-bottom: 10px;
 }
 
+.userProfileActions button {
+  border: none;
+  background: #313131;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 22px;
+  color: white;
+  display: inline-flex;
+  cursor: pointer;
+  margin: 0 3px;
+}
+
+.userProfileActions button.disabled {
+  color: #505050;
+}
+
 .userRanks {
   width: 125px;
   border-radius: 5px;

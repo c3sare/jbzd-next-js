@@ -13,6 +13,7 @@ import Head from "next/head";
 import { format } from "date-fns";
 import dbConnect from "@/lib/dbConnect";
 import createNotifycation from "@/utils/createNotifycation";
+import { IoMdEye, IoMdEyeOff, IoMdMail } from "react-icons/io";
 
 interface ProfileData {
   profile: {
@@ -40,6 +41,8 @@ const UserProfile = ({ profile }: ProfileData) => {
   const {
     login: { logged, login },
     setNotifys,
+    lists,
+    refreshLists,
   } = useContext(GlobalContext) as GlobalContextInterface;
 
   const handleAddSpear = async (username: string) => {
@@ -54,6 +57,26 @@ const UserProfile = ({ profile }: ProfileData) => {
       createNotifycation(setNotifys, "info", res.message);
     }
   };
+
+  const handleAddToBlackList = async (username: string) => {
+    const req = await fetch("/api/user/lists/user/block", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: username }),
+    });
+
+    const res = await req.json();
+
+    if (req.status === 200) {
+      refreshLists();
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
+  const isBlocked = lists.user.block.includes(profile.username);
 
   return (
     <>
@@ -129,7 +152,21 @@ const UserProfile = ({ profile }: ProfileData) => {
               </span>
             </div>
           </div>
-          <section className={style.userProfileActions}></section>
+          <section className={style.userProfileActions}>
+            {login !== profile?.username && logged && (
+              <>
+                <button>
+                  <IoMdMail />
+                </button>
+                <button
+                  className={isBlocked ? style.disabled : ""}
+                  onClick={() => handleAddToBlackList(profile.username)}
+                >
+                  {isBlocked ? <IoMdEyeOff /> : <IoMdEye />}
+                </button>
+              </>
+            )}
+          </section>
         </div>
         <div className={style.userRanks}>
           <div className={style.rank}>

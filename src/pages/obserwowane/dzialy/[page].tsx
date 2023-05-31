@@ -15,7 +15,7 @@ const Index = ({ posts, currentPage, allPages, noFollowed }: any) => {
       createNotifycation(
         setNotifys,
         "info",
-        "Nie zaobserwowałeś jeszcze żadnego użytkownika!"
+        "Nie zaobserwowałeś jeszcze żadnego działu!"
       );
       router.push("/");
     }
@@ -25,9 +25,9 @@ const Index = ({ posts, currentPage, allPages, noFollowed }: any) => {
     <></>
   ) : (
     <>
-      <Seo subTitle="Obserwowani użytkownicy" />
+      <Seo subTitle={`Obserwowane działy, strona ${currentPage}`} />
       <PostsPage
-        pageName="obserwowane/uzytkownicy"
+        pageName="obserwowane/dzialy"
         posts={posts}
         currentPage={currentPage}
         allPages={allPages}
@@ -38,4 +38,4 @@ const Index = ({ posts, currentPage, allPages, noFollowed }: any) => {
 
 export default Index;
 
-export const getServerSideProps = getPosts({}, false, "USER");
+export const getServerSideProps = getPosts({}, false, "SECTION");

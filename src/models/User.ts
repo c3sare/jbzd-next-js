@@ -43,3 +43,5 @@ export default models.User || model<User>("User", userSchema);
 
 export const Usersprofiles =
   models.usersprofiles || model("usersprofiles", userSchema);
+
+export const Usersposts = models.usersposts || model("usersposts", userSchema);

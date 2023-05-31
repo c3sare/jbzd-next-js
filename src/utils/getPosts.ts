@@ -10,17 +10,29 @@ interface Options {
   accepted?: boolean;
   author?: {
     $nin?: string[];
+    $in?: string[];
   };
   addTime?: {
     $gt: string;
     $lt?: string;
   };
-  category?: string;
+  category?:
+    | string
+    | {
+        $in: string[];
+      };
+  tags?: {
+    $in: string[];
+  };
   title?: any;
   memContainers?: any;
 }
 
-const getPosts = (options: Options, asPage: boolean = false) =>
+const getPosts = (
+  options: Options,
+  asPage: boolean = false,
+  personalType?: "USER" | "TAG" | "SECTION"
+) =>
   withSessionSSR(async function getServerSideProps({
     req,
     query,
@@ -176,9 +188,69 @@ const getPosts = (options: Options, asPage: boolean = false) =>
             type: "USER",
             method: "BLOCK",
           })
-        ).map((item) => item.user),
+        ).map((item) => item.name),
       };
+      if (personalType === "USER") {
+        const observedUsers = (
+          await ObservedBlockList.find({
+            username: session.login,
+            type: "USER",
+            method: "FOLLOW",
+          })
+        ).map((item) => item.name);
+
+        if (observedUsers.length === 0)
+          return {
+            props: {
+              noFollowed: true,
+            },
+          };
+
+        findOptions.author = {
+          ...findOptions.author,
+          $in: observedUsers,
+        };
+      } else if (personalType === "SECTION") {
+        const observedSections = (
+          await ObservedBlockList.find({
+            username: session.login,
+            type: "SECTION",
+            method: "FOLLOW",
+          })
+        ).map((item) => item.name);
+
+        if (observedSections.length === 0)
+          return {
+            props: {
+              noFollowed: true,
+            },
+          };
+
+        findOptions.category = {
+          $in: observedSections,
+        };
+      } else if (personalType === "TAG") {
+        const observedTags = (
+          await ObservedBlockList.find({
+            username: session.login,
+            type: "TAG",
+            method: "FOLLOW",
+          })
+        ).map((item) => item.name);
+
+        if (observedTags.length === 0)
+          return {
+            props: {
+              noFollowed: true,
+            },
+          };
+
+        findOptions.tags = {
+          $in: observedTags,
+        };
+      }
     }
+
     const allPosts = await Postsstats.count(findOptions);
     Postsstats.find({ $text: { $search: pharse } });
 
@@ -205,6 +277,7 @@ const getPosts = (options: Options, asPage: boolean = false) =>
         ...(checkCategory
           ? {
               category: checkCategory.name,
+              categorySlug: checkCategory.slug,
               nsfw: checkCategory.nsfw,
               ofage: hasCookie("ofage", { req }),
             }

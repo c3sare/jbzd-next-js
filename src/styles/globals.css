@@ -2,6 +2,11 @@
   --plyr-color-main: #de2127;
 }
 
+a {
+  text-decoration: none;
+  color: white;
+}
+
 hr {
   height: 4px;
   background-color: rgba(255, 255, 255, 0.2);
