@@ -21,6 +21,7 @@ const Index = ({
         <ConfirmOfAge />
       ) : (
         <PostsPage
+          category={categorySlug}
           pageName={categorySlug}
           posts={posts}
           currentPage={currentPage}

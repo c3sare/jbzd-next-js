@@ -8,10 +8,12 @@ import createNotifycation from "@/utils/createNotifycation";
 import { useContext, useState } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
-const PostsOptions = () => {
+const PostsOptions = ({ category }: { category?: string }) => {
   const {
     login: { logged },
     setNotifys,
+    refreshLists,
+    lists: { section },
   } = useContext(GlobalContext) as GlobalContextInterface;
   const [currentOption, setCurrentOption] = useState<number>(0);
   const options = [
@@ -25,6 +27,26 @@ const PostsOptions = () => {
     if (num === currentOption) setCurrentOption(0);
     else setCurrentOption(num);
   };
+
+  const handleFollowSection = async (slug: string) => {
+    const req = await fetch("/api/user/lists/section/follow", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: slug }),
+    });
+
+    const res = await req.json();
+
+    if (req.status === 200) {
+      refreshLists();
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
+  const isFollowed = category ? section.follow.includes(category) : false;
 
   return (
     <>
@@ -58,6 +80,14 @@ const PostsOptions = () => {
         >
           <IoMdFunnel /> Filtruj
         </button>
+        {category && (
+          <button
+            className={isFollowed ? style.followed : ""}
+            onClick={() => handleFollowSection(category)}
+          >
+            {isFollowed ? "Nie obserwuj działu" : "Obserwuj dział"}
+          </button>
+        )}
       </div>
       <div className={style.filterComponents}>
         {currentOption === 2 && options[2]}

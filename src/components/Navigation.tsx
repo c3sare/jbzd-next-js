@@ -109,6 +109,9 @@ const Navigation = () => {
       <li>
         <Link href="/obserwowane/uzytkownicy">Użytkownicy</Link>
       </li>
+      <li>
+        <Link href="/obserwowane/tagi">Tagi</Link>
+      </li>
     </>
   );
 

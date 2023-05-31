@@ -6,6 +6,20 @@ import { Postsstats } from "@/models/Post";
 import { hasCookie } from "cookies-next";
 import { formatISO } from "date-fns";
 
+interface ListsInterface {
+  user: {
+    follow: string[];
+    block: string[];
+  };
+  tag: {
+    follow: string[];
+    block: string[];
+  };
+  section: {
+    follow: string[];
+  };
+}
+
 interface Options {
   accepted?: boolean;
   author?: {
@@ -22,7 +36,8 @@ interface Options {
         $in: string[];
       };
   tags?: {
-    $in: string[];
+    $in?: string[];
+    $nin?: string[];
   };
   title?: any;
   memContainers?: any;
@@ -31,7 +46,8 @@ interface Options {
 const getPosts = (
   options: Options,
   asPage: boolean = false,
-  personalType?: "USER" | "TAG" | "SECTION"
+  personalType: "USER" | "TAG" | "SECTION" | "",
+  tag: boolean = false
 ) =>
   withSessionSSR(async function getServerSideProps({
     req,
@@ -180,24 +196,46 @@ const getPosts = (
       }
     }
 
+    let lists: any[] | ListsInterface | null = null;
+
     if (session?.logged && session?.login) {
+      lists = await ObservedBlockList.find({
+        username: session?.login,
+      });
+      lists = {
+        user: {
+          follow: lists
+            .filter((item) => item.type === "USER" && item.method === "FOLLOW")
+            .map((item) => item.name),
+          block: lists
+            .filter((item) => item.type === "USER" && item.method === "BLOCK")
+            .map((item) => item.name),
+        },
+        tag: {
+          follow: lists
+            .filter((item) => item.type === "TAG" && item.method === "FOLLOW")
+            .map((item) => item.name),
+          block: lists
+            .filter((item) => item.type === "TAG" && item.method === "BLOCK")
+            .map((item) => item.name),
+        },
+        section: {
+          follow: lists
+            .filter(
+              (item) => item.type === "SECTION" && item.method === "FOLLOW"
+            )
+            .map((item) => item.name),
+        },
+      } as ListsInterface;
+
       findOptions.author = {
-        $nin: (
-          await ObservedBlockList.find({
-            username: session?.login,
-            type: "USER",
-            method: "BLOCK",
-          })
-        ).map((item) => item.name),
+        $nin: lists.user.block,
+      };
+      findOptions.tags = {
+        $nin: lists.tag.block,
       };
       if (personalType === "USER") {
-        const observedUsers = (
-          await ObservedBlockList.find({
-            username: session.login,
-            type: "USER",
-            method: "FOLLOW",
-          })
-        ).map((item) => item.name);
+        const observedUsers = lists.user.follow;
 
         if (observedUsers.length === 0)
           return {
@@ -211,13 +249,7 @@ const getPosts = (
           $in: observedUsers,
         };
       } else if (personalType === "SECTION") {
-        const observedSections = (
-          await ObservedBlockList.find({
-            username: session.login,
-            type: "SECTION",
-            method: "FOLLOW",
-          })
-        ).map((item) => item.name);
+        const observedSections = lists.section.follow;
 
         if (observedSections.length === 0)
           return {
@@ -230,13 +262,7 @@ const getPosts = (
           $in: observedSections,
         };
       } else if (personalType === "TAG") {
-        const observedTags = (
-          await ObservedBlockList.find({
-            username: session.login,
-            type: "TAG",
-            method: "FOLLOW",
-          })
-        ).map((item) => item.name);
+        const observedTags = lists.tag.follow;
 
         if (observedTags.length === 0)
           return {
@@ -251,7 +277,20 @@ const getPosts = (
       }
     }
 
+    if (tag) {
+      findOptions = {
+        ...findOptions,
+        tags: { $in: [query.tag as string] },
+      };
+    }
+
     const allPosts = await Postsstats.count(findOptions);
+
+    if (allPosts === 0 && tag)
+      return {
+        notFound: true,
+      };
+
     Postsstats.find({ $text: { $search: pharse } });
 
     const allPages = Math.ceil(allPosts / 8);

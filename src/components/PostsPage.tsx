@@ -8,6 +8,7 @@ interface PostsPageInterface {
   currentPage: number;
   allPages: number;
   pageName?: string;
+  category?: string;
 }
 
 const PostsPage = ({
@@ -15,10 +16,11 @@ const PostsPage = ({
   currentPage,
   allPages,
   pageName,
+  category,
 }: PostsPageInterface) => {
   return (
     <>
-      <PostsOptions />
+      <PostsOptions category={category} />
       <div className={style.posts}>
         {posts.map((postMain: any, i: number) => (
           <Post key={i} post={postMain} />

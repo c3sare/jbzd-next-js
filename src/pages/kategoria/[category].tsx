@@ -15,6 +15,7 @@ const Category = ({
         subTitle={category + (currentPage > 1 ? `, strona ${currentPage}` : "")}
       />
       <PostsPage
+        category={categorySlug}
         pageName={`kategoria/${categorySlug}`}
         posts={posts}
         currentPage={currentPage}
