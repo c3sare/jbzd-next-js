@@ -4,6 +4,7 @@ import UserData from "@/components/UserSettingsComponents/UserData";
 import UserPreferences from "@/components/UserSettingsComponents/UserPreferences";
 import Notifycations from "@/components/UserSettingsComponents/Notifycations";
 import Premium from "@/components/UserSettingsComponents/Premium";
+import Seo from "@/components/Seo";
 
 const UserSettings = () => {
   const [currentTab, setCurrentTab] = useState<number>(0);
@@ -28,18 +29,21 @@ const UserSettings = () => {
   ];
 
   return (
-    <section>
-      <div className={style.settingsContainer}>
-        <ul className={style.tabs}>
-          {tabs.map((tab, i) => (
-            <li key={i} className={currentTab === i ? style.active : ""}>
-              <button onClick={() => setCurrentTab(i)}>{tab.name}</button>
-            </li>
-          ))}
-        </ul>
-        <div className={style.tabContainer}>{tabs[currentTab].component}</div>
-      </div>
-    </section>
+    <>
+      <Seo title="Ustawienia" />
+      <section>
+        <div className={style.settingsContainer}>
+          <ul className={style.tabs}>
+            {tabs.map((tab, i) => (
+              <li key={i} className={currentTab === i ? style.active : ""}>
+                <button onClick={() => setCurrentTab(i)}>{tab.name}</button>
+              </li>
+            ))}
+          </ul>
+          <div className={style.tabContainer}>{tabs[currentTab].component}</div>
+        </div>
+      </section>
+    </>
   );
 };
 

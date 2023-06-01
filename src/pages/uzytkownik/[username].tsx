@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import dbConnect from "@/lib/dbConnect";
 import createNotifycation from "@/utils/createNotifycation";
 import { IoMdEye, IoMdEyeOff, IoMdMail } from "react-icons/io";
+import Breadcrumb from "@/components/Breadcrumb";
 
 interface ProfileData {
   profile: {
@@ -217,17 +218,12 @@ const UserProfile = ({ profile }: ProfileData) => {
         </button>
       </section>
       <div>
-        <div className={style.breadcrumbs}>
-          <span>
-            <Link href="/">Strona główna</Link>
-          </span>
-          <span>
-            <Link href={"/uzytkownik/" + profile.username}>
-              {profile.username}
-            </Link>
-          </span>
-          <span>{tab === 0 ? "Dzidy" : "Komentarze"}</span>
-        </div>
+        <Breadcrumb currentNode={tab === 0 ? "Dzidy" : "Komentarze"}>
+          <Link href="/">Strona główna</Link>
+          <Link href={"/uzytkownik/" + profile.username}>
+            {profile.username}
+          </Link>
+        </Breadcrumb>
         {tab === 0 && <ProfilePosts username={profile.username} />}
         {tab === 1 && <section></section>}
       </div>

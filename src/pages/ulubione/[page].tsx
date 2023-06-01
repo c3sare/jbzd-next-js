@@ -2,21 +2,22 @@ import PostsPage from "@/components/PostsPage";
 import Seo from "@/components/Seo";
 import getPosts from "@/utils/getPosts";
 
-const Index = ({ posts, currentPage, allPages }: any) => {
+const Favourites = ({ posts, currentPage, allPages }: any) => {
   return (
     <>
-      <Seo />
+      <Seo title="Ulubione" />
       <PostsPage
-        nodeName="Strona Główna"
+        nodeName="Ulubione"
+        pageName="ulubione"
         posts={posts}
         currentPage={currentPage}
         allPages={allPages}
-        isHomePage
+        hideButtons
       />
     </>
   );
 };
 
-export default Index;
+export const getServerSideProps = getPosts({}, false, "FAVOURITES");
 
-export const getServerSideProps = getPosts({ accepted: true }, false, "");
+export default Favourites;

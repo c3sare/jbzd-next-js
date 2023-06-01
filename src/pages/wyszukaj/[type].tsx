@@ -16,7 +16,9 @@ const SearchType = ({ boxes }: { boxes: any }) => {
           <h2>Tagi</h2>
           <div>
             {boxes.tagi.map((item: any, i: number) => (
-              <div key={i}>{item.title}</div>
+              <Link key={i} href={`/tag/${item}`}>
+                #{item}
+              </Link>
             ))}
           </div>
         </div>
@@ -50,7 +52,6 @@ const SearchType = ({ boxes }: { boxes: any }) => {
 export default SearchType;
 
 export async function getServerSideProps({ query }: { query: any }) {
-  console.log(query);
   if (
     !["wszystko", "obrazki", "tagi", "uzytkownicy"].includes(
       query.type as string

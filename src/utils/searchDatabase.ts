@@ -1,9 +1,14 @@
 import Post from "@/models/Post";
 import User from "@/models/User";
 
-interface BoxInterface {
-  type: "obrazki" | "tagi" | "uzytkownicy";
-  data: any[];
+function removeDuplicates(array: string[]) {
+  let uniqueChars: string[] = [];
+  array.forEach((element) => {
+    if (!uniqueChars.includes(element)) {
+      uniqueChars.push(element);
+    }
+  });
+  return uniqueChars;
 }
 
 export default async function searchDatabase(
@@ -11,6 +16,8 @@ export default async function searchDatabase(
   pharse: string
 ) {
   let boxes = {};
+
+  pharse = decodeURIComponent(pharse);
 
   if (["wszystko", "obrazki"].includes(type)) {
     const posts = await Post.find({
@@ -26,9 +33,16 @@ export default async function searchDatabase(
   }
 
   if (["wszystko", "tagi"].includes(type)) {
+    let tagi: string[] = [];
+    (await Post.find({ tags: { $in: pharse.split(" ") } })).forEach(
+      (item: any) => {
+        tagi = [...tagi, ...item.tags];
+      }
+    );
+    tagi = removeDuplicates(tagi);
     boxes = {
       ...boxes,
-      tagi: [],
+      tagi,
     };
   }
 

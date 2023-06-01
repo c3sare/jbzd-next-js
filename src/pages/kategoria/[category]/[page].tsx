@@ -15,6 +15,7 @@ const Category = ({
         subTitle={category + (currentPage > 1 ? `, strona ${currentPage}` : "")}
       />
       <PostsPage
+        nodeName={category}
         category={categorySlug}
         pageName={`kategoria/${categorySlug}`}
         posts={posts}
@@ -27,4 +28,4 @@ const Category = ({
 
 export default Category;
 
-export const getServerSideProps = getPosts({});
+export const getServerSideProps = getPosts({}, false, "");

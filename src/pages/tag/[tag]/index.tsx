@@ -10,6 +10,7 @@ const Index = ({ posts, currentPage, allPages }: any) => {
     <>
       <Seo />
       <PostsPage
+        nodeName={`Tag: #${router.query.tag}`}
         pageName={`tag/${router.query.tag}`}
         posts={posts}
         currentPage={currentPage}

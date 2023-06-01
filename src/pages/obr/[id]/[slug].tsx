@@ -2,17 +2,31 @@ import Post from "@/components/Post";
 import { Postsstats } from "@/models/Post";
 import createSlug from "@/utils/createSlug";
 import { Types } from "mongoose";
-import Head from "next/head";
 import Link from "next/link";
 import style from "@/styles/posts.module.css";
 import { GiDiceSixFacesTwo } from "react-icons/gi";
+import Seo from "@/components/Seo";
+import Breadcrumb from "@/components/Breadcrumb";
+import { useContext } from "react";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
 const Index = ({ post }: any) => {
+  const { categories } = useContext(GlobalContext) as GlobalContextInterface;
+  console.log(categories);
+
+  const category =
+    post.category !== "" && post.category
+      ? categories.find((item) => item.slug === post.category)?.name
+      : "";
   return (
     <>
-      <Head>
-        <title>{post.title}</title>
-      </Head>
+      <Seo title={post.title} />
+      <Breadcrumb currentNode={post.title}>
+        <Link href="/">Strona Główna</Link>
+        {post.category.length > 0 ? (
+          <Link href={`/kategoria/${post.category}`}>{category}</Link>
+        ) : null}
+      </Breadcrumb>
       <Post post={post} single showTags />
       <div className={style.pagination}>
         <div className={style.paginationButtons}>

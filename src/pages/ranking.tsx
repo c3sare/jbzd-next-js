@@ -1,3 +1,4 @@
+import Breadcrumb from "@/components/Breadcrumb";
 import Seo from "@/components/Seo";
 import dbConnect from "@/lib/dbConnect";
 import { Usersposts } from "@/models/User";
@@ -10,12 +11,12 @@ const MikroBlog = ({ data }: any) => {
   return (
     <>
       <Seo title="Ranking użytkowników" />
-      <div className={style.breadcrumbs}>
-        <span className={style.breadcrumbsLink}>
-          <Link href="/">Strona główna</Link>
-        </span>
-        <span className={style.breadcrumbsLink}> Ranking użytowników</span>
-      </div>
+      <Breadcrumb
+        currentNode="Ranking użytkowników"
+        styles={{ marginLeft: "8px" }}
+      >
+        <Link href="/">Strona Główna</Link>
+      </Breadcrumb>
       <div>
         <div className={style.ranking}>
           <ul>

@@ -27,6 +27,7 @@ const Index = ({ posts, currentPage, allPages, noFollowed }: any) => {
     <>
       <Seo subTitle={`Obserwowani użytkownicy ,strona ${currentPage}`} />
       <PostsPage
+        nodeName="Obserwowani użytkownicy"
         pageName="obserwowane/uzytkownicy"
         posts={posts}
         currentPage={currentPage}

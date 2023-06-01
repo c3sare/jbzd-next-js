@@ -21,6 +21,7 @@ const Index = ({
         <ConfirmOfAge />
       ) : (
         <PostsPage
+          nodeName={category}
           category={categorySlug}
           pageName={categorySlug}
           posts={posts}
@@ -34,4 +35,4 @@ const Index = ({
 
 export default Index;
 
-export const getServerSideProps = getPosts({}, true);
+export const getServerSideProps = getPosts({}, true, "");

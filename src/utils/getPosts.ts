@@ -1,10 +1,12 @@
 import { withSessionSSR } from "@/lib/AuthSession/session";
 import dbConnect from "@/lib/dbConnect";
 import Category from "@/models/Category";
+import Favourite from "@/models/Favourite";
 import ObservedBlockList from "@/models/ObservedBlockList";
 import { Postsstats } from "@/models/Post";
 import { hasCookie } from "cookies-next";
 import { formatISO } from "date-fns";
+import { Types } from "mongoose";
 
 interface ListsInterface {
   user: {
@@ -21,6 +23,7 @@ interface ListsInterface {
 }
 
 interface Options {
+  _id?: { $in?: Types.ObjectId[] };
   accepted?: boolean;
   author?: {
     $nin?: string[];
@@ -46,7 +49,7 @@ interface Options {
 const getPosts = (
   options: Options,
   asPage: boolean = false,
-  personalType: "USER" | "TAG" | "SECTION" | "",
+  personalType: "USER" | "TAG" | "SECTION" | "FAVOURITES" | "",
   tag: boolean = false
 ) =>
   withSessionSSR(async function getServerSideProps({
@@ -273,6 +276,13 @@ const getPosts = (
 
         findOptions.tags = {
           $in: observedTags,
+        };
+      } else if (personalType === "FAVOURITES") {
+        const favourites = (
+          await Favourite.collection.find({ username: session.login }).toArray()
+        ).map((item) => new Types.ObjectId(item.post));
+        findOptions._id = {
+          $in: favourites,
         };
       }
     }

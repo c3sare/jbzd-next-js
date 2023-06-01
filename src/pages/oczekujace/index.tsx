@@ -7,6 +7,7 @@ const Waitings = ({ posts, currentPage, allPages }: any) => {
     <>
       <Seo subTitle="Oczekujące" />
       <PostsPage
+        nodeName="Oczekujące"
         pageName="oczekujace"
         posts={posts}
         currentPage={currentPage}
@@ -18,4 +19,4 @@ const Waitings = ({ posts, currentPage, allPages }: any) => {
 
 export default Waitings;
 
-export const getServerSideProps = getPosts({ accepted: false });
+export const getServerSideProps = getPosts({ accepted: false }, false, "");
