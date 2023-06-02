@@ -179,24 +179,27 @@ const getPosts = (
           notFound: true,
         };
 
-      if (!session?.logged || !session?.login)
-        if (checkCategory.nsfw || checkCategory.asPage)
+      if (!session?.logged || !session?.login) {
+        if (checkCategory.nsfw || checkCategory.asPage) {
           return {
             redirect: {
               destination: "/logowanie",
               permament: false,
             },
           };
-        else {
-          if (!hasCookie("ofage", { req }) && checkCategory.nsfw)
-            return {
-              props: {
-                ofage: false,
-                nsfw: true,
-              },
-            };
+        } else {
           options.category = category as string;
         }
+      } else {
+        if (!hasCookie("ofage", { req }) && checkCategory.nsfw)
+          return {
+            props: {
+              ofage: false,
+              nsfw: true,
+            },
+          };
+        options.category = category as string;
+      }
     }
 
     let lists: any[] | ListsInterface | null = null;
