@@ -8,9 +8,29 @@ import React from "react";
 import NoSsrWrapper from "../no-ssr-wrapper";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import useSWR from "swr";
 const Konva = dynamic(import("../Konva"), { ssr: false });
 
 const isSSR = () => typeof window === "undefined";
+
+const FullFormLoading = () => {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "absolute",
+        top: "0",
+        left: "0",
+      }}
+    >
+      <Loading />
+    </div>
+  );
+};
 
 interface FormDataInterface {
   name: string;
@@ -20,26 +40,14 @@ interface FormDataInterface {
   birthday: string;
 }
 
-const UserDataForm = ({
-  setLoading,
-  addNotify,
-}: {
-  setLoading: any;
-  addNotify: any;
-}) => {
-  const [isLoading, setIsLoading] = useState<boolean>();
+const UserDataForm = ({ addNotify, data, refreshUserData }: any) => {
+  const [loading, setLoading] = useState<boolean>();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormDataInterface>({
-    defaultValues: async () => {
-      setIsLoading(true);
-      const data = await fetch("/api/user/userdata");
-      const formData = (await data.json()) as FormDataInterface;
-      setIsLoading(false);
-      return formData;
-    },
+    defaultValues: data,
   });
 
   const saveData = async (data: FormDataInterface) => {
@@ -59,6 +67,7 @@ const UserDataForm = ({
     } else {
       addNotify(res.message);
     }
+    refreshUserData();
     setLoading(false);
   };
 
@@ -107,7 +116,7 @@ const UserDataForm = ({
           type="text"
           placeholder="Imię"
           {...registerName}
-          disabled={isLoading}
+          disabled={loading}
           {...(errors.name ? { className: style.error } : {})}
         />
         {errors.name && (
@@ -117,7 +126,7 @@ const UserDataForm = ({
       <div className={style.formGroup}>
         <select
           {...registerGender}
-          disabled={isLoading}
+          disabled={loading}
           {...(errors.gender ? { className: style.error } : {})}
         >
           <option value={0}>Mężczyzna</option>
@@ -134,7 +143,7 @@ const UserDataForm = ({
           type="text"
           placeholder="Kraj"
           {...registerCountry}
-          disabled={isLoading}
+          disabled={loading}
           {...(errors.country ? { className: style.error } : {})}
         />
         {errors.country && (
@@ -146,7 +155,7 @@ const UserDataForm = ({
           type="text"
           placeholder="Miasto"
           {...registerCity}
-          disabled={isLoading}
+          disabled={loading}
           {...(errors.city ? { className: style.error } : {})}
         />
         {errors.city && (
@@ -157,7 +166,7 @@ const UserDataForm = ({
         <input
           type="date"
           {...registerBirthday}
-          disabled={isLoading}
+          disabled={loading}
           {...(errors.birthday ? { className: style.error } : {})}
         />
         {errors.birthday && (
@@ -165,7 +174,7 @@ const UserDataForm = ({
         )}
       </div>
       <div className={style.formButtons}>
-        <button type="submit" disabled={isLoading}>
+        <button type="submit" disabled={loading}>
           Zapisz
         </button>
       </div>
@@ -173,15 +182,10 @@ const UserDataForm = ({
   );
 };
 
-const Avatar = ({
-  setLoading,
-  addNotify,
-}: {
-  setLoading: any;
-  addNotify: any;
-}) => {
+const Avatar = ({ addNotify, data, refreshAvatar }: any) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [zoom, setZoom] = useState(1);
-  const [file, setFile] = useState<string>("");
+  const [file, setFile] = useState<string>(data.avatar);
   const canvasRef = useRef<any>(null);
   const avatarCanvas = useMemo(
     () =>
@@ -201,12 +205,6 @@ const Avatar = ({
   );
 
   useEffect(() => {
-    fetch("/api/user/avatar")
-      .then((res) => res.json())
-      .then((res) => setFile(res.avatar));
-  }, []);
-
-  useEffect(() => {
     setZoom(1);
   }, [file]);
 
@@ -221,7 +219,10 @@ const Avatar = ({
       },
     })
       .then((res) => res.json())
-      .then((data) => addNotify(data.message))
+      .then((data) => {
+        addNotify(data.message);
+        refreshAvatar();
+      })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   };
@@ -251,17 +252,13 @@ const Avatar = ({
       <div className={style.formButtons}>
         <button onClick={handleSendAvatar}>Zapisz</button>
       </div>
+      {loading && <Loading />}
     </div>
   );
 };
 
-const ChangePassword = ({
-  setLoading,
-  addNotify,
-}: {
-  setLoading: any;
-  addNotify: any;
-}) => {
+const ChangePassword = ({ addNotify }: { addNotify: any }) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     handleSubmit,
     register,
@@ -366,6 +363,26 @@ const ChangePassword = ({
 
 const UserData = () => {
   const router = useRouter();
+  const {
+    data: userData,
+    isLoading: isLoadingUserData,
+    error: errorUserData,
+    mutate: refreshUserData,
+  } = useSWR("/api/user/userdata", {
+    refreshInterval: 0,
+    keepPreviousData: true,
+    revalidateOnMount: true,
+  });
+  const {
+    data: dataAvatar,
+    isLoading: isLoadingAvatar,
+    error: errorAvatar,
+    mutate: refreshAvatar,
+  } = useSWR("/api/user/avatar", {
+    refreshInterval: 0,
+    keepPreviousData: true,
+    revalidateOnMount: true,
+  });
   const [loading, setLoading] = useState<boolean>();
   const { setNotifys, createMonit, refreshLogin } = useContext(
     GlobalContext
@@ -393,28 +410,28 @@ const UserData = () => {
   return (
     <section style={{ position: "relative" }}>
       <h3>Dane konta</h3>
-      <UserDataForm setLoading={setLoading} addNotify={addNotify} />
-      {loading && (
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, .5)",
-            position: "absolute",
-            top: "0",
-            left: "0",
-          }}
-        >
-          <Loading />
-        </div>
+      {!isLoadingUserData && !errorUserData && userData ? (
+        <UserDataForm
+          addNotify={addNotify}
+          data={userData}
+          refreshUserData={refreshUserData}
+        />
+      ) : (
+        <Loading />
       )}
+      {loading && <FullFormLoading />}
       <h3>Avatar</h3>
-      <Avatar setLoading={setLoading} addNotify={addNotify} />
+      {!isLoadingAvatar && !errorAvatar && dataAvatar ? (
+        <Avatar
+          addNotify={addNotify}
+          data={dataAvatar}
+          refreshAvatar={refreshAvatar}
+        />
+      ) : (
+        <Loading />
+      )}
       <h3>Hasło</h3>
-      <ChangePassword setLoading={setLoading} addNotify={addNotify} />
+      <ChangePassword addNotify={addNotify} />
       <h3>Usuwanie konta:</h3>
       <div className={style.formDeleteAccount}>
         <p>

@@ -1,7 +1,7 @@
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import style from "@/styles/usersettings.module.css";
 import createNotifycation from "@/utils/createNotifycation";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { TbCheckbox } from "react-icons/tb";
@@ -14,29 +14,28 @@ interface NotificationFormInterface {
   pins: boolean;
 }
 
-const Notifycations = () => {
+const Notifycations = ({ data, isLoading, error, refreshForm }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
-  const { register, handleSubmit, watch } = useForm<NotificationFormInterface>({
-    defaultValues: async () => {
-      setLoading(true);
-      const req = await fetch("/api/user/notifications");
-      const res = await req.json();
-      setLoading(false);
-      if (req.status === 200) {
-        return res;
-      } else {
-        createNotifycation(setNotifys, "info", res.message);
-      }
-    },
-  });
+  const { register, handleSubmit, watch, setValue } =
+    useForm<NotificationFormInterface>();
 
   const commentsOnMain = watch("commentsOnMain");
   const newComments = watch("newComments");
   const newOrders = watch("newOrders");
   const pins = watch("pins");
 
+  useEffect(() => {
+    if (!isLoading && !error && data) {
+      setValue("commentsOnMain", data.commentsOnMain);
+      setValue("newComments", data.newComments);
+      setValue("newOrders", data.newOrders);
+      setValue("pins", data.pins);
+    }
+  }, [data]);
+
   const handleUpdateNotify = async (data: NotificationFormInterface) => {
+    setLoading(true);
     const req = await fetch("/api/user/notifications", {
       method: "POST",
       headers: {
@@ -45,8 +44,9 @@ const Notifycations = () => {
       body: JSON.stringify(data),
     });
     const res = await req.json();
-
+    refreshForm();
     createNotifycation(setNotifys, "info", res.message);
+    setLoading(false);
   };
 
   return (
@@ -115,22 +115,24 @@ const Notifycations = () => {
             Zapisz
           </button>
         </div>
-        {loading && (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              top: "0",
-              left: "0",
-            }}
-          >
-            <Loading />
-          </div>
-        )}
+        {loading ||
+          isLoading ||
+          (error && (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "absolute",
+                top: "0",
+                left: "0",
+              }}
+            >
+              {error ? <span>{error}</span> : <Loading />}
+            </div>
+          ))}
       </form>
     </section>
   );

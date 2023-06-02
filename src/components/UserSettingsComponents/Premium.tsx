@@ -1,5 +1,5 @@
 import style from "@/styles/usersettings.module.css";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { TbCheckbox } from "react-icons/tb";
@@ -20,33 +20,11 @@ interface PremiumOptionsInterface {
   hideLowReputationComments: boolean;
 }
 
-const Premium = () => {
+const Premium = ({ data, isLoading, error, refreshForm }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [premium, setPremium] = useState<boolean>(false);
   const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
-  const { register, handleSubmit, watch } = useForm<PremiumOptionsInterface>({
-    defaultValues: async () => {
-      setLoading(true);
-      const req = await fetch("/api/user/premium");
-      const res = await req.json();
-
-      setLoading(false);
-      if (req.status === 200 && res?.isPremium) {
-        setPremium(true);
-        return res.premium;
-      } else
-        return {
-          memPerPage: 8,
-          adminPostsOff: false,
-          imagesGifsCommentsOff: false,
-          hideMinusedComments: false,
-          adsOff: true,
-          hideProfile: false,
-          hidePremiumIconBeforeNickName: false,
-          hideLowReputationComments: false,
-        };
-    },
-  });
+  const { register, handleSubmit, watch, setValue } =
+    useForm<PremiumOptionsInterface>({ defaultValues: data.premium });
 
   const memPerPage = watch("memPerPage");
   const adminPostsOff = watch("adminPostsOff");
@@ -76,6 +54,7 @@ const Premium = () => {
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
+    refreshForm();
     setLoading(false);
   };
 
@@ -84,14 +63,16 @@ const Premium = () => {
       <h1 className={style.premium}>
         Opcje <span>Premium</span>
       </h1>
-      {!premium && !loading && (
+      {!data?.isPremium && !loading && !isLoading && !error && (
         <Link href="/premium/kup" className={style.userFormDataBuyButton}>
           Kup premium
         </Link>
       )}
       <form
         onSubmit={handleSubmit(handleUpdatePremiumSettings)}
-        className={style.userFormData + (!premium ? " " + style.noPremium : "")}
+        className={
+          style.userFormData + (!data?.isPremium ? " " + style.noPremium : "")
+        }
       >
         <div className={style.userFormDataBlock + " " + style.column}>
           <label>Wybór liczby obrazków na stronę:</label>

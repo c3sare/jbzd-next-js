@@ -18,7 +18,10 @@ export const getServerSideProps = withSessionSSR(
   async function getServerSideProps({ req }): Promise<any> {
     if (req.session.user?.logged || req.session.user?.login)
       return {
-        redirect: "/",
+        redirect: {
+          destination: "/",
+          permament: false,
+        },
       };
 
     return {
