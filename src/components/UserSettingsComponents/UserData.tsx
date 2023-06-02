@@ -212,6 +212,7 @@ const Avatar = ({
 
   const handleSendAvatar = () => {
     if (file === "") return;
+    setLoading(true);
     fetch("/api/user/avatar", {
       method: "POST",
       body: JSON.stringify({ avatar: canvasRef.current!.toDataURL() }),
@@ -220,8 +221,9 @@ const Avatar = ({
       },
     })
       .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+      .then((data) => addNotify(data.message))
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
   };
 
   return (

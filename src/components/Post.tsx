@@ -200,7 +200,6 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
     const res = await req.json();
     if (req.status === 200) {
       createNotifycation(setNotifys, "info", res.message);
-      console.log(res);
       setBadge(res.type, res.count);
     } else {
       createNotifycation(setNotifys, "info", res.message);

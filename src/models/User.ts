@@ -17,6 +17,17 @@ export interface User {
     commentsOnMain: boolean;
     newComments: boolean;
   };
+  premiumExpires: string;
+  premium: {
+    memPerPage: 8 | 16 | 32;
+    adminPostsOff: boolean;
+    imagesGifsCommentsOff: boolean;
+    hideMinusedComments: boolean;
+    adsOff: boolean;
+    hideProfile: boolean;
+    hidePremiumIconBeforeNickName: boolean;
+    hideLowReputationComments: boolean;
+  };
   coins: number;
   token: string;
   confirmed: boolean;
@@ -33,7 +44,23 @@ export const userSchema = new Schema<User>({
   country: String,
   gender: Number,
   name: String,
-  notify: Object,
+  notify: {
+    newOrders: Boolean,
+    pins: Boolean,
+    commentsOnMain: Boolean,
+    newComments: Boolean,
+  },
+  premiumExpires: Date,
+  premium: {
+    memPerPage: Number,
+    adminPostsOff: Boolean,
+    imagesGifsCommentsOff: Boolean,
+    hideMinusedComments: Boolean,
+    adsOff: Boolean,
+    hideProfile: Boolean,
+    hidePremiumIconBeforeNickName: Boolean,
+    hideLowReputationComments: Boolean,
+  },
   coins: Number,
   token: String,
   confirmed: Boolean,

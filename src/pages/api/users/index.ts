@@ -1,6 +1,5 @@
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
-import currentDate from "@/utils/currentDate";
 import sendMail from "@/utils/sendMail";
 import { uniqueId } from "@/utils/uniqueId";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -80,10 +79,12 @@ export default async function handler(
 
     const genPassword = bcrypt.hashSync(password, 10);
 
+    const today = new Date();
+
     const addUser = await User.collection.insertOne({
       username,
       email,
-      createDate: currentDate(),
+      createDate: today,
       avatar: "",
       password: genPassword,
       birthday: "",
@@ -96,6 +97,17 @@ export default async function handler(
         pins: true,
         commentsOnMain: true,
         newComments: true,
+      },
+      premiumExpires: today,
+      premium: {
+        memPerPage: 8,
+        adminPostsOff: false,
+        imagesGifsCommentsOff: false,
+        hideMinusedComments: false,
+        adsOff: true,
+        hideProfile: false,
+        hidePremiumIconBeforeNickName: false,
+        hideLowReputationComments: false,
       },
       coins: 0,
       token,

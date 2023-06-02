@@ -23,7 +23,6 @@ const ConfirmOfAge = () => {
     const monthFormated = month > 9 ? month : "0" + month;
 
     const fullDate = `${year}-${monthFormated}-${dayFormated}`;
-    console.log(fullDate);
     fetch("/api/user/confirmage", {
       method: "POST",
       headers: {
@@ -63,6 +62,10 @@ const ConfirmOfAge = () => {
     max: new Date().getFullYear(),
   };
 
+  const dayRegister = register("day", dayOptions);
+  const monthRegister = register("month", monthOptions);
+  const yearRegister = register("year", yearOptions);
+
   return (
     <form onSubmit={handleSubmit(sendForm)} className={style.confirmAgeForm}>
       <h1>Potwierdź swój wiek</h1>
@@ -76,7 +79,15 @@ const ConfirmOfAge = () => {
             disabled={loading}
             placeholder="DD"
             type="number"
-            {...register("day", dayOptions)}
+            name={dayRegister.name}
+            ref={dayRegister.ref}
+            onChange={(e) => {
+              if (e.target.value.length > 2) {
+                e.target.value = e.target.value.slice(0, 2);
+              }
+              dayRegister.onChange(e);
+            }}
+            onBlur={dayRegister.onBlur}
           />
         </label>
         <label>
@@ -88,7 +99,15 @@ const ConfirmOfAge = () => {
             disabled={loading}
             placeholder="MM"
             type="number"
-            {...register("month", monthOptions)}
+            name={monthRegister.name}
+            ref={monthRegister.ref}
+            onChange={(e) => {
+              if (e.target.value.length > 2) {
+                e.target.value = e.target.value.slice(0, 2);
+              }
+              monthRegister.onChange(e);
+            }}
+            onBlur={monthRegister.onBlur}
           />
         </label>
         <label>
@@ -101,7 +120,15 @@ const ConfirmOfAge = () => {
             disabled={loading}
             placeholder="YYYY"
             type="number"
-            {...register("year", yearOptions)}
+            name={yearRegister.name}
+            ref={yearRegister.ref}
+            onChange={(e) => {
+              if (e.target.value.length > 4) {
+                e.target.value = e.target.value.slice(0, 4);
+              }
+              yearRegister.onChange(e);
+            }}
+            onBlur={yearRegister.onBlur}
           />
         </label>
       </div>

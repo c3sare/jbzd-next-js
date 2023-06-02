@@ -1,9 +1,6 @@
 import style from "@/styles/userprofile.module.css";
 
 const Breadcrumb = ({ children, currentNode, styles }: any) => {
-  console.log(children);
-  console.log(currentNode);
-
   const solo = children instanceof Array;
   return (
     <div className={style.breadcrumbs} style={styles ? styles : {}}>

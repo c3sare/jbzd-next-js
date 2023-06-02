@@ -166,7 +166,6 @@ const getPosts = (
     }
 
     let findOptions: Options = options;
-    console.log(findOptions);
 
     let checkCategory: any;
 
