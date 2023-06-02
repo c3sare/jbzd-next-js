@@ -180,22 +180,23 @@ const getPosts = (
         };
 
       if (!session?.logged || !session?.login)
-        return {
-          redirect: {
-            destination: "/logowanie",
-            permament: false,
-          },
-        };
-      else {
-        if (!hasCookie("ofage", { req }) && checkCategory.nsfw)
+        if (checkCategory.nsfw || checkCategory.asPage)
           return {
-            props: {
-              ofage: false,
-              nsfw: true,
+            redirect: {
+              destination: "/logowanie",
+              permament: false,
             },
           };
-        options.category = category as string;
-      }
+        else {
+          if (!hasCookie("ofage", { req }) && checkCategory.nsfw)
+            return {
+              props: {
+                ofage: false,
+                nsfw: true,
+              },
+            };
+          options.category = category as string;
+        }
     }
 
     let lists: any[] | ListsInterface | null = null;
