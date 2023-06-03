@@ -81,7 +81,6 @@ const Konva = ({
         width={204}
         height={204}
         style={{ margin: "0 auto", maxWidth: "204px", cursor: "pointer" }}
-        onClick={() => fileInput.current!.click()}
         ref={canvasRef}
       >
         <Layer>
@@ -96,6 +95,7 @@ const Konva = ({
               const { x, y } = setPos(size, pos, zoom);
               return { x, y };
             }}
+            onPointerClick={() => fileInput.current!.click()}
             width={size[0]}
             height={size[1]}
           />

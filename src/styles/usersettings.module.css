@@ -69,6 +69,7 @@
   margin-bottom: 20px;
   border-bottom: 4px solid #252525;
   padding-bottom: 20px;
+  position: relative;
 }
 
 .formGroup {
@@ -168,6 +169,7 @@ input.error {
 .formDeleteAccount {
   text-align: center;
   margin-top: 25px;
+  position: relative;
 }
 
 .formDeleteAccount button {

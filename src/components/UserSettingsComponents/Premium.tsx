@@ -23,8 +23,12 @@ interface PremiumOptionsInterface {
 const Premium = ({ data, isLoading, error, refreshForm }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
-  const { register, handleSubmit, watch, setValue } =
-    useForm<PremiumOptionsInterface>({ defaultValues: data.premium });
+  const { register, handleSubmit, watch } = useForm<PremiumOptionsInterface>({
+    defaultValues: data?.premium || {
+      memPerPage: 8,
+      adsOff: true,
+    },
+  });
 
   const memPerPage = watch("memPerPage");
   const adminPostsOff = watch("adminPostsOff");

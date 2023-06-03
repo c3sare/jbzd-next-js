@@ -9,28 +9,10 @@ import NoSsrWrapper from "../no-ssr-wrapper";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import FullContainerLoading from "../FullContainerLoading";
 const Konva = dynamic(import("../Konva"), { ssr: false });
 
 const isSSR = () => typeof window === "undefined";
-
-const FullFormLoading = () => {
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "absolute",
-        top: "0",
-        left: "0",
-      }}
-    >
-      <Loading />
-    </div>
-  );
-};
 
 interface FormDataInterface {
   name: string;
@@ -178,6 +160,7 @@ const UserDataForm = ({ addNotify, data, refreshUserData }: any) => {
           Zapisz
         </button>
       </div>
+      {loading && <FullContainerLoading />}
     </form>
   );
 };
@@ -357,6 +340,7 @@ const ChangePassword = ({ addNotify }: { addNotify: any }) => {
       <div className={style.formButtons}>
         <button type="submit">Zmień hasło</button>
       </div>
+      {loading && <FullContainerLoading />}
     </form>
   );
 };
@@ -383,7 +367,7 @@ const UserData = () => {
     keepPreviousData: true,
     revalidateOnMount: true,
   });
-  const [loading, setLoading] = useState<boolean>();
+  const [loading, setLoading] = useState<boolean>(false);
   const { setNotifys, createMonit, refreshLogin } = useContext(
     GlobalContext
   ) as GlobalContextInterface;
@@ -393,6 +377,7 @@ const UserData = () => {
   };
 
   const handleDeleteAccount = async () => {
+    setLoading(true);
     const req = await fetch("/api/user/deleteacc", {
       method: "POST",
     });
@@ -405,6 +390,7 @@ const UserData = () => {
     } else {
       addNotify(res.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -419,7 +405,6 @@ const UserData = () => {
       ) : (
         <Loading />
       )}
-      {loading && <FullFormLoading />}
       <h3>Avatar</h3>
       {!isLoadingAvatar && !errorAvatar && dataAvatar ? (
         <Avatar
@@ -448,6 +433,7 @@ const UserData = () => {
             tutaj
           </button>
         </p>
+        {loading && <FullContainerLoading />}
       </div>
     </section>
   );
