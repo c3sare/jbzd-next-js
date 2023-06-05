@@ -829,3 +829,117 @@
   padding-right: 0;
   margin-bottom: 0;
 }
+
+.commentForm {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 600px;
+  padding: 20px;
+  background: #313131;
+  margin: 15px 0 10px 56px;
+  align-items: flex-start;
+}
+
+.vldOverlay {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  align-items: center;
+  display: none;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.isActive {
+  display: flex;
+}
+
+.avatarComment {
+  width: 40px;
+  margin-right: 2px;
+}
+
+.addComment {
+  background: #1f1f1f;
+  display: inline-block;
+  line-height: 17px;
+  color: #fff;
+  padding: 0 10px;
+  border: 1px solid #1f1f1f;
+  font-family: Open Sans;
+  margin: 0 2px;
+  padding-top: 5px;
+  flex: 1;
+  min-height: 42px;
+  max-height: none;
+}
+
+.vldBackground {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: #fff;
+  opacity: 0.5;
+}
+
+.btnComment {
+  width: 100px;
+  margin-left: 2px;
+  line-height: 40px;
+  color: #fff;
+  font-family: Open Sans;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  background: #777;
+  width: 52px;
+}
+
+.btnComment svg {
+  position: relative;
+  font-size: 25px;
+  top: 8px;
+}
+
+.vldOverlay .vldIcon,
+.vldParent {
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .comments {
+    margin: 5px 0 0 0;
+    width: 100%;
+    max-width: none;
+  }
+
+  .commentsHeader {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto;
+  }
+
+  .commentForm {
+    width: 100%;
+    max-width: none;
+    margin: 15px 0 10px 0;
+  }
+
+  .pagination {
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .commentReplyA:nth-child(3) span:nth-child(2),
+  .commentReplyA:last-child span:nth-child(2) {
+    display: none;
+  }
+}

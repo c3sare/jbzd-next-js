@@ -10,6 +10,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { useContext } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import Comments from "@/components/Comments";
+import CommentForm from "@/components/CommentForm";
 
 const Index = ({ post }: any) => {
   const { categories } = useContext(GlobalContext) as GlobalContextInterface;
@@ -39,6 +40,7 @@ const Index = ({ post }: any) => {
           </Link>
         </div>
       </div>
+      <CommentForm avatar={post.user.avatar} />
       <Comments commentsCount={post.comments} id={post._id} />
     </>
   );
