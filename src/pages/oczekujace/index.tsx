@@ -19,4 +19,4 @@ const Waitings = ({ posts, currentPage, allPages }: any) => {
 
 export default Waitings;
 
-export const getServerSideProps = getPosts({ accepted: false }, false, "");
+export const getServerSideProps = getPosts({ options: { accepted: false } });

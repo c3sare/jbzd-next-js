@@ -46,12 +46,17 @@ interface Options {
   memContainers?: any;
 }
 
-const getPosts = (
-  options: Options,
-  asPage: boolean = false,
-  personalType: "USER" | "TAG" | "SECTION" | "FAVOURITES" | "",
-  tag: boolean = false
-) =>
+const getPosts = ({
+  options,
+  asPage = false,
+  personalType,
+  tag = false,
+}: {
+  options: Options;
+  asPage?: boolean;
+  personalType?: "USER" | "TAG" | "SECTION" | "FAVOURITES";
+  tag?: boolean;
+}) =>
   withSessionSSR(async function getServerSideProps({
     req,
     query,

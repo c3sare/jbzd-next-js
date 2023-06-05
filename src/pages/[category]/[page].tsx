@@ -35,4 +35,4 @@ const Index = ({
 
 export default Index;
 
-export const getServerSideProps = getPosts({}, true, "");
+export const getServerSideProps = getPosts({ options: {}, asPage: true });

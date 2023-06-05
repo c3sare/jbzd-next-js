@@ -39,4 +39,7 @@ const Index = ({ posts, currentPage, allPages, noFollowed }: any) => {
 
 export default Index;
 
-export const getServerSideProps = getPosts({}, false, "SECTION");
+export const getServerSideProps = getPosts({
+  options: {},
+  personalType: "SECTION",
+});

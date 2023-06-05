@@ -22,4 +22,4 @@ const Index = ({ posts, currentPage, allPages }: any) => {
 
 export default Index;
 
-export const getServerSideProps = getPosts({}, false, "", true);
+export const getServerSideProps = getPosts({ options: {}, tag: true });

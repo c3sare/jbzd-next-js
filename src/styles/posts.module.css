@@ -373,35 +373,6 @@
   height: auto;
 }
 
-.contentPost > .comments > .comment > .likes {
-  font-size: 20px;
-  float: right;
-}
-
-.contentPost > .comments > .comment > .likes > span {
-  margin: 5px;
-}
-
-.contentPost > .comments > .comment > .likes button {
-  border-radius: 5px;
-  background-color: darkred;
-  color: white;
-  font-size: 18px;
-  width: 30px;
-  box-shadow: 1px 1px 3px black;
-}
-
-.contentPost > .comments > .comment {
-  background-color: rgba(0, 0, 0, 0.2);
-  margin: 2px;
-  padding: 5px 15px;
-  width: calc(100% - 34px);
-}
-
-.contentPost > .comments > .comment > p {
-  width: 100%;
-}
-
 .buttonsMain {
   max-width: 600px;
   display: flex;
@@ -669,4 +640,192 @@
 
 .followed {
   opacity: 0.5;
+}
+
+.commentsHeader {
+  max-width: 600px;
+  background: #1f1f1f;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  margin: 10px 0 5px 56px;
+}
+
+.commentsCount {
+  position: relative;
+  color: #fff;
+}
+
+.switch {
+  color: #fff;
+  margin-left: 20px;
+}
+
+.switch.active {
+  color: #c03e3e;
+}
+
+.comments {
+  max-width: 600px;
+  background: #1f1f1f;
+  margin: 5px 0 30px 56px;
+  padding: 10px;
+}
+
+.comment {
+  display: flex;
+  margin-bottom: 10px;
+  position: relative;
+  padding: 10px;
+}
+
+.commentAvatar {
+  width: 33px;
+  display: block;
+  margin-right: 15px;
+}
+
+.commentContent {
+  flex: 1;
+}
+
+.commentHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.commentDetails {
+  display: flex;
+}
+
+.commentAuthor {
+  color: #fff;
+  font-weight: 700;
+  margin-right: 5px;
+}
+
+.commentDate {
+  color: #777;
+  font-size: 12px;
+  display: block;
+  font-weight: 700;
+}
+
+.commentBadge {
+  margin-left: auto;
+  margin-right: 10px;
+}
+
+.badgesInfoContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  color: #fff;
+}
+
+.commentScore {
+  display: flex;
+}
+
+.commentVote {
+  cursor: pointer;
+  padding: 0 11px;
+  line-height: normal;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  color: #fff;
+  background: #313131;
+  font-weight: 700;
+  height: 22px;
+}
+
+.commentScoreCount {
+  font-size: 14px;
+  margin: 0 5px;
+  color: #fff;
+}
+
+.commentVoteMinus {
+  font-size: 36px;
+}
+
+.commentReplyA {
+  font-size: 12px;
+  color: #777;
+  margin-right: 10px;
+}
+
+.commentReplyABadge {
+  position: relative;
+  margin-left: auto;
+}
+
+.commentReplyA,
+.commentReply {
+  display: flex;
+  align-items: center;
+}
+
+.commentReplyA:hover,
+.commentReply:hover {
+  color: #ac2f2f;
+}
+
+.commentReplyAIcon {
+  font-size: 22px;
+  margin-right: 5px;
+}
+
+.commentText {
+  font-size: 14px;
+  color: #fff;
+  margin: 5px 0;
+  word-break: break-word;
+  overflow: hidden;
+}
+
+.readMoreContent {
+  overflow: hidden;
+}
+
+.commentReplyASelector {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.commentReplyASelector img {
+  height: 15px;
+}
+
+.contentBadgesActionOptions {
+  display: none;
+}
+
+.contentBadgesActionOptions article {
+  width: 100%;
+  height: 51px;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.contentBadgesActionOptions article > img {
+  width: 28px;
+}
+
+.subComment {
+  margin-left: 40px;
+  border-left: 1px solid #777;
+  padding: 10px 15px;
+  padding-right: 0;
+  margin-bottom: 0;
 }

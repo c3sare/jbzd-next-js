@@ -28,4 +28,4 @@ const Category = ({
 
 export default Category;
 
-export const getServerSideProps = getPosts({}, false, "");
+export const getServerSideProps = getPosts({ options: {} });

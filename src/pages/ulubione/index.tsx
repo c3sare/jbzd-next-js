@@ -18,6 +18,9 @@ const Favourites = ({ posts, currentPage, allPages }: any) => {
   );
 };
 
-export const getServerSideProps = getPosts({}, false, "FAVOURITES");
-
 export default Favourites;
+
+export const getServerSideProps = getPosts({
+  options: {},
+  personalType: "FAVOURITES",
+});

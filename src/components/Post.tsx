@@ -485,37 +485,6 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
           </div>
         )}
         {allPostElements}
-        {/* <div className={style.comments"}>
-              {post.comments.map((comment) => (
-                <div className={style.comment" key={comment.id}>
-                  <span>
-                    <Link href={`/users/${comment.userId}`}>
-                      {comment.userName}
-                    </Link>
-                    <br />
-                    {comment.text}
-                  </span>
-                  <div className={style.likes">
-                    <button>+</button>
-                    <span>{comment.likes}</span>
-                    <button>-</button>
-                  </div>
-                  <div className={style.subComments">
-                    {comment.subcomments.map((subcomment) => (
-                      <div className={style.subComment" key={subcomment.id}>
-                        <p>{subcomment.text}</p>
-                        <div className={style.subLikes">
-                          <button>+</button>
-                          <span>{comment.likes}</span>
-                          <button>-</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div> */}
-        <div></div>
       </div>
       <div className={style.buttonsPost}>
         {logged && post.author === login && (
