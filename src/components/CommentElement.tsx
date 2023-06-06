@@ -14,6 +14,32 @@ import defaultAvatar from "@/images/avatars/default.jpg";
 import { useEffect, useRef, useState } from "react";
 import AuthorInfo from "./AuthorInfo";
 import CommentForm from "./CommentForm";
+import { attributesToProps, domToReact } from "html-react-parser";
+import Quote from "./Quote";
+import parse from "html-react-parser";
+import Badges from "./Badges";
+
+const options = {
+  replace: (node: any) => {
+    if (node.attribs && node.name === "a") {
+      const props = attributesToProps(node.attribs);
+      return (
+        <Link href="/" {...props}>
+          {domToReact(node.children, options)}
+        </Link>
+      );
+    }
+    if (node.name === "q") {
+      return <Quote>{domToReact(node.children, options)}</Quote>;
+    }
+  },
+};
+
+interface BadgesInterface {
+  rock: number;
+  silver: number;
+  gold: number;
+}
 
 const CommentElement = ({
   comment,
@@ -30,6 +56,11 @@ const CommentElement = ({
 }) => {
   const [showPrices, setShowPrices] = useState<boolean>(false);
   const [showCommentForm, setShowCommentForm] = useState<boolean>(false);
+  const [badges, setBadges] = useState<BadgesInterface>({
+    rock: comment.rock,
+    silver: comment.silver,
+    gold: comment.gold,
+  });
   const commentText = useRef("");
 
   const endFunction = () => {
@@ -53,8 +84,20 @@ const CommentElement = ({
 
   const parseBBcode = (text: string) => {
     const userNamePattern = /@\[[A-Za-z1-9]*\]/g;
+    const quotePattern =
+      /\[quote\][\w\d\s\.,!@#$%^&\*()`~?/><'";:|\\}{\[\]+-_]*\[\/quote\]/g;
     const elements: { textElement: string; nodeElement: string }[] = [];
     const nicknames = text.match(userNamePattern);
+    const quotes = text.match(quotePattern);
+    quotes?.forEach((item) => {
+      const startIndex = item.indexOf("[quote]") + 7;
+      const endIndex = item.lastIndexOf("[/quote]");
+      const quoteText = item.slice(startIndex, endIndex);
+      elements.push({
+        textElement: item,
+        nodeElement: `<q>${quoteText}</q>`,
+      });
+    });
     nicknames?.forEach((item) => {
       const nick = item.slice(item.indexOf("@[") + 2, item.indexOf("]"));
       elements.push({
@@ -67,7 +110,7 @@ const CommentElement = ({
       newText = newText.replace(item.textElement, item.nodeElement);
     });
 
-    return newText;
+    return parse(newText, options);
   };
 
   return (
@@ -105,13 +148,15 @@ const CommentElement = ({
                 {alongAgo(comment.addTime as string)}
               </div>
               <div className={style.commentBadge}>
-                <div className={style.badgesInfoContainer}></div>
+                <div className={style.badgesInfoContainer}>
+                  <Badges badges={badges} />
+                </div>
               </div>
               <div className={style.commentScore}>
                 <span className={style.commentVote}>
                   <span>+</span>
                 </span>
-                <span className={style.commentScoreCount}>0</span>
+                <span className={style.commentScoreCount}>{comment.score}</span>
                 <span
                   className={style.commentVote + " " + style.commentVoteMinus}
                 >
@@ -125,10 +170,9 @@ const CommentElement = ({
                   <div
                     className={style.readMoreContent}
                     style={{ maxHeight: "none" }}
-                    dangerouslySetInnerHTML={{
-                      __html: parseBBcode(comment.text),
-                    }}
-                  ></div>
+                  >
+                    {parseBBcode(comment.text)}
+                  </div>
                 </div>
               </span>
             </div>

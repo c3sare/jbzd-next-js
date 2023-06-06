@@ -18,6 +18,7 @@ import createSlug from "@/utils/createSlug";
 import YouTube from "react-youtube";
 import { useRouter } from "next/router";
 import AuthorInfo from "./AuthorInfo";
+import Badges from "./Badges";
 
 interface BadgeInterface {
   [key: string]: number;
@@ -301,35 +302,7 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
               </Link>
             )}
           </div>
-          <div className={style.otherLikes}>
-            {badges.rock > 0 && (
-              <div className={style.likeContainer}>
-                <div className={style.image}>
-                  <Image width={25} src={rockLike} alt="Kamienna Dzida" />
-                  <span>Kamienna&nbsp;Dzida</span>
-                </div>
-                <span>{badges.rock}</span>
-              </div>
-            )}
-            {badges.silver > 0 && (
-              <div className={style.likeContainer}>
-                <div className={style.image}>
-                  <Image width={25} src={silverLike} alt="Srebrna Dzida" />
-                  <span>Srebrna&nbsp;Dzida</span>
-                </div>
-                <span>{badges.silver}</span>
-              </div>
-            )}
-            {badges.gold > 0 && (
-              <div className={style.likeContainer}>
-                <div className={style.image}>
-                  <Image width={25} src={goldLike} alt="Złota Dzida" />
-                  <span>Złota&nbsp;Dzida</span>
-                </div>
-                <span>{badges.gold}</span>
-              </div>
-            )}
-          </div>
+          <Badges badges={badges} />
         </div>
         {showTags && (
           <div className={style.articleTags}>

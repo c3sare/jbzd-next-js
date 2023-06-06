@@ -13,6 +13,7 @@ const CommentForm = ({
   commentId,
   postId,
   refreshComments,
+  noFocus = false,
 }: {
   endFunction: any;
   avatar: string;
@@ -20,12 +21,13 @@ const CommentForm = ({
   commentId?: string | null;
   postId: string;
   refreshComments: any;
+  noFocus?: boolean;
 }) => {
   const { setNotifys } = useContext(GlobalContext) as GlobalContextInterface;
   const ref = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (ref.current !== null) {
+    if (ref.current !== null && !noFocus) {
       ref.current.value = comment;
       ref.current.focus();
       ref.current.selectionStart = ref.current.value.length;

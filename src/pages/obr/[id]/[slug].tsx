@@ -44,6 +44,7 @@ const Index = ({ post }: any) => {
         </div>
       </div>
       <CommentForm
+        noFocus
         endFunction={() => null}
         refreshComments={refreshComments}
         comment=""

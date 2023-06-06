@@ -17,7 +17,7 @@ const Comments = ({
     error: errorComments,
     isLoading: isLoadingComments,
     mutate: refreshComments,
-  } = useSWR<any[]>(`/api/post/${id}/comment`);
+  } = useSWR<any[]>(`/api/post/${id}/comment/${commentSort}`);
 
   return (
     <div>

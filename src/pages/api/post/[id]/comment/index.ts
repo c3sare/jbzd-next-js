@@ -4,33 +4,11 @@ import { Types } from "mongoose";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { sessionOptions } from "@/lib/AuthSession/config";
 import Post from "@/models/Post";
-import Comment, { Commentstats } from "@/models/Comment";
+import Comment from "@/models/Comment";
 import User from "@/models/User";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "GET") {
-    const { id } = req.query;
-
-    if (!id || !Types.ObjectId.isValid(id as string))
-      return res
-        .status(400)
-        .json({ message: "Nieprawidłowy identyfikator posta!" });
-
-    await dbConnect();
-
-    const postId = new Types.ObjectId(id as string);
-
-    const isExist = await Post.exists({
-      _id: postId,
-    });
-
-    if (!isExist)
-      return res.status(404).json({ message: "Post nie istnieje!" });
-
-    const comments = await Commentstats.find({ post: postId });
-
-    return res.status(200).json(comments);
-  } else if (req.method === "PUT") {
+  if (req.method === "PUT") {
     const session = req.session.user;
 
     if (!session?.logged || !session?.login)
