@@ -11,15 +11,18 @@ import { useContext } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import Comments from "@/components/Comments";
 import CommentForm from "@/components/CommentForm";
+import dbConnect from "@/lib/dbConnect";
+import { mutate } from "swr";
 
 const Index = ({ post }: any) => {
   const { categories } = useContext(GlobalContext) as GlobalContextInterface;
-  console.log(categories);
 
   const category =
     post.category !== "" && post.category
       ? categories.find((item) => item.slug === post.category)?.name
       : "";
+
+  const refreshComments = () => mutate(`/api/post/${post._id}/comment`);
   return (
     <>
       <Seo title={post.title} />
@@ -40,7 +43,13 @@ const Index = ({ post }: any) => {
           </Link>
         </div>
       </div>
-      <CommentForm avatar={post.user.avatar} />
+      <CommentForm
+        endFunction={() => null}
+        refreshComments={refreshComments}
+        comment=""
+        avatar={post.user.avatar}
+        postId={post._id}
+      />
       <Comments commentsCount={post.comments} id={post._id} />
     </>
   );
@@ -50,7 +59,7 @@ export default Index;
 
 export async function getServerSideProps({ query }: any) {
   const { id, slug } = query;
-
+  await dbConnect();
   const post = await Postsstats.findOne({ _id: new Types.ObjectId(id) });
 
   if (!post)

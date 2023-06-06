@@ -659,8 +659,11 @@
 }
 
 .switch {
+  border: none;
+  background: none;
   color: #fff;
   margin-left: 20px;
+  cursor: pointer;
 }
 
 .switch.active {
@@ -705,6 +708,11 @@
   color: #fff;
   font-weight: 700;
   margin-right: 5px;
+  position: relative;
+}
+
+.commentAuthor:hover .authorInfo {
+  display: flex;
 }
 
 .commentDate {
@@ -770,6 +778,10 @@
 .commentReply {
   display: flex;
   align-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .commentReplyA:hover,
@@ -792,6 +804,12 @@
 
 .readMoreContent {
   overflow: hidden;
+  font-size: 14px;
+}
+
+.readMoreContent a {
+  color: #777;
+  font-style: italic;
 }
 
 .commentReplyASelector {
@@ -799,14 +817,34 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  position: relative;
+  background: none;
+  border: none;
+  color: #777;
 }
 
-.commentReplyASelector img {
-  height: 15px;
+.commentReplyASelector:hover {
+  color: #ac2f2f;
 }
 
 .contentBadgesActionOptions {
+  width: 100%;
+  min-width: 51px;
   display: none;
+  flex-direction: column;
+  bottom: 100%;
+  left: 0;
+  position: absolute;
+  background: #313131;
+  padding: 5px 0;
+  gap: 10px;
+  z-index: 10;
+  -webkit-box-shadow: 5px -5px 5px #1f1f1f;
+  box-shadow: 5px -5px 5px #1f1f1f;
+}
+
+.contentBadgesActionOptions.active {
+  display: flex;
 }
 
 .contentBadgesActionOptions article {
@@ -818,15 +856,10 @@
   opacity: 0.5;
 }
 
-.contentBadgesActionOptions article > img {
-  width: 28px;
-}
-
 .subComment {
   margin-left: 40px;
   border-left: 1px solid #777;
-  padding: 10px 15px;
-  padding-right: 0;
+  padding: 10px;
   margin-bottom: 0;
 }
 
@@ -871,12 +904,12 @@
   color: #fff;
   padding: 0 10px;
   border: 1px solid #1f1f1f;
-  font-family: Open Sans;
   margin: 0 2px;
   padding-top: 5px;
   flex: 1;
   min-height: 42px;
   max-height: none;
+  font-family: sans-serif;
 }
 
 .vldBackground {
@@ -942,4 +975,16 @@
   .commentReplyA:last-child span:nth-child(2) {
     display: none;
   }
+}
+
+.contentBadgesActionOptions article > div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  align-items: center;
+}
+
+.contentBadgesActionOptions article:hover {
+  opacity: 1;
 }

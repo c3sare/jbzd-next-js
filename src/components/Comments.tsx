@@ -1,8 +1,8 @@
 import Loading from "./Loading";
 import style from "@/styles/posts.module.css";
 import useSWR from "swr";
-import { Comment as CommentInterface } from "@/models/Comment";
 import CommentElement from "./CommentElement";
+import { useState } from "react";
 
 const Comments = ({
   id,
@@ -11,10 +11,12 @@ const Comments = ({
   id: string;
   commentsCount: number;
 }) => {
+  const [commentSort, setCommentSort] = useState<"best" | "newest">("best");
   const {
     data: comments,
     error: errorComments,
     isLoading: isLoadingComments,
+    mutate: refreshComments,
   } = useSWR<any[]>(`/api/post/${id}/comment`);
 
   return (
@@ -24,24 +26,43 @@ const Comments = ({
           <span>{commentsCount}</span> komentarzy
         </span>
         <div>
-          <a href="" className={style.switch}>
+          <button
+            className={
+              style.switch + (commentSort === "best" ? " " + style.active : "")
+            }
+            onClick={() => setCommentSort("best")}
+          >
             najlepsze
-          </a>
-          <a href="" className={style.switch + " " + style.active}>
+          </button>
+          <button
+            className={
+              style.switch +
+              (commentSort === "newest" ? " " + style.active : "")
+            }
+            onClick={() => setCommentSort("newest")}
+          >
             najnowsze
-          </a>
+          </button>
         </div>
       </header>
       <div className={style.comments}>
         {!isLoadingComments && !errorComments && comments ? (
           comments.map((comment) => (
             <div key={comment._id}>
-              <CommentElement comment={comment} />
+              <CommentElement
+                comment={comment}
+                postId={id}
+                commentId={comment._id}
+                refreshComments={refreshComments}
+              />
               {comment.subcomments.map((subcomm: any) => (
                 <CommentElement
                   key={subcomm._id}
                   comment={subcomm}
+                  postId={id}
+                  commentId={comment._id}
                   isSubComment
+                  refreshComments={refreshComments}
                 />
               ))}
             </div>

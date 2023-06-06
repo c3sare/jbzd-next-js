@@ -14,10 +14,10 @@ import { useContext, useState, Fragment, useMemo, useCallback } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 import createNotifycation from "@/utils/createNotifycation";
 import VideoPlayer from "./VideoPlayer";
-import { TfiCup } from "react-icons/tfi";
 import createSlug from "@/utils/createSlug";
 import YouTube from "react-youtube";
 import { useRouter } from "next/router";
+import AuthorInfo from "./AuthorInfo";
 
 interface BadgeInterface {
   [key: string]: number;
@@ -72,7 +72,6 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
     silver: post.silver,
     gold: post.gold,
   });
-  const [spears, setSpears] = useState<number>(post.user?.spears || 0);
 
   const setBadge = (type: string, count: number) => {
     setBadges((prevState) => {
@@ -206,40 +205,6 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
     }
   };
 
-  const handleClickBlacklist = async (username: string) => {
-    const req = await fetch("/api/user/lists/user/block", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: username }),
-    });
-    const res = await req.json();
-
-    if (req.status === 200) {
-      refreshLists();
-    } else {
-      createNotifycation(setNotifys, "info", res.message);
-    }
-  };
-
-  const handleClickObservelist = async (username: string) => {
-    const req = await fetch("/api/user/lists/user/follow", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: username }),
-    });
-    const res = await req.json();
-
-    if (req.status === 200) {
-      refreshLists();
-    } else {
-      createNotifycation(setNotifys, "info", res.message);
-    }
-  };
-
   const handleDeleteMem = async (id: string) => {
     const req = await fetch("/api/posts", {
       method: "DELETE",
@@ -254,19 +219,6 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
       router.push("/");
     }
     createNotifycation(setNotifys, "info", res.message);
-  };
-
-  const handleAddSpear = async (username: string) => {
-    const req = await fetch(`/api/user/${username}/spear`, {
-      method: "POST",
-    });
-
-    const res = await req.json();
-    if (req.status === 200) {
-      setSpears(res.counter);
-    } else {
-      createNotifycation(setNotifys, "info", res.message);
-    }
   };
 
   const handleAddTagToFollowed = async (tag: string) => {
@@ -334,79 +286,7 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
             {post.user && (
               <span className={style.userName}>
                 <span className={style.author}>{post.user?.username}</span>
-                <div className={style.authorInfo}>
-                  <div className={style.detailsAvatar}>
-                    <Image
-                      alt={post.user?.username + " avatar"}
-                      width={45}
-                      height={45}
-                      src={userAvatar}
-                    />
-                  </div>
-                  <div className={style.userPostContent}>
-                    <div className={style.userPostName}>
-                      {post.user?.username}
-                    </div>
-                    <div className={style.userPostInfo}>
-                      <div>
-                        <span>
-                          <Image
-                            src="/images/spear.png"
-                            width={22}
-                            height={22}
-                            alt="Dzida"
-                          />
-                        </span>
-                        <span>{spears}</span>
-                        {logged && login !== post.user?.username && (
-                          <button
-                            className={style.userVote}
-                            onClick={() => handleAddSpear(post.user?.username)}
-                          >
-                            +
-                          </button>
-                        )}
-                      </div>
-                      <div>
-                        <span>
-                          <TfiCup />
-                        </span>
-                        <span>{post.user?.rank}</span>
-                      </div>
-                    </div>
-                    <div className={style.userPostActions}>
-                      <button
-                        disabled={post.user?.username === login}
-                        className={
-                          lists.user.follow.includes(post.user?.username)
-                            ? style.observed
-                            : ""
-                        }
-                        onClick={() =>
-                          handleClickObservelist(post.user?.username)
-                        }
-                      >
-                        Obserwuj
-                      </button>
-                      <button
-                        disabled={post.user?.username === login}
-                        className={
-                          lists.user.block.includes(post.user?.username)
-                            ? style.blacklisted
-                            : ""
-                        }
-                        onClick={() =>
-                          handleClickBlacklist(post.user?.username)
-                        }
-                      >
-                        Czarna lista
-                      </button>
-                      <Link href={"/uzytkownik/" + post.user?.username}>
-                        Profil
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                <AuthorInfo user={post.user} />
               </span>
             )}
             <span className={style.addTime}>{alongAgo(post.addTime)}</span>
