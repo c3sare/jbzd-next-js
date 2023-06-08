@@ -18,6 +18,9 @@ import { attributesToProps, domToReact } from "html-react-parser";
 import Quote from "./Quote";
 import parse from "html-react-parser";
 import Badges from "./Badges";
+import { useContext } from "react";
+import createNotifycation from "@/utils/createNotifycation";
+import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
 const options = {
   replace: (node: any) => {
@@ -39,6 +42,7 @@ interface BadgesInterface {
   rock: number;
   silver: number;
   gold: number;
+  score: number;
 }
 
 const CommentElement = ({
@@ -54,13 +58,20 @@ const CommentElement = ({
   commentId: string | null;
   refreshComments: any;
 }) => {
+  const { setNotifys, refreshCoins } = useContext(
+    GlobalContext
+  ) as GlobalContextInterface;
   const [showPrices, setShowPrices] = useState<boolean>(false);
   const [showCommentForm, setShowCommentForm] = useState<boolean>(false);
   const [badges, setBadges] = useState<BadgesInterface>({
     rock: comment.rock,
     silver: comment.silver,
     gold: comment.gold,
+    score: comment.score,
   });
+  const [voteType, setVoteType] = useState<"" | "PLUS" | "MINUS">(
+    comment.voteType || ""
+  );
   const commentText = useRef("");
 
   const endFunction = () => {
@@ -87,6 +98,7 @@ const CommentElement = ({
     const quotePattern =
       /\[quote\][\w\d\s\.,!@#$%^&\*()`~?/><'";:|\\}{\[\]+-_]*\[\/quote\]/g;
     const elements: { textElement: string; nodeElement: string }[] = [];
+    text = text.replace(/(?:\r\n|\r|\n)/g, "<br/>");
     const nicknames = text.match(userNamePattern);
     const quotes = text.match(quotePattern);
     quotes?.forEach((item) => {
@@ -111,6 +123,61 @@ const CommentElement = ({
     });
 
     return parse(newText, options);
+  };
+
+  const handleAddVote = async (type: "PLUS" | "MINUS") => {
+    const req = await fetch(`/api/comments/${comment._id}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type,
+      }),
+    });
+
+    const res = await req.json();
+
+    if (req.status === 200) {
+      setBadges((state) => {
+        const newState = { ...state };
+        newState.score = res.count;
+        return newState;
+      });
+      if (!res.isBadged) setVoteType("");
+      else setVoteType(res.type);
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
+  const handleAddBadge = async (type: "ROCK" | "SILVER" | "GOLD") => {
+    const req = await fetch(`/api/comments/${comment._id}/badge`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type,
+      }),
+    });
+
+    const res: {
+      message: string;
+      count: number;
+      type: "ROCK" | "SILVER" | "GOLD";
+    } = await req.json();
+
+    if (req.status === 200) {
+      setBadges((state) => {
+        const newState = { ...state };
+        newState[res.type.toLowerCase() as "rock" | "silver" | "gold"] =
+          res.count;
+        return newState;
+      });
+      refreshCoins();
+    }
+    createNotifycation(setNotifys, "info", res.message);
   };
 
   return (
@@ -153,15 +220,29 @@ const CommentElement = ({
                 </div>
               </div>
               <div className={style.commentScore}>
-                <span className={style.commentVote}>
+                <button
+                  className={
+                    style.commentVote +
+                    " " +
+                    style.commentVotePlus +
+                    (voteType === "PLUS" ? " " + style.activeVotePlus : "")
+                  }
+                  onClick={() => handleAddVote("PLUS")}
+                >
                   <span>+</span>
-                </span>
-                <span className={style.commentScoreCount}>{comment.score}</span>
-                <span
-                  className={style.commentVote + " " + style.commentVoteMinus}
+                </button>
+                <span className={style.commentScoreCount}>{badges.score}</span>
+                <button
+                  className={
+                    style.commentVote +
+                    " " +
+                    style.commentVoteMinus +
+                    (voteType === "MINUS" ? " " + style.activeVoteMinus : "")
+                  }
+                  onClick={() => handleAddVote("MINUS")}
                 >
                   <span>-</span>
-                </span>
+                </button>
               </div>
             </header>
             <div className={style.commentText}>
@@ -223,7 +304,7 @@ const CommentElement = ({
                       (showPrices ? " " + style.active : "")
                     }
                   >
-                    <article>
+                    <article onClick={() => handleAddBadge("GOLD")}>
                       <Image
                         width={28}
                         height={29.5}
@@ -235,7 +316,7 @@ const CommentElement = ({
                         <Image width={14} height={14} src={coin} alt="Moneta" />
                       </div>
                     </article>
-                    <article>
+                    <article onClick={() => handleAddBadge("SILVER")}>
                       <Image
                         width={28}
                         height={29.5}
@@ -247,7 +328,7 @@ const CommentElement = ({
                         <Image width={14} height={14} src={coin} alt="Moneta" />
                       </div>
                     </article>
-                    <article>
+                    <article onClick={() => handleAddBadge("ROCK")}>
                       <Image
                         width={28}
                         height={29.5}

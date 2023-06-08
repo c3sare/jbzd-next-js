@@ -758,6 +758,7 @@
   background: #313131;
   font-weight: 700;
   height: 22px;
+  border: none;
 }
 
 .commentScoreCount {
@@ -1015,4 +1016,12 @@ blockquote.quote svg:first-of-type {
 
 blockquote.quote svg:last-of-type {
   margin-left: 5px;
+}
+
+button.activeVotePlus {
+  background: #94b425;
+}
+
+button.activeVoteMinus {
+  background: #c03e3e;
 }

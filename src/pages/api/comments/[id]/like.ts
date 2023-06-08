@@ -83,27 +83,28 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         id: commentId,
         type: type === "PLUS" ? "MINUS" : "PLUS",
       });
-
-      const countPlus = await Badge.count({
-        where: "COMMENT",
-        type: "PLUS",
-        id: commentId,
-      });
-
-      const countMinus = await Badge.count({
-        where: "COMMENT",
-        type: "MINUS",
-        id: commentId,
-      });
-
-      const count = countPlus - countMinus;
-
-      res.status(200).json({
-        message: type + " został przyznany!",
-        count,
-        type,
-      });
     }
+
+    const countPlus = await Badge.count({
+      where: "COMMENT",
+      type: "PLUS",
+      id: commentId,
+    });
+
+    const countMinus = await Badge.count({
+      where: "COMMENT",
+      type: "MINUS",
+      id: commentId,
+    });
+
+    const count = countPlus - countMinus;
+
+    res.status(200).json({
+      message: type + " został przyznany!",
+      count,
+      type,
+      isBadged: !checkIsBadged,
+    });
   } else {
     res.status(404).json({ message: "Page not found" });
   }
