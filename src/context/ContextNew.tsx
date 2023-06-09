@@ -31,10 +31,6 @@ export interface GlobalContextInterface {
       comments: number;
     };
   };
-  plused: string[];
-  refreshPlused: any;
-  favourites: string[];
-  refreshFavourites: any;
   lists: {
     user: {
       follow: string[];
@@ -64,18 +60,6 @@ export default function Context({ children }: any) {
     useSWR("/api/checklogin");
   const { data: coins = 0, mutate: refreshCoins } = useSWR(
     login.logged ? "/api/coins" : null,
-    {
-      refreshInterval: 0,
-    }
-  );
-  const { data: plused = [], mutate: refreshPlused } = useSWR(
-    login.logged ? "/api/user/pluslist" : null,
-    {
-      refreshInterval: 0,
-    }
-  );
-  const { data: favourites = [], mutate: refreshFavourites } = useSWR(
-    login.logged ? "/api/user/favouritelist" : null,
     {
       refreshInterval: 0,
     }
@@ -144,10 +128,6 @@ export default function Context({ children }: any) {
         coins,
         refreshCoins,
         profileData: { isLoadingProfileData, profileData, profileDataError },
-        plused,
-        refreshPlused,
-        favourites,
-        refreshFavourites,
         lists,
         refreshLists,
         monit,

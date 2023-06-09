@@ -9,10 +9,11 @@ import createNotifycation from "@/utils/createNotifycation";
 
 const AuthorInfo = ({ user }: any) => {
   const [spears, setSpears] = useState<number>(user?.spears || 0);
+  const [userMethod, setUserMethod] = useState<"" | "FOLLOW" | "BLOCK">(
+    user?.method || ""
+  );
   const {
     login: { logged, login },
-    lists,
-    refreshLists,
     setNotifys,
   } = useContext(GlobalContext) as GlobalContextInterface;
 
@@ -27,7 +28,8 @@ const AuthorInfo = ({ user }: any) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      refreshLists();
+      if (res.method === "ADD") setUserMethod("BLOCK");
+      else setUserMethod("");
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -44,7 +46,8 @@ const AuthorInfo = ({ user }: any) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      refreshLists();
+      if (res.method === "ADD") setUserMethod("FOLLOW");
+      else setUserMethod("");
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -108,18 +111,14 @@ const AuthorInfo = ({ user }: any) => {
         <div className={style.userPostActions}>
           <button
             disabled={user?.username === login}
-            className={
-              lists.user.follow.includes(user?.username) ? style.observed : ""
-            }
+            className={userMethod === "FOLLOW" ? style.observed : ""}
             onClick={() => handleClickObservelist(user?.username)}
           >
             Obserwuj
           </button>
           <button
             disabled={user?.username === login}
-            className={
-              lists.user.block.includes(user?.username) ? style.blacklisted : ""
-            }
+            className={userMethod === "BLOCK" ? style.blacklisted : ""}
             onClick={() => handleClickBlacklist(user?.username)}
           >
             Czarna lista

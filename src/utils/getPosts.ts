@@ -1,5 +1,6 @@
 import { withSessionSSR } from "@/lib/AuthSession/session";
 import dbConnect from "@/lib/dbConnect";
+import Badge from "@/models/Badge";
 import Category from "@/models/Category";
 import Favourite from "@/models/Favourite";
 import ObservedBlockList from "@/models/ObservedBlockList";
@@ -313,16 +314,55 @@ const getPosts = ({
 
     const allPages = Math.ceil(allPosts / 8);
 
-    let posts = await Postsstats.find(findOptions)
-      .sort({ addTime: -1 })
-      .skip((page - 1) * 8)
-      .limit(8);
+    let posts = JSON.parse(
+      JSON.stringify(
+        await Postsstats.find(findOptions)
+          .sort({ addTime: -1 })
+          .skip((page - 1) * 8)
+          .limit(8)
+      )
+    );
 
-    if (!session?.logged || !session?.login) {
-      posts = posts.map((item) => {
-        const newObject = { ...item._doc };
-        delete newObject.user;
-        return newObject;
+    if (session?.logged && session?.login) {
+      let postUsers = posts.map((item: any) => item.author);
+      postUsers = postUsers.filter(
+        (item: any, pos: any) => postUsers.indexOf(item) === pos
+      );
+      const listOfObservedBlock = JSON.parse(
+        JSON.stringify(
+          await ObservedBlockList.find({
+            username: session.login,
+            type: "USER",
+            method: { $in: ["FOLLOW", "BLOCK"] },
+            name: { $in: postUsers },
+          })
+        )
+      );
+
+      const favourites: string[] = JSON.parse(
+        JSON.stringify(await Favourite.find({ username: session.login }))
+      ).map((item: any) => item.post);
+
+      const pluses: string[] = JSON.parse(
+        JSON.stringify(
+          await Badge.find({
+            author: session.login,
+            where: "POST",
+            type: "PLUS",
+          })
+        )
+      ).map((item: any) => item.id);
+
+      posts = posts.map((item: any) => {
+        item.user.method =
+          listOfObservedBlock.find(
+            (element: any) => element.name === item.author
+          )?.method || "";
+        return {
+          ...item,
+          isPlused: Boolean(pluses.find((pitem) => pitem === item._id)),
+          isFavourite: Boolean(favourites.find((pitem) => pitem === item._id)),
+        };
       });
     }
 

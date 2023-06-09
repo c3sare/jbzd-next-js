@@ -37,16 +37,19 @@ interface PostProps {
     category: string;
     addTime: string;
     author: string;
-    user: {
+    user?: {
       avatar: string;
       username: string;
       spears: number;
       rank: number;
+      method: "" | "BLOCK" | "FOLLOW";
     };
     plus: number;
     rock: number;
     silver: number;
     gold: number;
+    isPlused?: boolean;
+    isFavourite?: boolean;
   };
   single?: boolean;
   showTags?: boolean;
@@ -59,14 +62,14 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
     login: { logged, login },
     categories,
     setNotifys,
-    plused,
-    refreshPlused,
-    favourites,
-    refreshFavourites,
     lists,
     refreshLists,
     createMonit,
   } = useContext(GlobalContext) as GlobalContextInterface;
+  const [isPlused, setIsPlused] = useState<boolean>(post.isPlused || false);
+  const [isFavourite, setIsFavourite] = useState<boolean>(
+    post.isFavourite || false
+  );
   const [badges, setBadges] = useState<BadgeInterface>({
     plus: post.plus,
     rock: post.rock,
@@ -114,14 +117,18 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      refreshPlused();
       setBadge(res.method, res.count);
+      if (res.method === "PLUS") {
+        setIsPlused(true);
+      } else {
+        setIsPlused(false);
+      }
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
   };
 
-  const handleFavouritePost = (id: string) => {
+  const handleFavouritePost = async (id: string) => {
     if (!logged)
       return createNotifycation(
         setNotifys,
@@ -129,12 +136,19 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
         "Ta strona wymaga zalogowania"
       );
 
-    fetch(`/api/post/${id}/favourite`, { method: "POST" })
-      .then((res) => res.json())
-      .then(() => refreshFavourites())
-      .catch((err) => {
-        console.error(err);
-      });
+    const req = await fetch(`/api/post/${id}/favourite`, { method: "POST" });
+
+    const res = await req.json();
+
+    if (req.status === 200) {
+      if (res.method === "LIKED") {
+        setIsFavourite(true);
+      } else if (res.method === "UNLIKED") {
+        setIsFavourite(false);
+      }
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
   };
 
   const allPostElements = useMemo(
@@ -410,10 +424,7 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
         {logged && (
           <button
             aria-label="Dodaj dzidę do ulubionych"
-            className={
-              style.star +
-              (favourites.includes(post._id) ? " " + style.active : "")
-            }
+            className={style.star + (isFavourite ? " " + style.active : "")}
             onClick={() => handleFavouritePost(post._id)}
           >
             <FaStar />
@@ -422,9 +433,7 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
         <span className={style.likeCounter}>+{badges.plus}</span>
         <button
           aria-label="Zaplusuj dzidę"
-          className={
-            style.plus + (plused.includes(post._id) ? " " + style.added : "")
-          }
+          className={style.plus + (isPlused ? " " + style.added : "")}
           onClick={() => handlePlusPost(post._id)}
         >
           <span className={style.plusIcon}>+</span>
