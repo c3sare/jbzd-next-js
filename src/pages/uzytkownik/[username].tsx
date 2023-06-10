@@ -15,6 +15,8 @@ import dbConnect from "@/lib/dbConnect";
 import createNotifycation from "@/utils/createNotifycation";
 import { IoMdEye, IoMdEyeOff, IoMdMail } from "react-icons/io";
 import Breadcrumb from "@/components/Breadcrumb";
+import { withSessionSSR } from "@/lib/AuthSession/session";
+import ObservedBlockList from "@/models/ObservedBlockList";
 
 interface ProfileData {
   profile: {
@@ -31,19 +33,19 @@ interface ProfileData {
     acceptedPosts: number;
     allPosts: number;
   };
+  isBlocked: boolean;
 }
 
-const UserProfile = ({ profile }: ProfileData) => {
+const UserProfile = ({ profile, isBlocked }: ProfileData) => {
   const router = useRouter();
   const [spears, setSpears] = useState<number>(profile?.spears || 0);
   const [tab, setTab] = useState<number>(
     [0, 1].includes(Number(router.query?.tab)) ? Number(router.query?.tab) : 0
   );
+  const [blocked, setBlocked] = useState<boolean>(isBlocked || false);
   const {
     login: { logged, login },
     setNotifys,
-    lists,
-    refreshLists,
   } = useContext(GlobalContext) as GlobalContextInterface;
 
   const handleAddSpear = async (username: string) => {
@@ -71,13 +73,15 @@ const UserProfile = ({ profile }: ProfileData) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      refreshLists();
+      if (res.method === "ADD") {
+        setBlocked(true);
+      } else {
+        setBlocked(false);
+      }
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
   };
-
-  const isBlocked = lists.user.block.includes(profile.username);
 
   return (
     <>
@@ -160,10 +164,10 @@ const UserProfile = ({ profile }: ProfileData) => {
                   <IoMdMail />
                 </button>
                 <button
-                  className={isBlocked ? style.disabled : ""}
+                  className={blocked ? style.disabled : ""}
                   onClick={() => handleAddToBlackList(profile.username)}
                 >
-                  {isBlocked ? <IoMdEyeOff /> : <IoMdEye />}
+                  {blocked ? <IoMdEyeOff /> : <IoMdEye />}
                 </button>
               </>
             )}
@@ -231,21 +235,37 @@ const UserProfile = ({ profile }: ProfileData) => {
   );
 };
 
-export async function getServerSideProps({ query }: any) {
-  const { username } = query;
-  await dbConnect();
-  const profile: any = await Usersprofiles.findOne({ username });
+export const getServerSideProps = withSessionSSR(
+  async function getServerSideProps({ req, query }): Promise<any> {
+    const { username } = query;
+    const session = req.session.user;
+    await dbConnect();
+    const profile: any = await Usersprofiles.findOne({ username });
+    let isBlocked = false;
 
-  if (!profile)
+    if (session?.logged && session?.login) {
+      isBlocked = Boolean(
+        await ObservedBlockList.exists({
+          username: session.login,
+          type: "USER",
+          method: "BLOCK",
+          name: username,
+        })
+      );
+    }
+
+    if (!profile)
+      return {
+        notFound: true,
+      };
+
     return {
-      notFound: true,
+      props: {
+        profile: JSON.parse(JSON.stringify(profile)),
+        isBlocked,
+      },
     };
-
-  return {
-    props: {
-      profile: JSON.parse(JSON.stringify(profile)),
-    },
-  };
-}
+  }
+);
 
 export default UserProfile;

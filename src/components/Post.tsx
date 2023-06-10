@@ -65,8 +65,6 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
     login: { logged, login },
     categories,
     setNotifys,
-    lists,
-    refreshLists,
     createMonit,
   } = useContext(GlobalContext) as GlobalContextInterface;
   const [isPlused, setIsPlused] = useState<boolean>(post.isPlused || false);
