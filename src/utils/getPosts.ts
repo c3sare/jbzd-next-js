@@ -365,6 +365,17 @@ const getPosts = ({
         };
       });
     }
+    let isFollowedCategory = false;
+
+    if (session?.logged && session?.login) {
+      isFollowedCategory = Boolean(
+        await ObservedBlockList.exists({
+          type: "SECTION",
+          username: session.login,
+          method: "FOLLOW",
+        })
+      );
+    }
 
     return {
       props: {
@@ -377,6 +388,7 @@ const getPosts = ({
               categorySlug: checkCategory.slug,
               nsfw: checkCategory.nsfw,
               ofage: hasCookie("ofage", { req }),
+              isFollowedCategory,
             }
           : {}),
       },

@@ -8,6 +8,7 @@ const Category = ({
   allPages,
   category,
   categorySlug,
+  isFollowedCategory,
 }: any) => {
   return (
     <>
@@ -21,6 +22,7 @@ const Category = ({
         posts={posts}
         currentPage={currentPage}
         allPages={allPages}
+        isFollowedCategory={isFollowedCategory}
       />
     </>
   );

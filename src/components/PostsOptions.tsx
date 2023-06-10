@@ -8,14 +8,21 @@ import createNotifycation from "@/utils/createNotifycation";
 import { useContext, useState } from "react";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
 
-const PostsOptions = ({ category }: { category?: string }) => {
+const PostsOptions = ({
+  category,
+  isFollowedCategory,
+}: {
+  category?: string;
+  isFollowedCategory?: boolean;
+}) => {
   const {
     login: { logged },
     setNotifys,
-    refreshLists,
-    lists: { section },
   } = useContext(GlobalContext) as GlobalContextInterface;
   const [currentOption, setCurrentOption] = useState<number>(0);
+  const [followCategory, setFollowCategory] = useState<boolean>(
+    isFollowedCategory || false
+  );
   const options = [
     null,
     <AddPost setOption={setCurrentOption} key={1} />,
@@ -40,13 +47,13 @@ const PostsOptions = ({ category }: { category?: string }) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      refreshLists();
+      if (res.method === "ADD") {
+        setFollowCategory(true);
+      } else setFollowCategory(false);
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
   };
-
-  const isFollowed = category ? section.follow.includes(category) : false;
 
   return (
     <>
@@ -82,10 +89,10 @@ const PostsOptions = ({ category }: { category?: string }) => {
         </button>
         {category && (
           <button
-            className={isFollowed ? style.followed : ""}
+            className={followCategory ? style.followed : ""}
             onClick={() => handleFollowSection(category)}
           >
-            {isFollowed ? "Nie obserwuj działu" : "Obserwuj dział"}
+            {followCategory ? "Nie obserwuj działu" : "Obserwuj dział"}
           </button>
         )}
       </div>

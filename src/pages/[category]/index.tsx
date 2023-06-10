@@ -11,6 +11,7 @@ const Index = ({
   categorySlug,
   nsfw,
   ofage,
+  isFollowedCategory,
 }: any) => {
   return (
     <>
@@ -27,6 +28,7 @@ const Index = ({
           posts={posts}
           currentPage={currentPage}
           allPages={allPages}
+          isFollowedCategory={isFollowedCategory}
         />
       )}
     </>

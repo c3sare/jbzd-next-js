@@ -31,20 +31,6 @@ export interface GlobalContextInterface {
       comments: number;
     };
   };
-  lists: {
-    user: {
-      follow: string[];
-      block: string[];
-    };
-    tag: {
-      follow: string[];
-      block: string[];
-    };
-    section: {
-      follow: string[];
-    };
-  };
-  refreshLists: any;
   monit: MonitInterface;
   createMonit: (title: string, text: string, func: any) => void;
   closeMonit: () => void;
@@ -64,16 +50,6 @@ export default function Context({ children }: any) {
       refreshInterval: 0,
     }
   );
-  const {
-    data: lists = {
-      user: { follow: [], block: [] },
-      tag: { follow: [], block: [] },
-      section: { follow: [] },
-    },
-    mutate: refreshLists,
-  } = useSWR(login.logged ? "/api/user/lists" : null, {
-    refreshInterval: 0,
-  });
   const {
     isLoading: isLoadingProfileData,
     data: profileData,
@@ -128,8 +104,6 @@ export default function Context({ children }: any) {
         coins,
         refreshCoins,
         profileData: { isLoadingProfileData, profileData, profileDataError },
-        lists,
-        refreshLists,
         monit,
         createMonit,
         closeMonit,

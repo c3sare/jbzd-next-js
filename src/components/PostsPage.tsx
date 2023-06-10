@@ -3,7 +3,6 @@ import Post from "./Post";
 import style from "@/styles/posts.module.css";
 import PostsOptions from "./PostsOptions";
 import Breadcrumb from "./Breadcrumb";
-import { useRouter } from "next/router";
 import Link from "next/link";
 
 interface PostsPageInterface {
@@ -15,6 +14,7 @@ interface PostsPageInterface {
   hideButtons?: boolean;
   nodeName: string;
   isHomePage?: boolean;
+  isFollowedCategory?: boolean;
 }
 
 const PostsPage = ({
@@ -26,6 +26,7 @@ const PostsPage = ({
   hideButtons,
   nodeName,
   isHomePage = false,
+  isFollowedCategory = false,
 }: PostsPageInterface) => {
   return (
     <>
@@ -35,7 +36,12 @@ const PostsPage = ({
         {!isHomePage ? <Link href="/">Strona Główna</Link> : null}
         {currentPage > 1 ? <Link href={`/${pageName}`}>{nodeName}</Link> : null}
       </Breadcrumb>
-      {!hideButtons && <PostsOptions category={category} />}
+      {!hideButtons && (
+        <PostsOptions
+          category={category}
+          isFollowedCategory={isFollowedCategory}
+        />
+      )}
       <div className={style.posts}>
         {posts.map((postMain: any, i: number) => (
           <Post key={i} post={postMain} />
