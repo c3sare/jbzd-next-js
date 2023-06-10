@@ -40,27 +40,36 @@ const Konva = ({
   const [size, setSize] = useState([0, 0]);
 
   useEffect(() => {
-    const img = document.createElement("img");
-    img.onload = function () {
-      const w = img.naturalWidth;
-      const h = img.naturalHeight;
-      const width = w > h ? 204 * (w / h) : 204;
-      const height = h > w ? 204 * (h / w) : 204;
-      img.width = width;
-      img.height = height;
-      setImg(img);
-      setSize([width, height]);
-      stageRef.current!.position({
-        x: width > 204 ? -(width - 204) / 2 : 0,
-        y: height > 204 ? -(height - 204) / 2 : 0,
-      });
+    let isMounted = true;
+
+    if (isMounted) {
+      const img = document.createElement("img");
+      img.onload = function () {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        const width = w > h ? 204 * (w / h) : 204;
+        const height = h > w ? 204 * (h / w) : 204;
+        img.width = width;
+        img.height = height;
+        setImg(img);
+        setSize([width, height]);
+        stageRef.current!.position({
+          x: width > 204 ? -(width - 204) / 2 : 0,
+          y: height > 204 ? -(height - 204) / 2 : 0,
+        });
+      };
+      img.crossOrigin = "Anonymous";
+      img.src = src;
+    }
+
+    return () => {
+      isMounted = false;
     };
-    img.crossOrigin = "Anonymous";
-    img.src = src;
   }, [src]);
 
   useEffect(() => {
-    if (stageRef.current !== null) {
+    let isMounted = true;
+    if (stageRef.current !== null && isMounted) {
       const width = size[0] * zoom;
       const height = size[1] * zoom;
       const x = stageRef.current!.x();
@@ -73,6 +82,10 @@ const Konva = ({
         y: y < minY ? minY : y,
       });
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [zoom]);
 
   return (

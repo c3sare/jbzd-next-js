@@ -1025,3 +1025,9 @@ button.activeVotePlus {
 button.activeVoteMinus {
   background: #c03e3e;
 }
+
+@media screen and (max-width: 768px) {
+  .badgesInfoContainer {
+    display: none !important;
+  }
+}

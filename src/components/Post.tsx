@@ -33,7 +33,10 @@ interface PostProps {
       type: "image" | "text" | "youtube" | "video";
     }[];
     comments: number;
-    tags: string[];
+    tags: {
+      name: string;
+      method: "" | "FOLLOW" | "BLOCK";
+    }[];
     category: string;
     addTime: string;
     author: string;
@@ -76,6 +79,9 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
     silver: post.silver,
     gold: post.gold,
   });
+  const [tags, setTags] = useState<
+    { name: string; method: "" | "FOLLOW" | "BLOCK" }[]
+  >(post.tags);
 
   const setBadge = (type: string, count: number) => {
     setBadges((prevState) => {
@@ -247,7 +253,27 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      refreshLists();
+      if (res.method === "ADD") {
+        setTags((state) => {
+          const newTags = [...state];
+
+          return newTags.map((item) => {
+            if (item.name === tag) item.method = "FOLLOW";
+
+            return item;
+          });
+        });
+      } else {
+        setTags((state) => {
+          const newTags = [...state];
+
+          return newTags.map((item) => {
+            if (item.name === tag) item.method = "";
+
+            return item;
+          });
+        });
+      }
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -264,7 +290,27 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
     const res = await req.json();
 
     if (req.status === 200) {
-      refreshLists();
+      if (res.method === "ADD") {
+        setTags((state) => {
+          const newTags = [...state];
+
+          return newTags.map((item) => {
+            if (item.name === tag) item.method = "BLOCK";
+
+            return item;
+          });
+        });
+      } else {
+        setTags((state) => {
+          const newTags = [...state];
+
+          return newTags.map((item) => {
+            if (item.name === tag) item.method = "";
+
+            return item;
+          });
+        });
+      }
     } else {
       createNotifycation(setNotifys, "info", res.message);
     }
@@ -322,22 +368,22 @@ const Post = ({ post, single = false, showTags = false }: PostProps) => {
           <div className={style.articleTags}>
             <div className={style.articleTagsContent}>
               <div>
-                {post.tags.map((tag) => (
-                  <span key={tag} className={style.articleTag}>
-                    <Link href={`/tag/${tag}`}>#{tag}</Link>
+                {tags.map((tag) => (
+                  <span key={tag.name} className={style.articleTag}>
+                    <Link href={`/tag/${tag.name}`}>#{tag.name}</Link>
                     {logged && (
                       <div className={style.observeContainer}>
                         <button
-                          onClick={() => handleAddTagToFollowed(tag)}
-                          {...(lists.tag.follow.includes(tag)
+                          onClick={() => handleAddTagToFollowed(tag.name)}
+                          {...(tag.method === "FOLLOW"
                             ? { className: style.active }
                             : {})}
                         >
                           Obserwuj
                         </button>
                         <button
-                          onClick={() => handleAddTagToBlackList(tag)}
-                          {...(lists.tag.block.includes(tag)
+                          onClick={() => handleAddTagToBlackList(tag.name)}
+                          {...(tag.method === "BLOCK"
                             ? { className: style.active }
                             : {})}
                         >

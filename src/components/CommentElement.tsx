@@ -182,7 +182,7 @@ const CommentElement = ({
 
   return (
     <>
-      <div>
+      <div id={comment._id}>
         <article
           className={
             style.comment + (isSubComment ? " " + style.subComment : "")

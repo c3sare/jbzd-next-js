@@ -13,6 +13,12 @@ import Comments from "@/components/Comments";
 import CommentForm from "@/components/CommentForm";
 import dbConnect from "@/lib/dbConnect";
 import { mutate } from "swr";
+import Badge from "@/models/Badge";
+import { withIronSessionSsr } from "iron-session/next/dist";
+import { sessionOptions } from "@/lib/AuthSession/config";
+import { withSessionSSR } from "@/lib/AuthSession/session";
+import Favourite from "@/models/Favourite";
+import ObservedBlockList from "@/models/ObservedBlockList";
 
 const Index = ({ post }: any) => {
   const { categories } = useContext(GlobalContext) as GlobalContextInterface;
@@ -58,26 +64,72 @@ const Index = ({ post }: any) => {
 
 export default Index;
 
-export async function getServerSideProps({ query }: any) {
-  const { id, slug } = query;
-  await dbConnect();
-  const post = await Postsstats.findOne({ _id: new Types.ObjectId(id) });
+export const getServerSideProps = withSessionSSR(
+  async function getServerSideProps({ query, req }): Promise<any> {
+    const session = req.session.user;
+    const { id, slug } = query;
+    await dbConnect();
+    let post = JSON.parse(
+      JSON.stringify(
+        await Postsstats.findOne({
+          _id: new Types.ObjectId(id as string),
+        })
+      )
+    );
 
-  if (!post)
+    if (!post)
+      return {
+        notFound: true,
+      };
+
+    const slugDB = createSlug(post.title);
+
+    if (slug !== slugDB)
+      return {
+        redirect: { destination: `/obr/${id}/${slugDB}`, permament: false },
+      };
+
+    if (session?.logged && session?.login) {
+      const postId = new Types.ObjectId(post._id);
+      const isPlused = await Badge.exists({
+        author: session.login,
+        where: "POST",
+        type: "PLUS",
+        id: postId,
+      });
+      const isFavourite = await Favourite.exists({
+        username: session.login,
+        post: postId,
+      });
+      const userMethod = await ObservedBlockList.findOne({
+        username: session.login,
+        type: "USER",
+        method: { $in: ["FOLLOW", "BLOCK"] },
+        name: post.author,
+      });
+      const userTags = await ObservedBlockList.find({
+        username: session.login,
+        type: "TAG",
+        name: { $in: post.tags },
+      });
+      post.isPlused = isPlused;
+      post.isFavourite = isFavourite;
+      post.user.method = userMethod?.method || "";
+      post.tags = post.tags.map((tag: string) => ({
+        name: tag,
+        method: userTags.find((item) => item.name === tag)?.method || "",
+      }));
+    } else {
+      post.tags = post.tags.map((tag: string) => ({
+        name: tag,
+        method: "",
+      }));
+    }
+
     return {
-      notFound: true,
+      props: {
+        post: JSON.parse(JSON.stringify(post)),
+      },
     };
-
-  const slugDB = createSlug(post.title);
-
-  if (slug !== slugDB)
-    return {
-      redirect: { destination: `/obr/${id}/${slugDB}`, permament: false },
-    };
-
-  return {
-    props: {
-      post: JSON.parse(JSON.stringify(post)),
-    },
-  };
-}
+  }
+);
