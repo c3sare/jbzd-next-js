@@ -4,13 +4,18 @@ import { useContext, useEffect, useState } from "react";
 import Post from "./Post";
 import Loading from "./Loading";
 import { GlobalContext, GlobalContextInterface } from "@/context/ContextNew";
+import useSWR from "swr";
 
 const ProfilePosts = ({ username }: { username: string }) => {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [category, setCategory] = useState<string>("all");
+  const {
+    data: posts,
+    isLoading,
+    error,
+    mutate,
+  } = useSWR(`/api/user/${username}/posts/${category}`, { refreshInterval: 0 });
   const { categories } = useContext(GlobalContext) as GlobalContextInterface;
-  const [posts, setPosts] = useState<any[]>([]);
 
   const categoriesSelect = categories
     ? categories.filter((item) => !item.nsfw && !item.asPage)
@@ -27,17 +32,6 @@ const ProfilePosts = ({ username }: { username: string }) => {
         setCategory(router.query.category as string);
     }
   }, [categories, router]);
-
-  useEffect(() => {
-    setLoading(true);
-    fetch(`/api/user/${username}/posts/${category}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setPosts(data);
-      })
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, [category, username]);
 
   return (
     <>
@@ -60,10 +54,15 @@ const ProfilePosts = ({ username }: { username: string }) => {
         </select>
       </section>
 
-      {loading ? (
+      {isLoading ? (
         <Loading />
+      ) : error ? (
+        <div>
+          <p>Wystąpił błąd</p>
+          <button onClick={mutate}>Ponów próbę</button>
+        </div>
       ) : (
-        posts.map((item) => <Post key={item._id} post={item} />)
+        posts.map((item: any) => <Post key={item._id} post={item} />)
       )}
     </>
   );
