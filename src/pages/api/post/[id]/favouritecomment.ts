@@ -3,8 +3,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { Types } from "mongoose";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { sessionOptions } from "@/lib/AuthSession/config";
-import Post from "@/models/Post";
 import Favourite from "@/models/Favourite";
+import Comment from "@/models/Comment";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = req.session.user;
@@ -20,7 +20,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         .json({ message: "Nieprawidłowy identyfikator posta!" });
 
     await dbConnect();
-    const isExist = await Post.exists({
+    const isExist = await Comment.exists({
       _id: new Types.ObjectId(id as string),
     });
 
@@ -30,13 +30,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const checkIsFavourite = await Favourite.exists({
       post: id,
       username: session.login,
+      type: "COMMENT",
     });
 
     if (checkIsFavourite) {
       const unLike = await Favourite.deleteOne({
         post: id,
         username: session.login,
-        type: "POST",
+        type: "COMMENT",
       });
 
       if (!unLike)
@@ -50,7 +51,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         username: session.login,
         post: id,
         addTime: new Date(),
-        type: "POST",
+        type: "COMMENT",
       });
 
       if (!like)

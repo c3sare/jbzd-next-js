@@ -26,7 +26,10 @@ const Index = ({ post }: any) => {
       ? categories.find((item) => item.slug === post.category)?.name
       : "";
 
-  const refreshComments = () => mutate(`/api/post/${post._id}/comment`);
+  const refreshComments = () => {
+    mutate(`/api/post/${post._id}/comment/best`);
+    mutate(`/api/post/${post._id}/comment/newest`);
+  };
 
   return (
     <>

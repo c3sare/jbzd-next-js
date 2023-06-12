@@ -793,7 +793,8 @@
 }
 
 .commentReplyA:hover,
-.commentReply:hover {
+.commentReply:hover,
+.isFavouriteComment {
   color: #ac2f2f;
 }
 

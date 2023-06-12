@@ -11,7 +11,9 @@ const ProfileComments = ({ username }: { username: string }) => {
     isLoading,
     error,
     mutate,
-  } = useSWR(`/api/user/${username}/comments`, { refreshInterval: 0 });
+  } = useSWR(`/api/user/${username}/comments/${commentSort}`, {
+    refreshInterval: 0,
+  });
 
   return isLoading ? (
     <Loading />

@@ -9,6 +9,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import slug from "@/utils/createSlug";
 import Badge from "@/models/Badge";
 import ObservedBlockList from "@/models/ObservedBlockList";
+import Favourite from "@/models/Favourite";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
@@ -77,6 +78,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         )
       );
 
+      const favourites = JSON.parse(
+        JSON.stringify(
+          await Favourite.find({
+            username: session.login,
+            type: "COMMENT",
+          })
+        )
+      );
+
       comments = comments.map((item: any) => {
         const newItem = { ...item };
         delete newItem.user;
@@ -89,6 +99,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           },
           voteType:
             userVotes?.find((vote: any) => vote.id === item._id)?.type || "",
+          isFavourite: Boolean(
+            favourites.find((favourite: any) => favourite.post === item._id)
+          ),
         };
       });
     } else {

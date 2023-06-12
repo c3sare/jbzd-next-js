@@ -122,6 +122,7 @@ const Navigation = () => {
           <Link href="/" className={style.logo}>
             <Image
               height={35}
+              width={49}
               src={logo}
               alt="logo"
               style={{ margin: "5px" }}

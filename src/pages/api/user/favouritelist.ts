@@ -21,6 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const favourites = await Favourite.find({
       username: session.login,
+      type: "POST",
     });
 
     res.status(200).json(favourites.map((item) => item.post.toString()));

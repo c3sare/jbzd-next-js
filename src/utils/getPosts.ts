@@ -340,7 +340,9 @@ const getPosts = ({
       );
 
       const favourites: string[] = JSON.parse(
-        JSON.stringify(await Favourite.find({ username: session.login }))
+        JSON.stringify(
+          await Favourite.find({ username: session.login, type: "POST" })
+        )
       ).map((item: any) => item.post);
 
       const pluses: string[] = JSON.parse(

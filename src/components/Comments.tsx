@@ -36,7 +36,7 @@ const Comments = ({
   }, [comments, router]);
 
   return (
-    <div>
+    <div id="komentarze">
       <header className={style.commentsHeader}>
         <span className={style.commentsCount}>
           <span>{commentsCount}</span> komentarzy

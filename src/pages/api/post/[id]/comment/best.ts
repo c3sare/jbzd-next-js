@@ -6,6 +6,7 @@ import { sessionOptions } from "@/lib/AuthSession/config";
 import Post from "@/models/Post";
 import { Commentstats } from "@/models/Comment";
 import Badge from "@/models/Badge";
+import Favourite from "@/models/Favourite";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = req.session.user;
@@ -56,6 +57,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         )
       );
 
+      const favourites = JSON.parse(
+        JSON.stringify(
+          await Favourite.find({
+            username: session.login,
+            type: "COMMENT",
+          })
+        )
+      );
+
       comments = comments.map((comment: any) => {
         const newComment = { ...comment };
         delete newComment.subcomments;
@@ -69,6 +79,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           })),
           voteType:
             votes?.find((item: any) => item.id === comment._id)?.type || "",
+          isFavourite: Boolean(
+            favourites.find((favourite: any) => favourite.post === comment._id)
+          ),
         };
       });
     }

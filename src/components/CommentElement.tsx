@@ -60,9 +60,11 @@ const CommentElement = ({
   refreshComments: any;
   postLink?: boolean;
 }) => {
-  const { setNotifys, refreshCoins } = useContext(
-    GlobalContext
-  ) as GlobalContextInterface;
+  const {
+    setNotifys,
+    refreshCoins,
+    login: { logged },
+  } = useContext(GlobalContext) as GlobalContextInterface;
   const [showPrices, setShowPrices] = useState<boolean>(false);
   const [showCommentForm, setShowCommentForm] = useState<boolean>(false);
   const [badges, setBadges] = useState<BadgesInterface>({
@@ -73,6 +75,9 @@ const CommentElement = ({
   });
   const [voteType, setVoteType] = useState<"" | "PLUS" | "MINUS">(
     comment.voteType || ""
+  );
+  const [isFavourite, setIsFavourite] = useState<boolean>(
+    comment?.isFavourite || false
   );
   const commentText = useRef("");
 
@@ -128,6 +133,13 @@ const CommentElement = ({
   };
 
   const handleAddVote = async (type: "PLUS" | "MINUS") => {
+    if (!logged)
+      return createNotifycation(
+        setNotifys,
+        "info",
+        "Zaloguj się aby oddać głos"
+      );
+
     const req = await fetch(`/api/comments/${comment._id}/like`, {
       method: "POST",
       headers: {
@@ -182,6 +194,23 @@ const CommentElement = ({
     createNotifycation(setNotifys, "info", res.message);
   };
 
+  const handleAddToFavourites = async (id: string) => {
+    const req = await fetch(`/api/comments/${id}/favourite`, {
+      method: "POST",
+    });
+
+    const res = await req.json();
+    if (req.status === 200) {
+      if (res.method === "LIKE") {
+        setIsFavourite(true);
+      } else {
+        setIsFavourite(false);
+      }
+    } else {
+      createNotifycation(setNotifys, "info", res.message);
+    }
+  };
+
   return (
     <>
       <div id={comment._id}>
@@ -195,7 +224,7 @@ const CommentElement = ({
             className={style.commentAvatar}
           >
             <Image
-              src={comment.user.avatar || defaultAvatar}
+              src={comment?.user?.avatar || defaultAvatar}
               alt=""
               width={33}
               height={33}
@@ -259,102 +288,127 @@ const CommentElement = ({
                 </div>
               </span>
             </div>
-            <div className={style.commentReply}>
-              <button
-                className={style.commentReplyA}
-                onClick={() => {
-                  commentText.current = `@[${comment.author}] `;
-                  setShowCommentForm(!showCommentForm);
-                }}
-              >
-                <span className={style.commentReplyAIcon}>
-                  <TiArrowBack />
-                </span>
-                <span>Odpowiedz</span>
-              </button>
-              <button
-                className={style.commentReplyA}
-                onClick={() => {
-                  commentText.current = `@[${comment.author}] [quote]${comment.text}[/quote] `;
-                  setShowCommentForm(!showCommentForm);
-                }}
-              >
-                <span
-                  className={style.commentReplyAIcon}
-                  style={{ fontSize: "16px" }}
+            {logged && (
+              <div className={style.commentReply}>
+                <button
+                  className={style.commentReplyA}
+                  onClick={() => {
+                    commentText.current = `@[${comment.author}] `;
+                    setShowCommentForm(!showCommentForm);
+                  }}
                 >
-                  <FaQuoteLeft />
-                </span>
-                <span>Zacytuj</span>
-              </button>
-              <div
-                className={style.commentReplyA + " " + style.commentReplyABadge}
-              >
-                <div style={{ position: "relative" }}>
-                  <button
-                    className={style.commentReplyASelector}
-                    onClick={() => {
-                      setShowPrices(!showPrices);
-                    }}
+                  <span className={style.commentReplyAIcon}>
+                    <TiArrowBack />
+                  </span>
+                  <span>Odpowiedz</span>
+                </button>
+                <button
+                  className={style.commentReplyA}
+                  onClick={() => {
+                    commentText.current = `@[${comment.author}] [quote]${comment.text}[/quote] `;
+                    setShowCommentForm(!showCommentForm);
+                  }}
+                >
+                  <span
+                    className={style.commentReplyAIcon}
+                    style={{ fontSize: "16px" }}
                   >
-                    <DzidaIcon />
-                    <span>Nagroda</span>
-                  </button>
-                  <div
-                    className={
-                      style.contentBadgesActionOptions +
-                      (showPrices ? " " + style.active : "")
-                    }
-                  >
-                    <article onClick={() => handleAddBadge("GOLD")}>
-                      <Image
-                        width={28}
-                        height={29.5}
-                        src={goldLike}
-                        alt="Złota Dzida"
-                      />
-                      <div>
-                        <span>1000</span>
-                        <Image width={14} height={14} src={coin} alt="Moneta" />
-                      </div>
-                    </article>
-                    <article onClick={() => handleAddBadge("SILVER")}>
-                      <Image
-                        width={28}
-                        height={29.5}
-                        src={silverLike}
-                        alt="Srebrna Dzida"
-                      />
-                      <div>
-                        <span>400</span>{" "}
-                        <Image width={14} height={14} src={coin} alt="Moneta" />
-                      </div>
-                    </article>
-                    <article onClick={() => handleAddBadge("ROCK")}>
-                      <Image
-                        width={28}
-                        height={29.5}
-                        src={rockLike}
-                        alt="Kamienna Dzida"
-                      />
-                      <div>
-                        <span>100</span>{" "}
-                        <Image width={14} height={14} src={coin} alt="Moneta" />
-                      </div>
-                    </article>
+                    <FaQuoteLeft />
+                  </span>
+                  <span>Zacytuj</span>
+                </button>
+                <div
+                  className={
+                    style.commentReplyA + " " + style.commentReplyABadge
+                  }
+                >
+                  <div style={{ position: "relative" }}>
+                    <button
+                      className={style.commentReplyASelector}
+                      onClick={() => {
+                        setShowPrices(!showPrices);
+                      }}
+                    >
+                      <DzidaIcon />
+                      <span>Nagroda</span>
+                    </button>
+                    <div
+                      className={
+                        style.contentBadgesActionOptions +
+                        (showPrices ? " " + style.active : "")
+                      }
+                    >
+                      <article onClick={() => handleAddBadge("GOLD")}>
+                        <Image
+                          width={28}
+                          height={29.5}
+                          src={goldLike}
+                          alt="Złota Dzida"
+                        />
+                        <div>
+                          <span>1000</span>
+                          <Image
+                            width={14}
+                            height={14}
+                            src={coin}
+                            alt="Moneta"
+                          />
+                        </div>
+                      </article>
+                      <article onClick={() => handleAddBadge("SILVER")}>
+                        <Image
+                          width={28}
+                          height={29.5}
+                          src={silverLike}
+                          alt="Srebrna Dzida"
+                        />
+                        <div>
+                          <span>400</span>{" "}
+                          <Image
+                            width={14}
+                            height={14}
+                            src={coin}
+                            alt="Moneta"
+                          />
+                        </div>
+                      </article>
+                      <article onClick={() => handleAddBadge("ROCK")}>
+                        <Image
+                          width={28}
+                          height={29.5}
+                          src={rockLike}
+                          alt="Kamienna Dzida"
+                        />
+                        <div>
+                          <span>100</span>{" "}
+                          <Image
+                            width={14}
+                            height={14}
+                            src={coin}
+                            alt="Moneta"
+                          />
+                        </div>
+                      </article>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <button className={style.commentReplyA}>
-                <span
-                  className={style.commentReplyAIcon}
-                  style={{ fontSize: "16px" }}
+                <button
+                  className={
+                    style.commentReplyA +
+                    (isFavourite ? " " + style.isFavouriteComment : "")
+                  }
+                  onClick={() => handleAddToFavourites(comment._id)}
                 >
-                  <BsStarFill />
-                </span>
-                <span>Ulubione</span>
-              </button>
-            </div>
+                  <span
+                    className={style.commentReplyAIcon}
+                    style={{ fontSize: "16px" }}
+                  >
+                    <BsStarFill />
+                  </span>
+                  <span>Ulubione</span>
+                </button>
+              </div>
+            )}
             {postLink && (
               <Link
                 className="get-to-post"
