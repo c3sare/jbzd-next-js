@@ -14,8 +14,6 @@ import CommentForm from "@/components/CommentForm";
 import dbConnect from "@/lib/dbConnect";
 import { mutate } from "swr";
 import Badge from "@/models/Badge";
-import { withIronSessionSsr } from "iron-session/next/dist";
-import { sessionOptions } from "@/lib/AuthSession/config";
 import { withSessionSSR } from "@/lib/AuthSession/session";
 import Favourite from "@/models/Favourite";
 import ObservedBlockList from "@/models/ObservedBlockList";
@@ -29,6 +27,7 @@ const Index = ({ post }: any) => {
       : "";
 
   const refreshComments = () => mutate(`/api/post/${post._id}/comment`);
+
   return (
     <>
       <Seo title={post.title} />

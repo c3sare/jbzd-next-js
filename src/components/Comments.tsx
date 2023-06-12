@@ -2,7 +2,8 @@ import Loading from "./Loading";
 import style from "@/styles/posts.module.css";
 import useSWR from "swr";
 import CommentElement from "./CommentElement";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 
 const Comments = ({
   id,
@@ -11,13 +12,28 @@ const Comments = ({
   id: string;
   commentsCount: number;
 }) => {
+  const router = useRouter();
   const [commentSort, setCommentSort] = useState<"best" | "newest">("best");
+  const scrolledToId = useRef<boolean>(false);
   const {
-    data: comments,
+    data: comments = [],
     error: errorComments,
     isLoading: isLoadingComments,
     mutate: refreshComments,
   } = useSWR<any[]>(`/api/post/${id}/comment/${commentSort}`);
+
+  useEffect(() => {
+    const hashIndex = router.asPath.indexOf("#");
+
+    if (hashIndex > -1 && !scrolledToId.current) {
+      const id = router.asPath.slice(hashIndex + 1);
+      const comment = document.getElementById(id);
+      if (comment) {
+        comment.scrollIntoView();
+        scrolledToId.current = true;
+      }
+    }
+  }, [comments, router]);
 
   return (
     <div>

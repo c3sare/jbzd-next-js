@@ -180,3 +180,9 @@ textarea {
 .plyr--video .plyr__controls {
   background: none !important;
 }
+
+.get-to-post {
+  font-size: 10px;
+  color: #777;
+  float: right;
+}

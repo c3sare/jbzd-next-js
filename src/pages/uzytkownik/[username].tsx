@@ -17,6 +17,7 @@ import { IoMdEye, IoMdEyeOff, IoMdMail } from "react-icons/io";
 import Breadcrumb from "@/components/Breadcrumb";
 import { withSessionSSR } from "@/lib/AuthSession/session";
 import ObservedBlockList from "@/models/ObservedBlockList";
+import ProfileComments from "@/components/ProfileComments";
 
 interface ProfileData {
   profile: {
@@ -229,7 +230,7 @@ const UserProfile = ({ profile, isBlocked }: ProfileData) => {
           </Link>
         </Breadcrumb>
         {tab === 0 && <ProfilePosts username={profile.username} />}
-        {tab === 1 && <section></section>}
+        {tab === 1 && <ProfileComments username={profile.username} />}
       </div>
     </>
   );

@@ -51,12 +51,14 @@ const CommentElement = ({
   postId,
   commentId,
   refreshComments,
+  postLink,
 }: {
   comment: any;
   isSubComment?: boolean;
   postId: string;
   commentId: string | null;
   refreshComments: any;
+  postLink?: boolean;
 }) => {
   const { setNotifys, refreshCoins } = useContext(
     GlobalContext
@@ -353,6 +355,14 @@ const CommentElement = ({
                 <span>Ulubione</span>
               </button>
             </div>
+            {postLink && (
+              <Link
+                className="get-to-post"
+                href={`/obr/${comment.post}/${comment.slug}#${comment._id}`}
+              >
+                Przejdź do posta
+              </Link>
+            )}
           </div>
         </article>
       </div>

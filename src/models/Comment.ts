@@ -20,4 +20,7 @@ const commentSchema = new Schema<Comment>({
 export const Commentstats =
   models.commentstats || model<Comment>("commentstats", commentSchema);
 
+export const AllComments =
+  models.subcommentstats || model<Comment>("subcommentstats", commentSchema);
+
 export default models.Comment || model<Comment>("Comment", commentSchema);
