@@ -17,7 +17,7 @@ export interface CommentInterface {
   rock: number;
   silver: number;
   gold: number;
-  user: {
+  user?: {
     _id: string;
     username: string;
     avatar: string;
@@ -97,6 +97,12 @@ export default async function getComments(
       comment.user!.userMethod = userMethod;
       comment.voteMethod = voteMethod as "PLUS" | "MINUS";
       comment.isFavourite = isFavourite;
+
+      return comment;
+    });
+  } else {
+    comments = comments.map((comment) => {
+      delete comment.user;
 
       return comment;
     });

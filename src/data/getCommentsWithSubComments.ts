@@ -15,7 +15,7 @@ interface CommentWithStatsInterface {
   rock: number;
   silver: number;
   gold: number;
-  user: {
+  user?: {
     _id: string;
     username: string;
     avatar: string;
@@ -123,6 +123,12 @@ export default async function getCommentsWithSubComments(
 
         return subcomment;
       });
+
+      return comment;
+    });
+  } else {
+    comments = comments.map((comment) => {
+      delete comment.user;
 
       return comment;
     });

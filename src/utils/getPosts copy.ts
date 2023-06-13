@@ -1,13 +1,14 @@
 import { withSessionSSR } from "@/lib/AuthSession/session";
 import dbConnect from "@/lib/dbConnect";
+import Badge from "@/models/Badge";
 import Category from "@/models/Category";
 import Favourite from "@/models/Favourite";
 import ObservedBlockList from "@/models/ObservedBlockList";
 import { Postsstats } from "@/models/Post";
 import { hasCookie } from "cookies-next";
 import { formatISO } from "date-fns";
-import { FilterQuery, Types } from "mongoose";
-import getPostsWithStats from "@/data/getPosts";
+import { Types } from "mongoose";
+import getPostWithStats from "@/data/getPosts";
 
 interface ListsInterface {
   user: {
@@ -23,13 +24,37 @@ interface ListsInterface {
   };
 }
 
+interface Options {
+  _id?: { $in?: Types.ObjectId[] };
+  accepted?: boolean;
+  author?: {
+    $nin?: string[];
+    $in?: string[];
+  };
+  addTime?: {
+    $gt: string;
+    $lt?: string;
+  };
+  category?:
+    | string
+    | {
+        $in: string[];
+      };
+  tags?: {
+    $in?: string[];
+    $nin?: string[];
+  };
+  title?: any;
+  memContainers?: any;
+}
+
 const getPosts = ({
   options,
   asPage = false,
   personalType,
   tag = false,
 }: {
-  options: FilterQuery<any>;
+  options: Options;
   asPage?: boolean;
   personalType?: "USER" | "TAG" | "SECTION" | "FAVOURITES";
   tag?: boolean;
@@ -147,7 +172,7 @@ const getPosts = ({
       delete options.addTime;
     }
 
-    let findOptions: FilterQuery<any> = options;
+    let findOptions: Options = options;
 
     let checkCategory: any;
 
@@ -286,12 +311,63 @@ const getPosts = ({
         notFound: true,
       };
 
+    Postsstats.find({ $text: { $search: pharse } });
+
     const allPages = Math.ceil(allPosts / 8);
 
-    let posts = await getPostsWithStats(findOptions, { addTime: -1 }, session, {
-      limit: 8,
-      skip: (page - 1) * 8,
-    });
+    let posts = JSON.parse(
+      JSON.stringify(
+        await Postsstats.find(findOptions)
+          .sort({ addTime: -1 })
+          .skip((page - 1) * 8)
+          .limit(8)
+      )
+    );
+
+    if (session?.logged && session?.login) {
+      let postUsers = posts.map((item: any) => item.author);
+      postUsers = postUsers.filter(
+        (item: any, pos: any) => postUsers.indexOf(item) === pos
+      );
+      const listOfObservedBlock = JSON.parse(
+        JSON.stringify(
+          await ObservedBlockList.find({
+            username: session.login,
+            type: "USER",
+            method: { $in: ["FOLLOW", "BLOCK"] },
+            name: { $in: postUsers },
+          })
+        )
+      );
+
+      const favourites: string[] = JSON.parse(
+        JSON.stringify(
+          await Favourite.find({ username: session.login, type: "POST" })
+        )
+      ).map((item: any) => item.post);
+
+      const pluses: string[] = JSON.parse(
+        JSON.stringify(
+          await Badge.find({
+            author: session.login,
+            where: "POST",
+            type: "PLUS",
+          })
+        )
+      ).map((item: any) => item.id);
+
+      posts = posts.map((item: any) => {
+        item.user.method =
+          listOfObservedBlock.find(
+            (element: any) => element.name === item.author
+          )?.method || "";
+        return {
+          ...item,
+          isPlused: Boolean(pluses.find((pitem) => pitem === item._id)),
+          isFavourite: Boolean(favourites.find((pitem) => pitem === item._id)),
+        };
+      });
+    }
     let isFollowedCategory = false;
 
     if (session?.logged && session?.login) {
