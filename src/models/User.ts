@@ -1,6 +1,6 @@
 import { Schema, models, model } from "mongoose";
 
-export interface User {
+export interface UserInterface {
   username: string;
   email: string;
   createDate: string;
@@ -33,7 +33,7 @@ export interface User {
   confirmed: boolean;
 }
 
-export const userSchema = new Schema<User>({
+const userSchema = new Schema<UserInterface>({
   username: String,
   email: String,
   createDate: Date,
@@ -66,7 +66,10 @@ export const userSchema = new Schema<User>({
   confirmed: Boolean,
 });
 
-export default models.User || model<User>("User", userSchema);
+const User =
+  model<UserInterface>("User") || model<UserInterface>("User", userSchema);
+
+export default User;
 
 export const Usersprofiles =
   models.usersprofiles || model("usersprofiles", userSchema);

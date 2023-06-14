@@ -1,24 +1,24 @@
 .user {
-  max-width: 600px;
-  border-radius: 3px;
-  color: #fff;
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
-  padding: 15px;
+  max-width: 600px;
   margin: 0 66px 0 56px;
+  padding: 15px;
+  border-radius: 3px;
+  color: #fff;
 }
 
 .avatar {
+  margin: 0 auto;
   max-width: 118px;
   border-radius: 50%;
-  margin: 0 auto;
 }
 
 .userInfo {
-  padding-left: 15px;
   flex: 1;
   margin: 0 auto;
+  padding-left: 15px;
 }
 
 .userInfo header {
@@ -29,9 +29,9 @@
 }
 
 .userInfo header h2 {
+  margin: 0;
   font-weight: 400;
   font-size: 28px;
-  margin: 0;
 }
 
 .userDetails {
@@ -41,15 +41,15 @@
 }
 
 .userDetails > div {
-  margin-right: 25px;
   display: flex;
   align-items: center;
   gap: 5px;
+  margin-right: 25px;
 }
 
 .userDetails > div > span > svg {
-  color: #8f8f8f;
   font-size: 20px;
+  color: #8f8f8f;
 }
 
 .profileBadges {
@@ -65,10 +65,10 @@
 
 .profileBadges > div > span {
   display: flex;
-  font-size: 16px;
   align-items: center;
   gap: 5px;
   font-weight: 700;
+  font-size: 16px;
 }
 
 .userProfileActions {
@@ -76,15 +76,15 @@
 }
 
 .userProfileActions button {
-  border: none;
-  background: #313131;
+  display: inline-flex;
+  margin: 0 3px;
   padding: 4px 10px;
-  border-radius: 5px;
   font-size: 22px;
   color: white;
-  display: inline-flex;
+  border: none;
+  border-radius: 5px;
+  background: #313131;
   cursor: pointer;
-  margin: 0 3px;
 }
 
 .userProfileActions button.disabled {
@@ -93,39 +93,39 @@
 
 .userRanks {
   width: 125px;
-  border-radius: 5px;
   padding: 5px 10px;
+  border-radius: 5px;
   background: #1f1f1f;
 }
 
 .rank {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #fff;
-  font-size: 22px;
-  font-weight: 700;
-  position: relative;
   padding-right: 10px;
   text-decoration: none;
+  font-weight: 700;
+  font-size: 22px;
+  color: #fff;
 }
 
 .actions {
   display: flex;
   justify-content: space-between;
   max-width: 600px;
-  margin-left: 55px;
   margin-bottom: 25px;
+  margin-left: 55px;
 }
 
 .actions > button {
   flex: 1;
   min-height: 40px;
-  color: #fff;
-  border-radius: 3px;
   text-align: center;
-  background: #1f1f1f;
+  color: #fff;
   border: none;
+  border-radius: 3px;
+  background: #1f1f1f;
   cursor: pointer;
 }
 
@@ -138,20 +138,19 @@
 }
 
 .breadcrumbs {
-  margin-bottom: 15px;
-  color: #777;
-  font-size: 14px;
   margin: 15px 66px 15px 60px;
+  font-size: 14px;
+  color: #777;
 }
 
 .breadcrumbs > span {
-  font-size: 12px;
   position: relative;
+  font-size: 12px;
 }
 
 .breadcrumbs > span a {
-  color: #fff;
   text-decoration: none;
+  color: #fff;
 }
 
 .breadcrumbs > span:not(:last-child):after {
@@ -168,34 +167,34 @@
 .posts > select {
   width: 100%;
   max-width: 600px;
-  background: #1f1f1f;
+  height: 38px;
   padding: 0 10px;
   line-height: 38px;
-  height: 38px;
-  border: 0;
-  color: #fff;
   font-size: 16px;
+  color: #fff;
+  border: none;
+  background: #1f1f1f;
 }
 
 .loader {
+  position: relative;
   width: 30px;
   height: 30px;
+  margin: 0 auto;
   border: 2px solid rgba(255, 255, 255, 0.4);
   border-radius: 50%;
-  position: relative;
-  margin: 0 auto;
   animation: loading-rotating ease 1.5s infinite;
 }
 
 .loader:after {
   content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 1);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
   transform: translateX(-50%) translateY(50%);
 }
 
@@ -214,20 +213,20 @@
   position: absolute;
   right: -20px;
   top: 3px;
-  width: 25px;
-  height: 25px;
-  font-size: 24px;
-  border-radius: 50%;
-  margin: 0;
-  box-shadow: 0 2px 3px #000;
-  color: #fff;
-  background: #c03e3e;
-  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 25px;
+  height: 25px;
+  margin: 0;
   margin-left: 8px;
+  font-weight: 700;
+  font-size: 24px;
+  color: #fff;
   border: none;
+  border-radius: 50%;
+  background: #c03e3e;
+  box-shadow: 0 2px 3px #000;
   cursor: pointer;
 }
 
@@ -241,20 +240,20 @@
   }
 
   .breadcrumbs {
-    margin: 15px auto;
     max-width: 600px;
+    margin: 15px auto;
   }
 
   .posts {
-    margin: 0 auto 20px auto;
     max-width: 600px;
+    margin: 0 auto 20px auto;
   }
 
   .userRanks {
     display: flex;
-    width: 100%;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
     margin: 15px 0 5px;
   }
 

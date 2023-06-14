@@ -5,7 +5,7 @@ interface MemContainer {
   data: string;
 }
 
-interface Post {
+interface PostInterface {
   title: string;
   addTime: Date;
   author: string;
@@ -15,7 +15,7 @@ interface Post {
   tags?: Types.DocumentArray<string>;
 }
 
-const postSchema = new Schema<Post>({
+const postSchema = new Schema<PostInterface>({
   title: String,
   addTime: Date,
   author: String,
@@ -30,6 +30,9 @@ const postSchema = new Schema<Post>({
   tags: [String],
 });
 
-export default models.Post || model<Post>("Post", postSchema);
+const Post =
+  model<PostInterface>("Post") || model<PostInterface>("Post", postSchema);
 
-export const Postsstats = models.Postsstat || model("Postsstat", postSchema);
+export default Post;
+
+export const Postsstats = model("Postsstat") || model("Postsstat", postSchema);

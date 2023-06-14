@@ -12,20 +12,19 @@
   padding: 7px 5px;
   border-bottom: 1px solid #1f1f1f;
   background: #313131;
-  opacity: 0.3;
   opacity: 1;
 }
 
 .ranking ul li a {
   display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
   flex-direction: row;
   flex-wrap: nowrap;
-  font-size: 14px;
+  align-items: center;
+  width: 100%;
+  height: 100%;
   padding-left: 10px;
   padding-right: 5px;
+  font-size: 14px;
 }
 
 .rank {
@@ -34,8 +33,8 @@
 }
 
 .rank svg {
-  font-size: 16px;
   margin-right: 5px;
+  font-size: 16px;
 }
 
 .avatar {
@@ -51,12 +50,12 @@
 }
 
 .spearCounter {
-  margin-left: auto;
-  color: #f0cc00;
-  font-weight: 700;
   display: flex;
   align-items: center;
+  margin-left: auto;
+  font-weight: 700;
   font-size: 20px;
+  color: #f0cc00;
 }
 
 .spearCounter img {
@@ -64,15 +63,15 @@
 }
 
 .breadcrumbs {
-  padding-left: 0;
   margin-bottom: 15px;
-  color: #777;
+  padding-left: 0;
   font-size: 14px;
+  color: #777;
 }
 
 .breadcrumbsLink {
-  font-size: 12px;
   position: relative;
+  font-size: 12px;
 }
 
 .breadcrumbsLink a {

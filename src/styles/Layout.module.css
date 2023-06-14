@@ -1,45 +1,45 @@
 .breadcrumbs {
+  padding-left: 57px;
+  font-weight: 100;
   font-size: 12px;
   color: rgb(145, 145, 145);
-  font-weight: 100;
-  padding-left: 57px;
 }
 
 .breadcrumbs a {
-  color: white;
   text-decoration: none;
+  color: white;
 }
 
 .topFilter {
-  width: 660px;
   position: absolute;
   top: calc(100% + 5px);
-  z-index: 10;
-  background: #3c3c3c;
+  left: 50%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
+  width: 660px;
   padding: 20px;
-  left: 50%;
-  transform: translate(-50%);
   color: #fff;
-  flex-direction: column;
+  background: #3c3c3c;
+  transform: translate(-50%);
+  z-index: 10;
 }
 
 .postFilter {
   position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  top: calc(100% + 5px);
-  z-index: 10;
-  background: #3c3c3c;
   padding: 20px;
-  left: 50%;
+  background: #3c3c3c;
   transform: translate(-50%);
-  flex-direction: column;
+  z-index: 10;
 }
 
 .preview {
@@ -65,29 +65,23 @@
 }
 
 .contentWrapper {
-  margin-top: 46px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: stretch;
-  min-height: calc(100vh - 115px);
   flex-wrap: wrap;
   max-width: 1116px;
+  min-height: calc(100vh - 115px);
   margin: auto;
+  margin-top: 46px;
   padding: 0 5px;
-  justify-content: center;
 }
 
 .sidebar {
-  background: #313131;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
   flex-direction: column;
-  max-width: 356px;
   width: 100%;
+  max-width: 356px;
+  background: #313131;
 }
 
 @media screen and (max-width: 1132px) {
@@ -102,11 +96,11 @@
 
 .desktop {
   display: block;
-  padding: 15px 0;
   max-width: 290px;
   margin: 0 auto;
-  color: #fff;
+  padding: 15px 0;
   font-size: 14px;
+  color: #fff;
 }
 
 .loginForm {
@@ -115,12 +109,12 @@
 }
 
 .loginForm > .formGroup {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 5px 0;
   flex-wrap: wrap;
-  position: relative;
+  margin: 5px 0;
 }
 
 .loginForm > .formGroup:hover .error {
@@ -141,21 +135,17 @@
 }
 
 .loginForm .buttonSubmit {
-  display: block;
-  background: #c03e3e;
-  border: 0;
-  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   height: 30px;
-  max-width: 160px;
-  width: 100%;
+  color: #fff;
+  border: none;
   border-radius: 5px;
-  cursor: pointer;
   outline: 0 !important;
-  width: 100%;
-  max-width: none;
+  background: #c03e3e;
+  cursor: pointer;
 }
 
 .loginForm .buttonSubmit:disabled {
@@ -170,9 +160,9 @@
 }
 
 .formGroupCheckbox {
+  position: relative;
   display: flex;
   gap: 10px;
-  position: relative;
 }
 
 .formGroupCheckbox:hover .error {
@@ -181,21 +171,21 @@
 }
 
 .formLabel {
-  font-size: 14px;
-  color: #777;
   flex: 1;
   text-align: right;
+  font-size: 14px;
+  color: #777;
 }
 
 .formLabel a {
-  color: #777;
   text-decoration: none;
+  color: #777;
 }
 
 .formGroupLinks a {
-  color: #777;
-  font-size: 13px;
   text-decoration: none;
+  font-size: 13px;
+  color: #777;
 }
 
 .formGroupLinks a.white {
@@ -204,13 +194,12 @@
 
 .loginForm input {
   display: block;
-  background: #1f1f1f;
-  border: 1px solid #1f1f1f;
-  color: #777;
-  padding: 12px 10px;
-  border: 0;
-  outline: 0;
   width: 100%;
+  padding: 12px 10px;
+  color: #777;
+  border: none;
+  outline: 0 !important;
+  background: #1f1f1f;
 }
 
 .loginForm .errorInput {
@@ -229,17 +218,17 @@
 }
 
 .error {
-  display: none;
   position: absolute;
-  right: calc(100% + 8px);
   top: 50%;
-  transform: translateY(-50%);
-  background-color: #c03e3e;
-  border-radius: 4px;
+  right: calc(100% + 8px);
+  display: none;
+  width: auto;
   padding: 4px;
   font-size: 11px;
-  width: auto;
   white-space: nowrap;
+  border-radius: 4px;
+  background-color: #c03e3e;
+  transform: translateY(-50%);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -249,41 +238,41 @@
   position: absolute;
   top: 50%;
   right: -10px;
-  transform: translateY(-50%);
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent transparent #c03e3e;
+  transform: translateY(-50%);
 }
 
 .notifycations {
-  width: 300px;
+  position: fixed;
   top: 0px;
   right: 0px;
   display: block;
-  position: fixed;
+  width: 300px;
   z-index: 99999;
 }
 
 .notifycationWraper {
   display: block;
-  overflow: hidden;
   width: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
   transition: all 300ms ease 0s;
 }
 
 .notifyContainer {
-  font-size: 12px;
-  padding: 10px;
-  margin: 0 5px 5px;
-  color: #fff;
-  background: #44a4fc;
-  border-left: 5px solid #187fe7;
   display: block;
-  box-sizing: border-box;
+  margin: 0 5px 5px;
+  padding: 10px;
   text-align: left;
+  font-size: 12px;
+  color: #fff;
+  border-left: 5px solid #187fe7;
+  background: #44a4fc;
+  box-sizing: border-box;
 }
 
 .profile {
@@ -307,43 +296,43 @@
 
 .profileHeader {
   position: relative;
+  padding: 8px 10px;
   color: #fff;
   background: #181818;
-  padding: 8px 10px;
 }
 
 .profileHeader button {
   color: white;
-  background: none;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
   margin: 0;
-  font-size: 15px;
   padding: 0;
+  font-size: 15px;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
 }
 
 .profileHeader > span {
   display: flex;
   align-items: center;
-  font-size: 16px;
   justify-content: space-between;
+  font-size: 16px;
 }
 
 .profileHeader a {
-  color: white;
   text-decoration: none;
+  color: white;
 }
 
 .profileDetails {
+  padding-top: 10px;
   font-size: 12px;
   color: #fff;
-  padding-top: 10px;
 }
 
 .profileDetail {
-  margin: 0px 0 8px;
   display: flex;
+  margin: 0px 0 8px;
 }
 
 .profileDetail > svg {
@@ -353,20 +342,20 @@
 
 .profileNav {
   display: flex;
-  background: #252525;
   height: 40px;
+  background: #252525;
 }
 
 .profileNav > a {
   display: flex;
-  flex: 1 1;
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
-  height: 100%;
   align-items: center;
   justify-content: center;
+  flex: 1 1;
+  height: 100%;
   text-decoration: none;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
 }
 
 .profileNav > a:hover {
@@ -377,17 +366,17 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 5000;
-  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
   opacity: 1;
   animation-name: fadeInOpacity;
   animation-duration: 0.2s;
   transition: opacity 0.2s;
+  z-index: 5000;
 }
 
 .reverseMonit {
@@ -404,14 +393,14 @@
 }
 
 .monitContent {
-  color: #fff;
-  background-color: #000;
-  box-shadow: 0 0 5px rgba(50, 50, 50, 0.75);
   width: 98%;
   max-width: 400px;
-  padding: 15px;
-  border-radius: 5px;
   margin: 25px auto;
+  padding: 15px;
+  color: #fff;
+  border-radius: 5px;
+  background-color: #000;
+  box-shadow: 0 0 5px rgba(50, 50, 50, 0.75);
   transform: translateY(-70%) scale(1);
   animation-name: fadeIn;
   animation-duration: 0.5s;
@@ -434,56 +423,52 @@
 .monitContent h5 {
   margin: 0 0 10px;
   padding: 0;
-  font-size: 18px;
   text-align: center;
+  font-size: 18px;
 }
 
 .monitContent p {
-  font-size: 14px;
-  padding: 0;
   margin: 0;
+  padding: 0;
   text-align: center;
+  font-size: 14px;
 }
 
 .monitButtons {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   padding: 15px 0 0;
 }
 
 .monitButtons button {
-  display: inline-block;
   position: relative;
+  display: inline-block;
   min-width: 80px;
+  margin: 0 3px;
   padding: 6px 20px;
-  border-radius: 4px;
-  border: 2px solid transparent;
   text-align: center;
   text-decoration: none;
-  cursor: pointer;
-  outline: none;
-  appearance: none;
   font-size: 16px;
   font-weight: 400;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  outline: 0 !important;
+  appearance: none;
   float: none;
-  margin: 0 3px;
+  cursor: pointer;
 }
 
 .monitButtons button:first-child {
-  color: #fff;
-  background-color: #c03e3e;
-  border-color: #c03e3e;
-  -webkit-box-ordinal-group: 2;
-  -ms-flex-order: 1;
   order: 1;
+  color: #fff;
+  border-color: #c03e3e;
+  background-color: #c03e3e;
 }
 
 .monitButtons button:last-child {
+  order: 2;
   color: #000;
   background-color: #fff;
-  -webkit-box-ordinal-group: 3;
-  -ms-flex-order: 2;
-  order: 2;
 }

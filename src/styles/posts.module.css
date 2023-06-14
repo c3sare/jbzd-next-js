@@ -1,7 +1,7 @@
 .posts {
-  flex: 1 1;
   display: flex;
   flex-direction: column;
+  flex: 1 1;
 }
 
 .post {
@@ -20,26 +20,26 @@
 .post > .contentPost > .postHeader {
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: 5px 10px;
   margin-bottom: 4px;
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .post > .contentPost > .postHeader > h2 {
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 .post > .contentPost > .postHeader > h2 a {
-  color: white;
   text-decoration: none;
+  color: white;
 }
 
 .post > .contentPost > .postHeader > .iconComments {
-  font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 15px;
 }
 
 .post > .contentPost > .postHeader > .iconComments > svg {
@@ -48,12 +48,12 @@
 }
 
 .post > .buttonsPost {
-  min-width: 50px;
-  padding: 0 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  min-width: 50px;
+  padding: 0 8px;
 }
 
 .post > .buttonsPost > * {
@@ -62,20 +62,20 @@
 
 .buttonsCoins {
   position: absolute;
-  bottom: 100%;
   right: 0;
+  bottom: 100%;
 }
 
 .post > .buttonsPost button,
 .buttonsCoins > button {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 20px;
-  cursor: pointer;
-  border: none;
-  border-radius: 3px;
   width: 50px;
   min-height: 40px;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 3px;
   background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
 }
 
 .buttonsCoins > button:nth-child(2),
@@ -89,8 +89,8 @@
 
 @media screen and (max-width: 768px) {
   .buttonsPost {
-    max-width: 600px;
     margin: 0 auto;
+    max-width: 600px;
   }
 
   .buttonsPost > :last-child {
@@ -104,8 +104,8 @@
 }
 
 .buttonsCoins > button {
-  padding: 3px;
   display: block;
+  padding: 3px;
 }
 
 .buttonsCoins > button img,
@@ -124,9 +124,9 @@
 }
 
 .buttonsCoins > button > span {
-  font-size: 13px;
   display: flex;
   font-weight: 700;
+  font-size: 13px;
 }
 
 .buttonsCoins > button > span > img {
@@ -136,9 +136,9 @@
 }
 
 .post > .buttonsPost > .coins {
-  background: rgba(255, 255, 255, 0.05);
-  height: 55px;
   position: relative;
+  height: 55px;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .post > .buttonsPost > .coins > img {
@@ -176,12 +176,12 @@
 }
 
 .memDetails {
-  font-size: 12px;
-  padding: 5px 10px;
-  background-color: rgba(0, 0, 0, 0.2);
-  margin: 0;
   display: flex;
   justify-content: space-between;
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .memDetails > .userAddTimeDetails > .addTime {
@@ -194,12 +194,12 @@
 }
 
 .likeContainer {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  font-weight: 700;
   padding: 0 8px;
+  font-weight: 700;
 }
 
 .likeContainer > .image {
@@ -214,25 +214,25 @@
 }
 
 .likeContainer > .image > span {
-  display: none;
-  font-size: 11px;
   position: absolute;
-  padding: 3px 5px;
-  bottom: calc(100% + 6px);
-  background-color: black;
   left: 50%;
+  bottom: calc(100% + 6px);
+  display: none;
+  padding: 3px 5px;
   font-weight: normal;
+  font-size: 11px;
   border-radius: 3px;
+  background-color: black;
   transform: translateX(-59%);
 }
 
 .likeContainer > .image > span:after {
   content: "";
-  width: 15px;
-  height: 15px;
   position: absolute;
   top: calc(100% - 15px);
   left: 50%;
+  width: 15px;
+  height: 15px;
   background-color: black;
   transform: translateX(-50%) rotate(45deg);
   z-index: -1;
@@ -243,8 +243,8 @@
 }
 
 .memDetails > .userAddTimeDetails > .userName {
-  display: inline-block;
   position: relative;
+  display: inline-block;
   padding: 8px 0;
 }
 
@@ -253,9 +253,9 @@
 }
 
 .detailsAvatar {
-  width: 45px;
   display: flex;
   align-items: center;
+  width: 45px;
   margin-right: 15px;
 }
 
@@ -265,41 +265,40 @@
 
 .userPostContent {
   display: flex;
-  flex-grow: 1;
   flex-direction: column;
   justify-content: space-between;
+  flex-grow: 1;
 }
 
 .userPostName {
-  font-size: 14px;
-  color: #fff;
-  font-weight: 700;
   margin-bottom: 5px;
+  font-weight: 700;
+  font-size: 14px;
   color: rgb(222, 34, 33);
 }
 
 .userPostInfo {
-  width: 100%;
+  display: flex;
+  justify-content: space-between;
   flex-wrap: nowrap;
   gap: 5px;
+  width: 100%;
   margin-bottom: 5px;
-  justify-content: space-between;
-  display: flex;
 }
 
 .userPostInfo > div {
-  flex-grow: 1;
-  background: #252525;
-  line-height: 38px;
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-  align-items: center;
-  padding: 0 8px;
-  border-radius: 4px;
   position: relative;
-  justify-content: space-between;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-grow: 1;
+  padding: 0 8px;
+  line-height: 38px;
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+  border-radius: 4px;
+  background: #252525;
 }
 
 .userPostInfo > div:first-child {
@@ -307,24 +306,24 @@
 }
 
 .userPostActions {
-  width: 100%;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
+  width: 100%;
   font-size: 12px;
 }
 
 .userPostActions button,
 .userPostActions a {
-  color: #8f8f8f;
   padding: 3px 7px;
-  border-radius: 4px;
-  background-color: transparent;
-  border: none;
   text-decoration: none;
-  cursor: pointer;
   font-weight: 700;
   font-size: 13.5px;
+  color: #8f8f8f;
+  border-radius: 4px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 .userPostActions button:hover,
@@ -333,8 +332,8 @@
 }
 
 .userPostActions button.observed {
-  background-color: rgb(222, 34, 33);
   color: white;
+  background-color: rgb(222, 34, 33);
 }
 
 .userPostActions button.blacklisted {
@@ -343,28 +342,28 @@
 }
 
 .authorInfo {
-  display: none;
   position: absolute;
   top: 100%;
   left: calc(100% - 60px);
+  display: none;
   width: 310px;
-  background: #313131;
-  border-radius: 3px;
   padding: 15px;
+  border-radius: 3px;
+  background: #313131;
   z-index: 11;
 }
 
 .authorInfo:before {
-  width: 0;
-  height: 0;
   content: "";
-  display: block;
-  border-style: solid;
-  border-width: 0 5px 5px;
-  border-color: transparent transparent #313131;
   position: absolute;
   left: 10px;
   top: -5px;
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 5px 5px;
+  border-color: transparent transparent #313131;
 }
 
 .memDetails > .userAddTimeDetails > .userName:hover .authorInfo {
@@ -381,38 +380,38 @@
 }
 
 .buttonsMain {
-  max-width: 600px;
   display: flex;
-  gap: 10px 5px;
-  margin-left: 57px;
   flex-wrap: nowrap;
+  gap: 10px 5px;
+  max-width: 600px;
+  margin-left: 57px;
 }
 
 .buttonsMain button {
-  cursor: pointer;
-  background: #3c3c3c;
-  border: 0;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  height: 34px;
-  padding: 0 15px;
-  border-radius: 4px;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0 10px;
-  position: relative;
+  height: 34px;
+  padding: 0 15px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  background: #3c3c3c;
+  cursor: pointer;
 }
 
 .buttonsMain button.active:after {
   content: "";
-  width: 100%;
-  height: 8px;
+  position: absolute;
   top: calc(100% - 3px);
   left: 0;
+  width: 100%;
+  height: 8px;
   background: #3c3c3c;
-  position: absolute;
 }
 
 .buttonsMain .addMem {
@@ -442,8 +441,8 @@
 
 @media screen and (max-width: 450px) {
   .buttonsMain {
-    margin-left: 0;
     flex-wrap: wrap;
+    margin-left: 0;
   }
 
   .buttonsMain > button {
@@ -473,40 +472,40 @@
   .buttonsPost {
     position: relative;
     left: 0;
-    width: 100%;
     display: flex;
-    flex-wrap: nowrap;
-    padding-top: 5px;
     flex-direction: row !important;
+    flex-wrap: nowrap;
+    width: 100%;
+    padding-top: 5px;
   }
 }
 
 .userVote {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
   position: absolute;
   right: -5px;
-  color: #fff;
-  background: #c03e3e;
-  font-weight: 700;
-  font-size: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 25px;
+  height: 25px;
   margin-left: 8px;
+  font-weight: 700;
+  font-size: 30px;
+  color: #fff;
   border: none;
+  border-radius: 50%;
+  background: #c03e3e;
   cursor: pointer;
 }
 
 .textBoard {
   max-width: 600px;
-  color: #fff;
   padding: 10px 15px;
+  line-height: 30px;
+  font-size: 18px;
+  color: #fff;
   background: #000;
   overflow: hidden;
-  font-size: 18px;
-  line-height: 30px;
 }
 
 .textBoard h1,
@@ -539,33 +538,33 @@
 
 .paginationNext {
   display: block;
-  line-height: 50px;
-  margin-bottom: 10px;
-  color: #fff;
-  font-size: 18px;
-  text-align: center;
-  text-decoration: none;
   width: 100%;
   max-width: 600px;
+  margin-bottom: 10px;
+  line-height: 50px;
+  text-decoration: none;
+  text-align: center;
+  font-size: 18px;
+  color: #fff;
 }
 
 .paginationRandom {
-  width: 20%;
-  margin-left: 10px;
   position: relative;
-  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  width: 20%;
+  height: 50px;
+  margin-left: 10px;
   font-size: 32px;
+  color: white;
 }
 
 .articleTags {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   margin: 10px 0;
-  position: relative;
   padding-right: 25px;
 }
 
@@ -580,15 +579,14 @@
 }
 
 .articleTag {
-  color: #fff;
-  font-size: 11px;
-  padding: 4px;
+  position: relative;
   margin-left: 2px;
-  position: relative;
   margin-bottom: 3px;
-  background: #4f4f4f;
+  padding: 4px;
+  font-size: 11px;
+  color: #fff;
   border-radius: 2px;
-  position: relative;
+  background: #4f4f4f;
 }
 
 .articleTag:hover .observeContainer {
@@ -600,40 +598,40 @@
 }
 
 .observeContainer {
-  margin-top: 4px;
   position: absolute;
   top: 100%;
   left: 25%;
-  background-color: #313131;
-  width: 240px;
-  border-radius: 3px;
-  padding: 15px;
   display: none;
+  width: 240px;
+  margin-top: 4px;
+  padding: 15px;
+  border-radius: 3px;
+  background-color: #313131;
   z-index: 10;
 }
 
 .observeContainer:before {
-  width: 0;
-  height: 0;
   content: "";
-  display: block;
-  border-style: solid;
-  border-width: 0 5px 5px;
-  border-color: transparent transparent #313131;
   position: absolute;
   left: 10px;
   top: -5px;
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 5px 5px;
+  border-color: transparent transparent #313131;
 }
 
 .observeContainer button {
   width: 50%;
   margin: 0 3px;
-  font-size: 14px;
   padding: 10px;
-  border: none;
-  background-color: #ac2f2f;
-  border-radius: 3px;
+  font-size: 14px;
   color: #fff;
+  border: none;
+  border-radius: 3px;
+  background-color: #ac2f2f;
   cursor: pointer;
 }
 
@@ -650,14 +648,14 @@
 }
 
 .commentsHeader {
-  max-width: 600px;
-  background: #1f1f1f;
-  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  max-width: 600px;
+  height: 60px;
   margin: 10px 0 5px 56px;
+  padding: 0 20px;
+  background: #1f1f1f;
 }
 
 .commentsCount {
@@ -666,10 +664,10 @@
 }
 
 .switch {
+  margin-left: 20px;
+  color: #fff;
   border: none;
   background: none;
-  color: #fff;
-  margin-left: 20px;
   cursor: pointer;
 }
 
@@ -679,21 +677,21 @@
 
 .comments {
   max-width: 600px;
-  background: #1f1f1f;
   margin: 5px 0 30px 56px;
   padding: 10px;
+  background: #1f1f1f;
 }
 
 .comment {
+  position: relative;
   display: flex;
   margin-bottom: 10px;
-  position: relative;
   padding: 10px;
 }
 
 .commentAvatar {
-  width: 33px;
   display: block;
+  width: 33px;
   margin-right: 15px;
 }
 
@@ -712,10 +710,10 @@
 }
 
 .commentAuthor {
-  color: #fff;
-  font-weight: 700;
-  margin-right: 5px;
   position: relative;
+  margin-right: 5px;
+  font-weight: 700;
+  color: #fff;
 }
 
 .commentAuthor:hover .authorInfo {
@@ -723,15 +721,15 @@
 }
 
 .commentDate {
-  color: #777;
-  font-size: 12px;
   display: block;
   font-weight: 700;
+  font-size: 12px;
+  color: #777;
 }
 
 .commentBadge {
-  margin-left: auto;
   margin-right: 10px;
+  margin-left: auto;
 }
 
 .badgesInfoContainer {
@@ -746,24 +744,24 @@
 }
 
 .commentVote {
-  cursor: pointer;
-  padding: 0 11px;
-  line-height: normal;
-  border-radius: 3px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  height: 22px;
+  padding: 0 11px;
+  line-height: normal;
+  font-weight: 700;
   font-size: 23px;
   color: #fff;
-  background: #313131;
-  font-weight: 700;
-  height: 22px;
   border: none;
+  border-radius: 3px;
+  background: #313131;
+  cursor: pointer;
 }
 
 .commentScoreCount {
-  font-size: 14px;
   margin: 0 5px;
+  font-size: 14px;
   color: #fff;
 }
 
@@ -772,9 +770,9 @@
 }
 
 .commentReplyA {
+  margin-right: 10px;
   font-size: 12px;
   color: #777;
-  margin-right: 10px;
 }
 
 .commentReplyABadge {
@@ -787,8 +785,8 @@
   display: flex;
   align-items: center;
   padding: 0;
-  background: none;
   border: none;
+  background: none;
   cursor: pointer;
 }
 
@@ -799,37 +797,37 @@
 }
 
 .commentReplyAIcon {
-  font-size: 22px;
   margin-right: 5px;
+  font-size: 22px;
 }
 
 .commentText {
-  font-size: 14px;
-  color: #fff;
   margin: 5px 0;
   word-break: break-word;
+  font-size: 14px;
+  color: #fff;
   overflow: hidden;
 }
 
 .readMoreContent {
-  overflow: hidden;
   font-size: 14px;
+  overflow: hidden;
 }
 
 .readMoreContent a {
-  color: #777;
   font-style: italic;
+  color: #777;
 }
 
 .commentReplyASelector {
-  cursor: pointer;
+  position: relative;
   display: flex;
   align-items: center;
   gap: 5px;
-  position: relative;
-  background: none;
-  border: none;
   color: #777;
+  border: none;
+  background: none;
+  cursor: pointer;
 }
 
 .commentReplyASelector:hover {
@@ -837,19 +835,18 @@
 }
 
 .contentBadgesActionOptions {
-  width: 100%;
-  min-width: 51px;
-  display: none;
-  flex-direction: column;
+  position: absolute;
   bottom: 100%;
   left: 0;
-  position: absolute;
-  background: #313131;
-  padding: 5px 0;
+  display: none;
+  flex-direction: column;
   gap: 10px;
-  z-index: 10;
-  -webkit-box-shadow: 5px -5px 5px #1f1f1f;
+  width: 100%;
+  min-width: 51px;
+  padding: 5px 0;
+  background: #313131;
   box-shadow: 5px -5px 5px #1f1f1f;
+  z-index: 10;
 }
 
 .contentBadgesActionOptions.active {
@@ -861,37 +858,36 @@
   height: 51px;
   text-align: center;
   color: #fff;
-  cursor: pointer;
   opacity: 0.5;
+  cursor: pointer;
 }
 
 .subComment {
-  margin-left: 40px;
-  border-left: 1px solid #777;
-  padding: 10px;
   margin-bottom: 0;
+  margin-left: 40px;
+  padding: 10px;
+  border-left: 1px solid #777;
 }
 
 .commentForm {
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   max-width: 600px;
+  margin: 15px 0 10px 56px;
   padding: 20px;
   background: #313131;
-  margin: 15px 0 10px 56px;
-  align-items: flex-start;
 }
 
 .vldOverlay {
+  position: absolute;
+  top: 0;
+  right: 0;
   bottom: 0;
   left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  align-items: center;
   display: none;
+  align-items: center;
   justify-content: center;
   overflow: hidden;
   z-index: 1;
@@ -907,47 +903,45 @@
 }
 
 .addComment {
-  background: #1f1f1f;
   display: inline-block;
-  line-height: 17px;
-  color: #fff;
-  padding: 0 10px;
-  border: 1px solid #1f1f1f;
-  margin: 0 2px;
-  padding-top: 5px;
   flex: 1;
   min-height: 42px;
   max-height: none;
+  margin: 0 2px;
+  padding-top: 5px;
+  line-height: 17px;
   font-family: sans-serif;
+  color: #fff;
+  border: 1px solid #1f1f1f;
+  background: #1f1f1f;
 }
 
 .vldBackground {
+  position: absolute;
+  top: 0;
+  right: 0;
   bottom: 0;
   left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
   background: #fff;
   opacity: 0.5;
 }
 
 .btnComment {
-  width: 100px;
+  width: 52px;
   margin-left: 2px;
   line-height: 40px;
+  font-family: sans-serif;
   color: #fff;
-  font-family: Open Sans;
-  border: 0;
+  border: none;
   border-radius: 3px;
-  cursor: pointer;
   background: #777;
-  width: 52px;
+  cursor: pointer;
 }
 
 .btnComment svg {
   position: relative;
-  font-size: 25px;
   top: 8px;
+  font-size: 25px;
 }
 
 .vldOverlay .vldIcon,
@@ -957,9 +951,9 @@
 
 @media screen and (max-width: 768px) {
   .comments {
-    margin: 5px 0 0 0;
     width: 100%;
     max-width: none;
+    margin: 5px 0 0 0;
   }
 
   .commentsHeader {
@@ -987,11 +981,11 @@
 }
 
 .contentBadgesActionOptions article > div {
-  width: 100%;
   display: flex;
   justify-content: center;
-  gap: 5px;
   align-items: center;
+  gap: 5px;
+  width: 100%;
 }
 
 .contentBadgesActionOptions article:hover {
@@ -999,16 +993,16 @@
 }
 
 blockquote.quote {
-  padding: 0;
   margin: 0;
+  margin-top: 5px;
+  padding: 0;
   padding: 10px;
-  background: #313131;
   font-style: italic;
   font-size: 13px;
-  margin-top: 5px;
-  border-radius: 2px;
-  border: 1px solid #1f1f1f;
   color: #777;
+  border: 1px solid #1f1f1f;
+  border-radius: 2px;
+  background: #313131;
 }
 
 blockquote.quote svg:first-of-type {

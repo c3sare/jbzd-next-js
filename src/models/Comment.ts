@@ -1,6 +1,7 @@
-import { Schema, models, model, ObjectId } from "mongoose";
+import { Schema, model, ObjectId } from "mongoose";
+import type CommentstatsInterface from "@/types/Commentstats";
 
-export interface Comment {
+export interface CommentInterface {
   author: string;
   post: ObjectId;
   addTime: string | Date;
@@ -9,7 +10,7 @@ export interface Comment {
   _id?: string;
 }
 
-const commentSchema = new Schema<Comment>({
+const commentSchema = new Schema<CommentInterface>({
   author: String,
   post: Schema.Types.ObjectId,
   addTime: Date,
@@ -18,9 +19,15 @@ const commentSchema = new Schema<Comment>({
 });
 
 export const Commentstats =
-  models.commentstats || model<Comment>("commentstats", commentSchema);
+  model<CommentstatsInterface>("commentstats") ||
+  model<CommentstatsInterface>("commentstats", commentSchema as any);
 
 export const AllComments =
-  models.subcommentstats || model<Comment>("subcommentstats", commentSchema);
+  model<CommentInterface>("subcommentstats") ||
+  model<CommentInterface>("subcommentstats", commentSchema);
 
-export default models.Comment || model<Comment>("Comment", commentSchema);
+const Comment =
+  model<CommentInterface>("Comment") ||
+  model<CommentInterface>("Comment", commentSchema);
+
+export default Comment;

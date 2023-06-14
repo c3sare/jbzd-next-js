@@ -1,14 +1,14 @@
 .settingsContainer {
+  position: relative;
   max-width: 650px;
   margin-bottom: 25px;
   color: #fff;
-  position: relative;
 }
 
 .premium {
-  color: #fff;
-  font-size: 30px;
   margin-top: 0;
+  font-size: 30px;
+  color: #fff;
 }
 
 .premium span {
@@ -16,32 +16,31 @@
 }
 
 .tabs {
-  margin-bottom: 5px;
-  border: 0;
   display: flex;
+  gap: 2px;
   margin-bottom: -1px;
   padding: 0;
-  gap: 2px;
+  border: none;
 }
 
 .tabs > li {
-  z-index: 2;
-  transform: translateY(2px);
-  background: #2b2b2b;
-  margin-right: 0;
-  list-style: none;
-  transition: transform 0.3s ease;
-  color: #fff;
   flex-grow: 1;
+  margin-right: 0;
   text-align: center;
+  color: #fff;
+  list-style: none;
+  background: #2b2b2b;
+  transform: translateY(2px);
+  transition: transform 0.3s ease;
+  z-index: 2;
 }
 
 .tabs > li > button {
-  background: none;
-  border: none;
-  color: white;
-  padding: 0.75em 0;
   width: 100%;
+  padding: 0.75em 0;
+  color: white;
+  border: none;
+  background: none;
   cursor: pointer;
 }
 
@@ -60,21 +59,21 @@
 
 .tabContainer {
   padding: 35px 15px;
-  background: #313131;
-  border: 1px solid #313131;
   color: #fff;
+  border: 1px solid #313131;
+  background: #313131;
 }
 
 .userDataForm {
-  margin-bottom: 20px;
-  border-bottom: 4px solid #252525;
-  padding-bottom: 20px;
   position: relative;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 4px solid #252525;
 }
 
 .formGroup {
-  margin-bottom: 5px;
   position: relative;
+  margin-bottom: 5px;
 }
 
 .formGroup:hover > span.errorMsg {
@@ -83,18 +82,18 @@
 }
 
 .formGroup > span.errorMsg {
-  display: none;
   position: absolute;
-  right: 50%;
-  transform: translateX(50%);
   top: calc(100% + 8px);
-  background-color: #c03e3e;
-  border-radius: 4px;
-  padding: 4px;
-  font-size: 11px;
+  right: 50%;
+  display: none;
   width: auto;
+  padding: 4px;
   white-space: nowrap;
+  font-size: 11px;
+  border-radius: 4px;
+  background-color: #c03e3e;
   opacity: 0;
+  transform: translateX(50%);
   transition: opacity 0.3s;
   z-index: 1;
 }
@@ -104,22 +103,22 @@
   position: absolute;
   bottom: 100%;
   right: 50%;
-  transform: translateX(50%);
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent #c03e3e transparent;
+  transform: translateX(50%);
 }
 
 .formGroup > input,
 .formGroup > select {
   width: 100%;
-  background: #1f1f1f;
+  height: 38px;
   padding: 0 10px;
   line-height: 38px;
-  height: 38px;
-  border: 0;
   color: #777;
+  border: none;
+  background: #1f1f1f;
 }
 
 .formButtons {
@@ -127,15 +126,15 @@
 }
 
 .formButtons button {
+  display: block;
   width: 100%;
   max-width: none;
-  display: block;
-  margin: 0 auto;
-  background: #c03e3e;
-  border: 0;
-  color: #fff;
   height: 30px;
+  margin: 0 auto;
+  color: #fff;
+  border: none;
   border-radius: 5px;
+  background: #c03e3e;
   cursor: pointer;
 }
 
@@ -144,10 +143,10 @@ input.error {
 }
 
 .avatar {
-  color: #fff;
-  text-align: center;
-  border-bottom: 4px solid #252525;
   padding-bottom: 20px;
+  text-align: center;
+  color: #fff;
+  border-bottom: 4px solid #252525;
 }
 
 .avatar .formButtons {
@@ -158,8 +157,8 @@ input.error {
   width: 204px !important;
   height: 204px !important;
   margin-bottom: 25px;
-  cursor: pointer;
   border: 2px solid rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .avatar > div > input {
@@ -167,38 +166,38 @@ input.error {
 }
 
 .formDeleteAccount {
-  text-align: center;
-  margin-top: 25px;
   position: relative;
+  margin-top: 25px;
+  text-align: center;
 }
 
 .formDeleteAccount button {
-  color: #c03e3f;
-  background: transparent;
-  border: none;
   display: inline-block;
-  cursor: pointer;
   margin: 0 auto;
   padding: 0;
   font-size: 14px;
+  color: #c03e3f;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 .contentBoxWrapper {
-  max-width: 650px;
-  background: #313131;
-  padding: 15px;
-  margin-bottom: 25px;
-  color: #fff;
   position: relative;
+  max-width: 650px;
+  margin-bottom: 25px;
+  padding: 15px;
+  color: #fff;
+  background: #313131;
 }
 
 .contentBoxWrapper h1 {
   display: block;
+  margin-bottom: 25px;
+  text-align: center;
+  font-weight: 400;
   font-size: 22px;
   color: #fff;
-  margin-bottom: 25px;
-  font-weight: 400;
-  text-align: center;
 }
 
 .contentBoxWrapper > div {
@@ -217,47 +216,47 @@ input.error {
 }
 
 .contentBoxWrapper > div > ul li {
-  background: #1f1f1f;
-  border-color: #1f1f1f;
-  border-radius: 3px;
-  padding: 5px 0 5px 8px;
   position: relative;
   display: inline-flex;
   margin: 2px;
+  padding: 5px 0 5px 8px;
   color: #fff;
+  border-color: #1f1f1f;
+  border-radius: 3px;
+  background: #1f1f1f;
 }
 
 .contentBoxWrapper > div > ul li span {
-  padding-right: 8px;
   margin-right: 4px;
+  padding-right: 8px;
   font-size: 12px;
   border-right: 1px solid #2f2f2f;
 }
 
 .contentBoxWrapper > div > ul li button {
-  background: transparent;
-  cursor: pointer;
-  border: none;
-  color: white;
   display: flex;
-  font-size: 14px;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
+  color: white;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 .userFormData {
+  position: relative;
   max-width: 360px;
   margin: 0 auto;
-  position: relative;
 }
 
 .userFormDataBlock {
-  margin-bottom: 25px;
-  font-size: 14px;
-  color: #fff;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
+  margin-bottom: 25px;
+  font-size: 14px;
+  color: #fff;
 }
 
 .userFormDataBlock label {
@@ -267,26 +266,26 @@ input.error {
 }
 
 .userFormDataBlock span:first-child {
-  font-size: 20px;
   margin-right: 5px;
-  color: #b4d132;
   line-height: 15px;
+  font-size: 20px;
+  color: #b4d132;
 }
 
 .userFormDataBlock button {
-  background: #c03e3e;
-  border: 0;
-  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 30px;
-  max-width: 160px;
   width: 100%;
-  border-radius: 5px;
-  cursor: pointer;
-  outline: 0 !important;
+  max-width: 160px;
+  height: 30px;
   margin: 0 auto;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  outline: 0 !important;
+  cursor: pointer;
+  background: #c03e3e;
 }
 
 .column {
@@ -308,26 +307,26 @@ input.error {
 
 .noPremium:after {
   content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
-  position: absolute;
-  left: 0;
-  top: 0;
 }
 
 .userFormDataBuyButton {
   position: absolute;
   top: 140px;
   left: 50%;
+  height: 40px;
   margin-left: -90px;
   padding: 0 30px;
-  border-radius: 5px;
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-  height: 40px;
   line-height: 40px;
-  z-index: 10;
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  border-radius: 5px;
   background: linear-gradient(180deg, #94b425 0, #8dac20 50%, #87a61c);
+  z-index: 10;
 }

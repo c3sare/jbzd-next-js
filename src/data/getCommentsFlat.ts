@@ -31,7 +31,7 @@ export interface CommentInterface {
   isFavourite?: boolean;
 }
 
-export default async function getComments(
+export default async function getCommentsFlat(
   filter: FilterQuery<CommentInterface>,
   sort: { [P in keyof CommentInterface]: -1 | 1 },
   session: { logged?: boolean; login?: string }

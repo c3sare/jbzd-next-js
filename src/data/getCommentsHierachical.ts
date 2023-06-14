@@ -30,9 +30,9 @@ interface CommentWithStatsInterface {
   isFavourite?: boolean;
 }
 
-export default async function getCommentsWithSubComments(
+export default async function getPostComments(
   filter: FilterQuery<CommentWithStatsInterface>,
-  sort: { [P in keyof CommentWithStatsInterface]: -1 | 1 },
+  sort: { [P in keyof CommentWithStatsInterface]?: -1 | 1 },
   session: { logged?: boolean; login?: string }
 ) {
   let comments: CommentWithStatsInterface[] = (await Commentstats.find(

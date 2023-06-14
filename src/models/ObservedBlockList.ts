@@ -1,4 +1,4 @@
-import { Schema, models, model, Date } from "mongoose";
+import { Schema, model, Date } from "mongoose";
 
 export interface ObserveBlockListInterface {
   username: string;
@@ -16,5 +16,8 @@ const observeBlockListSchema = new Schema<ObserveBlockListInterface>({
   addTime: Date,
 });
 
-export default models.ObservedBlockList ||
+const ObservedBlockList =
+  model<ObserveBlockListInterface>("ObservedBlockList") ||
   model<ObserveBlockListInterface>("ObservedBlockList", observeBlockListSchema);
+
+export default ObservedBlockList;

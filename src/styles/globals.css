@@ -9,8 +9,8 @@ a {
 
 hr {
   height: 4px;
-  background-color: rgba(255, 255, 255, 0.2);
   border: none;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 * {
@@ -20,10 +20,10 @@ hr {
 body {
   margin: 0;
   padding-top: 45px;
-  background: #252525;
-  font-family: Open Sans, sans-serif;
+  font-family: sans-serif;
   font-size: 14px;
   color: white;
+  background: #252525;
 }
 
 video {
@@ -52,11 +52,11 @@ img {
 }
 
 main {
+  flex: 0 0 750px;
   width: 100%;
+  max-width: 750px;
   padding: 15px 0 25px;
   border-right: 1px solid #1d1d1d;
-  flex: 0 0 750px;
-  max-width: 750px;
   background: #252525;
 }
 
@@ -96,9 +96,9 @@ textarea {
 }
 
 .rdp {
-  background: #2d2d2d;
-  border: 1px solid #2d2d2d;
   padding: 5px;
+  border: 1px solid #2d2d2d;
+  background: #2d2d2d;
 }
 
 .rdp-table {
@@ -112,18 +112,17 @@ textarea {
 }
 
 .rdp-table button:hover {
-  border: 1px solid #c03e3f;
-  background: #c03e3f;
   font-weight: 700;
   color: #fff;
-  font-weight: 700;
+  border: 1px solid #c03e3f;
+  background: #c03e3f;
 }
 
 .rdp-day_selected {
-  border: 1px solid #c03e3f !important;
-  background: #c03e3f !important;
   font-weight: 700 !important;
   color: #fff !important;
+  border: 1px solid #c03e3f !important;
+  background: #c03e3f !important;
 }
 
 .rdp-caption_label {
@@ -132,12 +131,12 @@ textarea {
 }
 
 .rdp button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
+  font-weight: inherit;
   text-align: center;
   color: inherit;
-  font-weight: inherit;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 .rdp-table button {
@@ -146,9 +145,9 @@ textarea {
 }
 
 .rdp-caption {
+  position: relative;
   display: flex;
   width: 100%;
-  position: relative;
   padding: 16px 0;
 }
 
@@ -160,21 +159,21 @@ textarea {
 }
 
 .rdp-head_row > .rdp-head_cell {
-  font-size: 75%;
-  white-space: nowrap;
-  cursor: inherit;
   width: 14.285714285714286%;
   height: 40px;
+  text-transform: capitalize;
+  font-size: 75%;
   font-weight: 100;
   color: #929292;
-  text-transform: capitalize;
+  white-space: nowrap;
+  cursor: inherit;
 }
 
 .rdp-day_disabled {
   color: #3c3c3c !important;
-  cursor: default !important;
-  background-color: transparent !important;
   border-color: transparent !important;
+  background-color: transparent !important;
+  cursor: default !important;
 }
 
 .plyr--video .plyr__controls {

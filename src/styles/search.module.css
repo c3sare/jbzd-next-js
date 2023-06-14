@@ -1,9 +1,9 @@
 .container {
   position: relative;
   width: 100%;
-  background-color: #1f1f1f;
   margin-top: 20px;
   padding: 20px;
+  background-color: #1f1f1f;
 }
 
 .images > div {
@@ -12,27 +12,26 @@
 }
 
 .images > div > a {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-basis: calc(25% - 10px);
   height: 140px;
   margin: 5px;
-  position: relative;
-  color: white;
   text-decoration: none;
-  background: #000;
-  color: #fff;
-  font-size: 12px;
   font-style: italic;
+  font-size: 12px;
+  color: white;
+  background-color: black;
 }
 
 .container h2 {
-  text-transform: uppercase;
   margin-bottom: 15px;
+  text-transform: uppercase;
+  font-weight: 100;
   font-size: 12px;
   color: #777;
-  font-weight: 100;
 }
 
 .tags > div {
@@ -45,8 +44,8 @@
 }
 
 .tags a {
+  padding: 5px;
   text-align: left;
   font-size: 15px;
   border: 1px solid #464646;
-  padding: 5px;
 }

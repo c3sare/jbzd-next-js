@@ -1,4 +1,4 @@
-import { Schema, models, model, Date, Types } from "mongoose";
+import { Schema, model, Date, Types } from "mongoose";
 
 export interface BadgeInterface {
   author: string;
@@ -16,4 +16,7 @@ const badgeSchema = new Schema<BadgeInterface>({
   addTime: { type: Date, required: true },
 });
 
-export default models.Badge || model<BadgeInterface>("Badge", badgeSchema);
+const Badge =
+  model<BadgeInterface>("Badge") || model<BadgeInterface>("Badge", badgeSchema);
+
+export default Badge;
