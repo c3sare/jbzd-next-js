@@ -1,5 +1,6 @@
-import { Schema, model, ObjectId } from "mongoose";
+import { Schema, model, ObjectId, models } from "mongoose";
 import type CommentstatsInterface from "@/types/Commentstats";
+import type SubcommentstatsInterface from "@/types/Subcommentstats";
 
 export interface CommentInterface {
   author: string;
@@ -19,15 +20,14 @@ const commentSchema = new Schema<CommentInterface>({
 });
 
 export const Commentstats =
-  model<CommentstatsInterface>("commentstats") ||
+  models.commentstats ||
   model<CommentstatsInterface>("commentstats", commentSchema as any);
 
 export const AllComments =
-  model<CommentInterface>("subcommentstats") ||
-  model<CommentInterface>("subcommentstats", commentSchema);
+  models.subcommentstats ||
+  model<SubcommentstatsInterface>("subcommentstats", commentSchema as any);
 
 const Comment =
-  model<CommentInterface>("Comment") ||
-  model<CommentInterface>("Comment", commentSchema);
+  models.Comment || model<CommentInterface>("Comment", commentSchema);
 
 export default Comment;

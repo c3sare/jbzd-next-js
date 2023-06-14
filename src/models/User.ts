@@ -1,4 +1,4 @@
-import { Schema, models, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 export interface UserInterface {
   username: string;
@@ -66,12 +66,12 @@ const userSchema = new Schema<UserInterface>({
   confirmed: Boolean,
 });
 
-const User =
-  model<UserInterface>("User") || model<UserInterface>("User", userSchema);
-
-export default User;
+const User = models.User || model<UserInterface>("User", userSchema);
 
 export const Usersprofiles =
-  models.usersprofiles || model("usersprofiles", userSchema);
+  models.usersprofiles || model<UserInterface>("usersprofiles", userSchema);
 
-export const Usersposts = models.usersposts || model("usersposts", userSchema);
+export const Usersposts =
+  models.usersposts || model<UserInterface>("usersposts", userSchema);
+
+export default User;

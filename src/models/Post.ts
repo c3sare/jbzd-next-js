@@ -30,9 +30,8 @@ const postSchema = new Schema<PostInterface>({
   tags: [String],
 });
 
-const Post =
-  model<PostInterface>("Post") || model<PostInterface>("Post", postSchema);
+const Post = models.Post || model<PostInterface>("Post", postSchema);
 
 export default Post;
 
-export const Postsstats = model("Postsstat") || model("Postsstat", postSchema);
+export const Postsstats = models.Postsstat || model("Postsstat", postSchema);

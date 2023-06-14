@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "@/lib/AuthSession/config";
 import { withIronSessionApiRoute } from "iron-session/next";
 import dbConnect from "@/lib/dbConnect";
-import Users, { type User } from "@/models/User";
+import Users from "@/models/User";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
@@ -10,7 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!session?.logged) return res.status(200).json(0);
 
     await dbConnect();
-    const user = (await Users.findOne({ username: session.login })) as User;
+    const user = await Users.findOne({ username: session.login });
 
     if (!user) return res.status(200).json(0);
 

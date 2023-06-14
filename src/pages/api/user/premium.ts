@@ -1,6 +1,6 @@
 import { sessionOptions } from "@/lib/AuthSession/config";
 import dbConnect from "@/lib/dbConnect";
-import User, { User as UserInterface } from "@/models/User";
+import User from "@/models/User";
 import { isPremiumUser } from "@/utils/premium";
 import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiRequest, NextApiResponse } from "next";

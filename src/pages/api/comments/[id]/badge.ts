@@ -30,6 +30,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const user = await User.findOne({ username: session.login });
 
+    if (!user)
+      return res.status(404).json({ message: "Nie odnaleziono użytkownika!" });
+
     const cost: {
       [key: string]: number;
     } = {

@@ -17,7 +17,7 @@ interface User {
   userMethod?: "FOLLOW" | "BLOCK" | "";
 }
 
-export default interface Commentstats {
+export default interface Subcommentstats {
   _id: Types.ObjectId | string;
   author: string;
   post: Types.ObjectId | string;
@@ -27,20 +27,7 @@ export default interface Commentstats {
   silver: number;
   gold: number;
   user?: User;
-  subcomments: {
-    _id: Types.ObjectId | string;
-    author: string;
-    post: Types.ObjectId;
-    addTime: Date;
-    text: string;
-    rock: number;
-    silver: number;
-    gold: number;
-    user?: User;
-    score: number;
-    voteMethod?: "PLUS" | "MINUS" | "";
-    isFavourite?: boolean;
-  }[];
+  precedent: Types.ObjectId | string | null;
   score: number;
   voteMethod?: "PLUS" | "MINUS" | "";
   isFavourite?: boolean;

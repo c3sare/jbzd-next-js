@@ -5,45 +5,20 @@ import ObservedBlockList from "@/models/ObservedBlockList";
 import { FilterQuery, Types } from "mongoose";
 import type { Badge as BadgeType } from "@/types/Badge";
 import type { ObservedBlockList as ObservedBlockListType } from "@/types/ObservedBlockList";
-
-interface CommentWithStatsInterface {
-  _id: string;
-  author: string;
-  post: string;
-  addTime: Date;
-  text: string;
-  rock: number;
-  silver: number;
-  gold: number;
-  user?: {
-    _id: string;
-    username: string;
-    avatar: string;
-    premiumExpires: Date;
-    spears: number;
-    rank: number;
-    userMethod?: "FOLLOW" | "BLOCK" | "";
-  };
-  subcomments: CommentWithStatsInterface[];
-  score: number;
-  voteMethod?: "PLUS" | "MINUS" | "";
-  isFavourite?: boolean;
-}
+import type CommentstatsInterface from "@/types/Commentstats";
 
 export default async function getPostComments(
-  filter: FilterQuery<CommentWithStatsInterface>,
-  sort: { [P in keyof CommentWithStatsInterface]?: -1 | 1 },
+  filter: FilterQuery<CommentstatsInterface>,
+  sort: { [P in keyof CommentstatsInterface]?: -1 | 1 },
   session: { logged?: boolean; login?: string }
 ) {
-  let comments: CommentWithStatsInterface[] = (await Commentstats.find(
-    filter
-  ).sort(sort)) as CommentWithStatsInterface[];
+  let comments = await Commentstats.find(filter).sort(sort);
 
   if (session?.logged && session?.login) {
     const commentIds: Types.ObjectId[] = [];
 
     comments.forEach((comment) => {
-      comment.subcomments.forEach((subcomment) => {
+      comment.subcomments.forEach((subcomment: any) => {
         commentIds.push(new Types.ObjectId(subcomment._id as string));
       });
 
@@ -102,7 +77,7 @@ export default async function getPostComments(
       comment.user!.userMethod = userMethod;
       comment.voteMethod = voteMethod as "PLUS" | "MINUS";
       comment.isFavourite = isFavourite;
-      comment.subcomments = comment.subcomments.map((subcomment) => {
+      comment.subcomments = comment.subcomments.map((subcomment: any) => {
         const voteMethod =
           votes.find((vote) => vote.id === subcomment._id)?.type || "";
 

@@ -1,6 +1,6 @@
 import { sessionOptions } from "@/lib/AuthSession/config";
 import dbConnect from "@/lib/dbConnect";
-import User, { User as UserInterface } from "@/models/User";
+import User from "@/models/User";
 import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
@@ -29,9 +29,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         .status(400)
         .json({ message: "Nieprawidłowe parametry zapytania!" });
 
-    const user = (await User.findOne({
+    const user = await User.findOne({
       username: session.login,
-    })) as UserInterface;
+    });
 
     if (!user)
       return res.status(404).json({ message: "Nie znaleziono użytkownika!" });

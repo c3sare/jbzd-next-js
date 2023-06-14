@@ -13,10 +13,10 @@ export default async function getHomePagePosts() {
 
   const data = posts.map((post) => {
     const user = users.find((item) => item.username === post.author);
+
     post.author = {
-      username: user.username,
-      avatar: user.avatar,
-      spears: user.spears,
+      username: user?.username || "",
+      avatar: user?.avatar || "",
     };
     return post;
   });

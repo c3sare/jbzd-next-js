@@ -1,44 +1,19 @@
 import Badge from "@/models/Badge";
-import { Commentstats } from "@/models/Comment";
+import { AllComments } from "@/models/Comment";
 import Favourite from "@/models/Favourite";
-import { FilterQuery, Types } from "mongoose";
-
-import type { Badge as BadgeType } from "@/types/Badge";
-import type { ObservedBlockList as ObservedBlockListType } from "@/types/ObservedBlockList";
 import ObservedBlockList from "@/models/ObservedBlockList";
 
-export interface CommentInterface {
-  _id: string;
-  author: string;
-  post: string;
-  addTime: Date;
-  precedent: string | null;
-  text: string;
-  rock: number;
-  silver: number;
-  gold: number;
-  user?: {
-    _id: string;
-    username: string;
-    avatar: string;
-    premiumExpires: Date;
-    spears: number;
-    rank: number;
-    userMethod?: "FOLLOW" | "BLOCK" | "";
-  };
-  score: number;
-  voteMethod?: "PLUS" | "MINUS" | "";
-  isFavourite?: boolean;
-}
+import { FilterQuery, Types } from "mongoose";
+import type Subcommentstats from "@/types/Subcommentstats";
+import type { Badge as BadgeType } from "@/types/Badge";
+import type { ObservedBlockList as ObservedBlockListType } from "@/types/ObservedBlockList";
 
 export default async function getCommentsFlat(
-  filter: FilterQuery<CommentInterface>,
-  sort: { [P in keyof CommentInterface]: -1 | 1 },
+  filter: FilterQuery<Subcommentstats>,
+  sort: { [P in keyof Subcommentstats]: -1 | 1 },
   session: { logged?: boolean; login?: string }
 ) {
-  let comments = (await Commentstats.find(filter).sort(
-    sort
-  )) as CommentInterface[];
+  let comments = await AllComments.find(filter).sort(sort);
 
   if (session?.logged && session?.login) {
     const commentIds: Types.ObjectId[] = comments.map(

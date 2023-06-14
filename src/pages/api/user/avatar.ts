@@ -60,6 +60,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const user = await User.findOne({ username: session.login });
 
+    if (!user)
+      return res.status(404).json({ message: "Nie odnaleziono użytkownika!" });
+
     if (user.avatar !== "") {
       const url = user.avatar;
       const id = url.slice(url.lastIndexOf("/") + 1, url.lastIndexOf("."));

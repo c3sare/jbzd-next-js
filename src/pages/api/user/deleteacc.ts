@@ -61,7 +61,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const comments = await Comment.find({ author: session.login });
 
     const subcomments = comments
-      .filter((item) => item.precedent === "")
+      .filter((item) => item.precedent === null)
       .map((item) => item._id.toString());
 
     await Comment.deleteMany({

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 interface Category {
   name: string;
@@ -18,7 +18,6 @@ const categorySchema = new Schema<Category>({
   hide: { type: Boolean, required: true },
 });
 
-const Category =
-  model<Category>("Category") || model<Category>("Category", categorySchema);
+const Category = models.Category || model<Category>("Category", categorySchema);
 
 export default Category;

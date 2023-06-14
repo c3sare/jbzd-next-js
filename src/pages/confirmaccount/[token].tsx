@@ -28,18 +28,16 @@ const ConfirmAccount = ({ confirmed }: { confirmed: boolean }) => {
   );
 };
 
-export async function getServerSideProps({ req, query }: any) {
+export async function getServerSideProps({ query }: any) {
   await dbConnect();
-  const user = await User.collection.updateOne(
+  const user = await User.updateOne(
     { token: query.token as string, confirmed: false },
     { $set: { token: "", confirmed: true } }
   );
 
-  console.log(user);
-
   return {
     props: {
-      confirmed: user.modifiedCount === 1,
+      confirmed: user?.modifiedCount === 1 || false,
     },
   };
 }

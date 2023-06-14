@@ -30,6 +30,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const user = await User.findOne({ username: session.login });
 
+    if (!user)
+      return res.status(404).json({ message: "Nie odnaleziono użytkownika!" });
+
     const cost: {
       [key: string]: number;
     } = {
@@ -96,13 +99,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
       const count = await Badge.count({ where: "POST", type, id: postId });
 
-      res
-        .status(200)
-        .json({
-          message: "Odznaka " + names[type] + " została przyznana!",
-          count,
-          type,
-        });
+      res.status(200).json({
+        message: "Odznaka " + names[type] + " została przyznana!",
+        count,
+        type,
+      });
     }
   } else {
     res.status(404).json({ message: "Page not found" });
