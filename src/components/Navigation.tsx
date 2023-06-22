@@ -41,7 +41,7 @@ const Navigation = () => {
   useEffect(() => {
     if (showMobileMenu) setShowMobileMenu(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname]);
+  }, [router]);
 
   const normalCategories =
     categories !== null

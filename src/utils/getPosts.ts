@@ -5,9 +5,10 @@ import Favourite from "@/models/Favourite";
 import ObservedBlockList from "@/models/ObservedBlockList";
 import { Postsstats } from "@/models/Post";
 import { hasCookie } from "cookies-next";
-import { formatISO } from "date-fns";
 import { FilterQuery, Types } from "mongoose";
 import getPostsWithStats from "@/data/getPosts";
+import dateFilter from "./dateFilter";
+import filterPostByPharseType from "./filterPostByPharseType";
 
 interface ListsInterface {
   user: {
@@ -44,6 +45,10 @@ const getPosts = ({
     const page = Number(query.page || 1);
     const category = query?.category;
 
+    if (!category) {
+      delete options.category;
+    }
+
     if (Number.isNaN(page) || category !== undefined) {
       if ((category as string)?.length > 0) {
       } else
@@ -56,57 +61,14 @@ const getPosts = ({
     const from = query?.from;
     const to = query?.to;
 
-    if (
-      datePreset &&
-      ["6h", "12h", "24h", "48h", "7d"].includes(datePreset as string)
-    ) {
-      const preset: {
-        [key: string]: Date;
-      } = {
-        "6h": (() => {
-          const date = new Date();
-          date.setHours(date.getHours() - 6);
-          return date;
-        })(),
-        "12h": (() => {
-          const date = new Date();
-          date.setHours(date.getHours() - 12);
-          return date;
-        })(),
-        "24h": (() => {
-          const date = new Date();
-          date.setDate(date.getDate() - 1);
-          return date;
-        })(),
-        "48h": (() => {
-          const date = new Date();
-          date.setDate(date.getDate() - 2);
-          return date;
-        })(),
-        "7d": (() => {
-          const date = new Date();
-          date.setDate(date.getDate() - 7);
-          return date;
-        })(),
-      };
-      options = {
-        ...options,
-        addTime: {
-          $gt: formatISO(preset[datePreset as string]),
-        },
-      };
-    } else if (from && to) {
-      const dateRegex = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
-      if (dateRegex.test(from as string) && dateRegex.test(to as string)) {
-        options = {
-          ...options,
-          addTime: {
-            $gt: formatISO(new Date(from as string)),
-            $lt: formatISO(new Date(to as string)),
-          },
-        };
-      }
-    }
+    const filterOptionsByDate = dateFilter(query);
+    const filterOptionsByTypePharse = filterPostByPharseType(query);
+
+    options = {
+      ...options,
+      ...filterOptionsByDate,
+      ...filterOptionsByTypePharse,
+    };
 
     const pharse = query?.pharse as string;
     const video = Boolean(query?.video);
@@ -114,32 +76,11 @@ const getPosts = ({
     const gif = Boolean(query?.gif);
     const text = Boolean(query?.text);
 
-    if (pharse) {
-      options = {
-        ...options,
-        title: { $regex: pharse, $options: "i" },
-      };
-    } else {
+    if (!pharse) {
       delete options.title;
     }
 
-    if (video || image || gif || text) {
-      const toSearch = [
-        video ? { type: "video" } : null,
-        image ? { type: "image" } : null,
-        gif ? { type: "gif" } : null,
-        text ? { type: "text" } : null,
-      ].filter((item) => item !== null);
-
-      options = {
-        ...options,
-        memContainers: {
-          $elemMatch: {
-            $or: toSearch,
-          },
-        },
-      };
-    } else {
+    if (!video && !image && !gif && !text) {
       delete options.memContainers;
     }
 
@@ -304,20 +245,22 @@ const getPosts = ({
       );
     }
 
+    const categorySearch = checkCategory
+      ? {
+          category: checkCategory.name,
+          categorySlug: checkCategory.slug,
+          nsfw: checkCategory.nsfw,
+          ofage: hasCookie("ofage", { req }),
+          isFollowedCategory,
+        }
+      : {};
+
     return {
       props: {
         posts: JSON.parse(JSON.stringify(posts)),
         currentPage: page,
         allPages,
-        ...(checkCategory
-          ? {
-              category: checkCategory.name,
-              categorySlug: checkCategory.slug,
-              nsfw: checkCategory.nsfw,
-              ofage: hasCookie("ofage", { req }),
-              isFollowedCategory,
-            }
-          : {}),
+        ...categorySearch,
       },
     };
   });
